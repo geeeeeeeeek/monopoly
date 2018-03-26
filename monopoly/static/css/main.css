@@ -1,0 +1,152 @@
+html, body {
+    width: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+    font-size: 15px;
+    height: 100%;
+    color: #1a1a1a;
+    background: #f6f6f6;
+    -webkit-tap-highlight-color: rgba(26,26,26,0);
+}
+
+#page-container {
+    margin-top: 72px;
+    flex-direction: column;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 8px;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #f6f6f6;
+    margin: 0 0 -2px 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    display: flex;
+}
+
+/* Components - Card */
+.card {
+    margin-bottom: 10px;
+    background: #fff;
+    overflow: hidden;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(26,26,26,.1);
+    box-sizing: border-box;
+}
+
+.large-button {
+    color: #fff;
+    background-color: #0084ff;
+    font-size: 15px;
+    height: 32px;
+    border: none;
+    border-radius: 3px;
+    padding: 0 14px;
+    outline-width: 0;
+    cursor: pointer;
+}
+
+.large-button:hover {
+    border-color: #0077e6 !important;
+    background-color: #0077e6 !important;
+}
+
+.large-button:disabled {
+    border-color: #8590a6 !important;
+    background-color: #8590a6 !important;
+}
+
+
+.light-button {
+    color: #0084ff;
+    background-color: #fff;
+    font-size: 15px;
+    height: 32px;
+    border: 1px solid #0084ff;
+    border-radius: 3px;
+    padding: 0 14px;
+    outline-width: 0;
+    cursor: pointer;
+}
+
+.light-button:hover {
+    background-color: rgba(0,132,255,.06) !important;
+}
+
+.light-button:disabled {
+    opacity: .5;
+}
+
+/* Components - Banner */
+#navgation {
+    z-index: 100;
+    overflow: hidden;
+    display: flex;
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    margin: 0 auto;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+}
+
+#nav-container {
+    width: 724px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-active {
+    color: #444 !important;
+    font-weight: 500;
+}
+
+.nav-button:hover {
+    color: #175199 !important;
+    fill: #175199 !important;
+}
+
+.nav-button {
+    padding: 0 15px;
+    font-size: 15px;
+    line-height: 30px;
+    color: #8590a6;
+    fill: #8590a6;
+    cursor: pointer;
+    display: flex;
+}
+
+#nav-profile {
+    height: 32px;
+    width: 32px;
+}
+
+.nav-button-group {
+    display: flex;
+    align-items: center;
+}
+
+#nav-profile:before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    height: 32px;
+    width: 32px;
+    background-size: 32px 32px;
+    background-image: url("/static/images/default_avatar.png");
+}
