@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} User {{ profile.user.username }} {% endblock %}
+{% block files %}
+<link rel="stylesheet" href="{% static 'css/profile_page.css' %}">
+<script src="{% static 'js/profile_page.js' %}"></script>
+{% endblock %}
+{% block content %}
+<div id="profile-container" class="center">
+    {% include "profile_header.html" %}
+    {% if user.username == profile.user.username %}
+    <div id="profile-followers" class="card profile-card">
+        <span id="profile-follower-top">Followers</span>
+        {% for follower in followers %}
+        {% include "profile_follower.html" %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
