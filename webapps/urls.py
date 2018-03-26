@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from socialnetwork import views
 
 urlpatterns = [
     url(r'^monopoly/', include('monopoly.urls')),
