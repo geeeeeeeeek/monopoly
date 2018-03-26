@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Some Social Network</title>
+    <title>Monopoly</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="/static/css/main.css">
     <link rel="stylesheet" href="/static/css/login.css">
 </head>
 <body>
 <div id="page-container" class="center">
-    {% if error %}
-    <span id="login-error" class="card"> {{error}} </span>
-    {% endif %}
+    <div id="login-blur" class="center"></div>
     <form id="login-container" class="center card login-card" method="POST">
         {% csrf_token %}
-        <span id="login-title">{{active_page}} to Social Network</span>
+        <span id="login-title">{{active_page}} to Monopoly</span>
         {% if active_page == "register" %}
         <div id="login-name-group">
             <input name="firstname" id="login-first-name" placeholder="First Name"></input>
