@@ -1,0 +1,41 @@
+<div id="profile-header" class="profile-card card">
+    <div id="profile-avatar-edit-mask" type="file">
+        <svg fill="#fff" viewBox="0 0 24 24" width="36" height="36" data-reactid="82"><path d="M20.094 6S22 6 22 8v10.017S22 20 19 20H4.036S2 20 2 18V7.967S2 6 4 6h3s1-2 2-2h6c1 0 2 2 2 2h3.094zM12 16a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7zm0 1.5a5 5 0 1 0-.001-10.001A5 5 0 0 0 12 17.5zm7.5-8a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" fill-rule="evenodd" data-reactid="83"></path></svg>
+        <span>Upload</span>
+    </div>
+    <img id="profile-user-avatar" src="{{ profile.info.avatar }}"></img>
+    <div id="profile-meta">
+        <span id="profile-name">{{ profile.user.first_name }}&nbsp;{{ profile.user.last_name }}</span>
+        {% if user.username == profile.user.username %}
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <textarea id="profile-bio" readonly name="bio">{{ profile.info.bio }}</textarea>
+            <input type="file" id="profile-avatar-file" name="avatar" hidden>
+            <div id="profile-actions">
+                <button type="button"id="profile-edit" class="light-button">Edit Profile</button>
+                <button type="submit" id="profile-update" hidden class="large-button">Apply Changes</button>
+            </div>
+    </div>
+    {% elif has_followed %}
+    <form method="POST" action="/followers">
+        {% csrf_token %}
+        <textarea id="profile-bio" readonly>{{ profile.info.bio }}</textarea>
+        <input name="followers" value="{{ followers }}" hidden>
+        <input name="newfollower" value="{{ profile.user.username }}" hidden>
+        <div id="profile-actions">
+            <button name="action" value="unfollow" id="profile-follow" class="light-button">Unfollow</button>
+        </div>
+</div>
+{% else %}
+<form method="POST" action="/followers">
+    {% csrf_token %}
+    <textarea id="profile-bio" readonly>{{ profile.info.bio }}</textarea>
+    <input name="followers" value="{{ followers }}" hidden>
+    <input name="newfollower" value="{{ profile.user }}" hidden>
+    <div id="profile-actions">
+        <button name="action" value="follow" id="profile-follow" class="light-button">Follow</button>
+    </div>
+    </div>
+    {% endif %}
+    </div>
+    </div>
