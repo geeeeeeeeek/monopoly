@@ -4,12 +4,12 @@ html, body {
 }
 
 body {
-    font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     font-size: 15px;
     height: 100%;
     color: #1a1a1a;
     background: #f6f6f6;
-    -webkit-tap-highlight-color: rgba(26,26,26,0);
+    -webkit-tap-highlight-color: rgba(26, 26, 26, 0);
 }
 
 #page-container {
@@ -24,15 +24,6 @@ body {
     margin-top: 8px;
 }
 
-hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid #f6f6f6;
-    margin: 0 0 -2px 0;
-    padding: 0;
-}
-
 a {
     text-decoration: none;
     display: flex;
@@ -41,11 +32,11 @@ a {
 /* Components - Card */
 .card {
     margin-bottom: 10px;
-    background: #fff;
     overflow: hidden;
     border-radius: 2px;
-    box-shadow: 0 1px 3px rgba(26,26,26,.1);
+    box-shadow: 0 1px 3px rgba(26, 26, 26, .1);
     box-sizing: border-box;
+    opacity: 0.90;
 }
 
 .large-button {
@@ -70,7 +61,6 @@ a {
     background-color: #8590a6 !important;
 }
 
-
 .light-button {
     color: #0084ff;
     background-color: #fff;
@@ -84,7 +74,7 @@ a {
 }
 
 .light-button:hover {
-    background-color: rgba(0,132,255,.06) !important;
+    background-color: rgba(0, 132, 255, .06) !important;
 }
 
 .light-button:disabled {
@@ -149,4 +139,33 @@ a {
     width: 32px;
     background-size: 32px 32px;
     background-image: url("/static/images/default_avatar.png");
+}
+
+.card-content-container {
+    z-index: 100;
+    width: 100%;
+}
+
+.card-blur {
+    filter: blur(40px);
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    bottom: -20px;
+    left: -20px;
+    z-index: 99;
+    margin: 0;
+    padding: 20px;
+    background: #fff no-repeat;
+}
+
+.card-blur-container {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 5px;
+    z-index: 99;
 }

@@ -20,7 +20,7 @@ body {
 }
 
 #login-blur {
-    filter: blur(30px);
+    filter: blur(40px);
     width: 432px;
     position: absolute;
     top: -20px;
@@ -31,15 +31,6 @@ body {
     margin: 0;
     padding: 20px;
     background: #fff no-repeat;
-}
-
-.login-card {
-    padding: 40px 36px;
-    width: 432px;
-    padding-bottom: 20px;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
 }
 
 #login-title {
@@ -74,7 +65,7 @@ input {
 #login-submit {
     text-transform: capitalize;
     width: 100%;
-    margin-top: 40px;
+    margin-top: 30px;
     height: 34px;
 }
 
@@ -82,14 +73,12 @@ input {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 432px;
     background-color: #e6e6e6;
     height: 58px;
     border-top: 1px solid #ebebeb;
     font-size: 16px;
     color: #175199;
     cursor: pointer;
-    z-index: 100;
     margin-bottom: 0;
 }
 
@@ -97,24 +86,13 @@ input {
     margin: 0;
     position: relative;
     z-index: 100;
-    padding: 20px;
     background: inherit;
+    width: 432px;
+    padding: 20px 36px 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 input {
     background: inherit;
-}
-
-#login-error {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 432px;
-    background-color: #ef5350;
-    height: 48px;
-    border-top: 1px solid #ebebeb;
-    font-size: 16px;
-    color: #fff;
-    cursor: pointer;
-    margin-bottom: 0;
 }

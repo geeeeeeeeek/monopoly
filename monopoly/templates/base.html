@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block files %}{% endblock %}
+</head>
+<body>
+{% csrf_token %}
+<div id="page-container" class="center">
+    {% block content %}{% endblock %}
+</div>
+</body>
+</html>

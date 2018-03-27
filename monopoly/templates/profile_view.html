@@ -1,20 +1,41 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %} User {{ profile.user.username }} {% endblock %}
+
+{% block title %} {{ profile.user.username }} {% endblock %}
+
 {% block files %}
-<link rel="stylesheet" href="{% static 'css/profile_page.css' %}">
-<script src="{% static 'js/profile_page.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+<script src="{% static 'js/profile.js' %}"></script>
 {% endblock %}
+
 {% block content %}
 <div id="profile-container" class="center">
-    {% include "profile_header.html" %}
-    {% if user.username == profile.user.username %}
-    <div id="profile-followers" class="card profile-card">
-        <span id="profile-follower-top">Followers</span>
-        {% for follower in followers %}
-        {% include "profile_follower.html" %}
-        {% endfor %}
+    <div id="profile-header" class="profile-card card">
+        <div class="card-blur-container">
+            <div class="card-blur"></div>
+        </div>
+        <div class="card-content-container">
+            <div id="profile-avatar-edit-mask">
+                <svg fill="#fff" viewBox="0 0 24 24" width="36" height="36" data-reactid="82">
+                    <path d="M20.094 6S22 6 22 8v10.017S22 20 19 20H4.036S2 20 2 18V7.967S2 6 4 6h3s1-2 2-2h6c1 0 2 2 2 2h3.094zM12 16a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7zm0 1.5a5 5 0 1 0-.001-10.001A5 5 0 0 0 12 17.5zm7.5-8a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"
+                          fill-rule="evenodd" data-reactid="83"></path>
+                </svg>
+                <span>Upload</span>
+            </div>
+            <img id="profile-user-avatar" src="{{ profile.info.avatar }}">
+            <div id="profile-meta">
+                <span id="profile-name">Zhongyi Tong{{ profile.user.first_name }}&nbsp;{{ profile.user.last_name }}</span>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <textarea id="profile-bio" readonly name="bio">Some bio{{ profile.info.bio }}</textarea>
+                    <input type="file" id="profile-avatar-file" name="avatar" hidden>
+                    <div id="profile-actions">
+                        <button type="button" id="profile-edit" class="light-button">Edit Profile</button>
+                        <button type="submit" id="profile-update" hidden class="large-button">Apply Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    {% endif %}
 </div>
 {% endblock %}
