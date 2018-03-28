@@ -15,21 +15,16 @@ class ConfirmRegistrationView(View):
     template_name = 'login_view.html'
 
     def get(self, request, *args, **kwargs):
-        user = get_object_or_404(User, username=args[1])
+        user = get_object_or_404(User, username=kwargs.get('username'))
         # Send 404 error if token is invalid
-        if not default_token_generator.check_token(user, args[2]):
+        if not default_token_generator.check_token(user, kwargs.get('token')):
             res = {'active_page': 'register',
                    "error": "Invalid token."}
             return render(request, self.template_name, res)
-            # page = LoginView.as_view({
-            #     "view": "register",
-            #     "error": "Invalid token."
-            # }, request).render()
-            # return HttpResponse(page)
 
         # Otherwise token was valid, activate the user.
         user.is_active = True
         user.save()
         login(request, user)
 
-        return redirect("/posts/public")
+        return redirect("/monopoly/join")
