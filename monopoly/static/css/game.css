@@ -1,0 +1,122 @@
+#page-container {
+    width: 100%;
+    height: 100%;
+    display: block;
+    margin: 0;
+}
+
+#game-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+#user-avatar {
+    background: #ccc;
+    border-radius: 36px;
+    overflow: hidden;
+    border: 4px solid #fff;
+    width: 64px;
+    height: 64px;
+    vertical-align: middle;
+    top: 40px;
+    right: 40px;
+    position: absolute;
+}
+
+#user-avatar:before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    height: 64px;
+    width: 64px;
+    background-size: 64px 64px;
+    background-image: url("/static/images/default_avatar.png");
+}
+
+#cash-card {
+    bottom: 40px;
+    left: 40px;
+    position: absolute;
+    width: 140px;
+    height: 56px;
+    background: #FFC107;
+}
+
+#cash-card .card-blur {
+    background: #ffffffab no-repeat;
+    filter: blur(60px);
+}
+
+#cash-card > .card-content-container {
+    text-align: center;
+    vertical-align: middle;
+    height: 100%;
+    line-height: 56px;
+    font-size: 20px;
+    color: #000;
+}
+
+#chat-switch {
+    background: #0084ff url("/static/images/chat.png") no-repeat center;
+    background-size: 18px 18px;
+    border-radius: 36px;
+    overflow: hidden;
+    border: 2px solid #fff;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+    top: 82px;
+    right: 31px;
+    position: absolute;
+}
+
+#chat-card {
+    width: 432px;
+    height: 520px;
+}
+
+.center-card {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#chat-card .card-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 20px 20px;
+}
+
+#chat-card-title {
+    align-items: center;
+    text-align: center;
+    font-size: 32px;
+    color: #0084ff;
+    margin-bottom: 10px;
+}
+
+#chat-message-container {
+    flex-grow: 1;
+}
+
+#chat-send-message {
+    color: #666;
+    width: 296px;
+    height: 32px;
+    line-height: 32px;
+    background: #ffffff;
+    border: 1px #cccccc solid;
+    border-radius: 3px;
+    font-size: 14px;
+    outline: none;
+    padding: 0 8px;
+}
+
+#chat-send-container {
+    display: flex;
+    justify-content: space-between;
+}
