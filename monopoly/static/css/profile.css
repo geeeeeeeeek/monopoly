@@ -4,21 +4,21 @@
 }
 
 .profile-card {
-    padding: 16px 20px;
     width: 694px;
-    padding-bottom: 20px;
+    padding: 16px 20px 20px;
     margin-bottom: 20px;
     display: flex;
 }
 
 #profile-user-avatar {
     background: #ccc;
-    border-radius: 4px;
+    border-radius: 84px;
+    overflow: hidden;
     border: 4px solid #fff;
     width: 168px;
     height: 168px;
     vertical-align: middle;
-    top: 80px;
+    top: -80px;
     position: absolute;
     margin-left: 10px;
 }
@@ -34,14 +34,15 @@
 }
 
 #profile-header {
-    margin-top: 40px;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: initial;
 }
 
 #profile-meta {
-    margin-left: 160px;
+    padding: 0 0 0 200px;
     display: flex;
     flex-direction: column;
-    width: 100%;
 }
 
 #profile-actions {
@@ -61,10 +62,11 @@
     font-size: 15px;
     color: #646464;
     padding: 10px;
-    border: 1px solid #fff;
     width: 96%;
     margin-bottom: 10px;
     min-height: 26px;
+    background: inherit;
+    border: none;
     resize: vertical;
 }
 
@@ -136,12 +138,12 @@
 }
 
 #profile-avatar-edit-mask {
-    position: relative;
+    position: absolute;
     width: 40px;
     height: 40px;
     color: #fff;
-    top: 0px;
-    left: 74px;
+    top: -17px;
+    left: 94px;
     z-index: 100;
     opacity: 0;
     cursor: pointer;
