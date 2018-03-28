@@ -1,0 +1,103 @@
+#join-card-container {
+    width: 432px;
+    padding: 16px 20px 20px;
+    display: flex;
+    position: relative;
+    overflow: inherit;
+    margin-top: 80px;
+}
+
+.card-content-container{
+    display: flex;
+    flex-direction: column;
+    margin-top: 50px;
+}
+
+#user-avatar {
+    background: #ccc;
+    border-radius: 68px;
+    overflow: hidden;
+    border: 4px solid #fff;
+    width: 128px;
+    height: 128px;
+    vertical-align: middle;
+    top: -80px;
+    left: 146px;
+    position: absolute;
+}
+
+#user-avatar:before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    height: 128px;
+    width: 128px;
+    background-size: 128px 128px;
+    background-image: url("/static/images/default_avatar.png");
+}
+
+#joined-users-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.joined-user-avatar {
+    background: #ccc;
+    border-radius: 36px;
+    overflow: hidden;
+    border: 4px solid #fff;
+    width: 64px;
+    height: 64px;
+    margin: 10px 0;
+    position: relative;
+}
+
+.joined-user-avatar::before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    height: 64px;
+    width: 64px;
+    background-size: 64px 64px;
+    background-image: url("/static/images/default_avatar.png");
+}
+
+#start-game {
+    margin: 20px 0;
+}
+
+input {
+    color: #666;
+    width: 304px;
+    height: 32px;
+    line-height: 32px;
+    background: #ffffff;
+    border: 1px #cccccc solid;
+    border-radius: 3px;
+    font-size: 14px;
+    padding: 0 8px;
+}
+
+hr {
+    margin: 10px 0;
+    border: 0.5px #ccc solid;
+}
+
+#invitation-container {
+    margin: 10px 0;
+}
+
+#invitation-note {
+    font-size: 13px;
+    color: #666;
+    margin: 10px 0 5px 0;
+}
+
+#new-game-notice {
+    align-items: center;
+    text-align: center;
+    font-size: 32px;
+    color: #0084ff;
+    margin-bottom: 10px;
+}

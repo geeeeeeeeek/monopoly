@@ -1,25 +1,11 @@
-body {
-    background-image: url(/static/images/login_bg.jpg);
-    background-repeat: no-repeat;
-    background-color: #c1daf4;
-    background-size: cover;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 #profile-container {
     display: flex;
     flex-direction: column;
 }
 
 .profile-card {
-    padding: 16px 20px;
     width: 694px;
-    padding-bottom: 20px;
+    padding: 16px 20px 20px;
     margin-bottom: 20px;
     display: flex;
 }
@@ -48,7 +34,7 @@ body {
 }
 
 #profile-header {
-    margin-top: 40px;
+    margin-bottom: 40px;
     position: relative;
     overflow: initial;
 }
