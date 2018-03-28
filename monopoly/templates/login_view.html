@@ -13,9 +13,12 @@
         <div class="card-blur"></div>
     </div>
     <div class="card-content-container">
-        <form id="form-container" class="center" method="POST">
+        <form id="login-container" class="center" method="POST">
             {% csrf_token %}
             <span id="login-title">{{active_page}} to Monopoly</span>
+            {% if error %}
+                <span id="login-error" class="card"> {{error}} </span>
+            {% endif %}
             {% if active_page == "register" %}
             <div id="login-name-group">
                 <input name="firstname" id="login-first-name" placeholder="First Name"/>
@@ -27,13 +30,13 @@
             <input name="password" type="password" id="login-password" placeholder="Password"/>
             <button type="submit" id="login-submit" class="large-button">{{active_page}}</button>
         </form>
-        <span id="login-switch">
+        <span id="login-switch" class="card">
             {% if active_page == "register" %}
             Already Signed Up? &nbsp;
-            <a href="/login">Log Into Existing Account</a>
+            <a href="/monopoly/login">Log Into Existing Account</a>
             {% else %}
             New Here? &nbsp;
-            <a href="/register">Create New Account</a>
+            <a href="/monopoly/register">Create New Account</a>
             {% endif %}
         </span>
     </div>
