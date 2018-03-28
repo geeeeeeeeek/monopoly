@@ -1,23 +1,7 @@
-#page-container {
+#login-container {
     margin: 0;
-    opacity: 0.85;
-    position: relative;
-    overflow: hidden;
-    border-radius: 5px;
-}
-
-#login-blur {
-    filter: blur(40px);
     width: 432px;
-    position: absolute;
-    top: -20px;
-    right: -20px;
-    bottom: -20px;
-    left: -20px;
-    z-index: 99;
-    margin: 0;
-    padding: 20px;
-    background: #fff no-repeat;
+    position: relative;
 }
 
 #login-title {
@@ -69,12 +53,11 @@ input {
     margin-bottom: 0;
 }
 
-#login-container {
+#form-container {
     margin: 0;
     position: relative;
     z-index: 100;
     background: inherit;
-    width: 432px;
     padding: 20px 36px 20px;
     display: flex;
     flex-direction: column;
@@ -82,4 +65,8 @@ input {
 
 input {
     background: inherit;
+}
+
+.card-content-container {
+    position: relative;
 }

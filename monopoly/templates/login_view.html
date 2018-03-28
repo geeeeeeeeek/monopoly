@@ -8,32 +8,34 @@
 {% endblock %}
 
 {% block content %}
-<div class="card-blur-container">
-    <div class="card-blur"></div>
-</div>
-<div class="card-content-container">
-    <form id="login-container" class="center" method="POST">
-        {% csrf_token %}
-        <span id="login-title">{{active_page}} to Monopoly</span>
-        {% if active_page == "register" %}
-        <div id="login-name-group">
-            <input name="firstname" id="login-first-name" placeholder="First Name"/>
-            <input name="lastname" id="login-last-name" placeholder="Last Name"/>
-        </div>
-        <input name="email" type="email" id="login-email" placeholder="Email"/>
-        {% endif %}
-        <input name="username" id="login-user-name" placeholder="User Name"/>
-        <input name="password" type="password" id="login-password" placeholder="Password"/>
-        <button type="submit" id="login-submit" class="large-button">{{active_page}}</button>
-    </form>
-    <span id="login-switch" class="card">
-        {% if active_page == "register" %}
-        Already Signed Up? &nbsp;
-        <a href="/login">Log Into Existing Account</a>
-        {% else %}
-        New Here? &nbsp;
-        <a href="/register">Create New Account</a>
-        {% endif %}
-    </span>
+<div id="login-container" class="card">
+    <div class="card-blur-container">
+        <div class="card-blur"></div>
+    </div>
+    <div class="card-content-container">
+        <form id="form-container" class="center" method="POST">
+            {% csrf_token %}
+            <span id="login-title">{{active_page}} to Monopoly</span>
+            {% if active_page == "register" %}
+            <div id="login-name-group">
+                <input name="firstname" id="login-first-name" placeholder="First Name"/>
+                <input name="lastname" id="login-last-name" placeholder="Last Name"/>
+            </div>
+            <input name="email" type="email" id="login-email" placeholder="Email"/>
+            {% endif %}
+            <input name="username" id="login-user-name" placeholder="User Name"/>
+            <input name="password" type="password" id="login-password" placeholder="Password"/>
+            <button type="submit" id="login-submit" class="large-button">{{active_page}}</button>
+        </form>
+        <span id="login-switch">
+            {% if active_page == "register" %}
+            Already Signed Up? &nbsp;
+            <a href="/login">Log Into Existing Account</a>
+            {% else %}
+            New Here? &nbsp;
+            <a href="/register">Create New Account</a>
+            {% endif %}
+        </span>
+    </div>
 </div>
 {% endblock %}
