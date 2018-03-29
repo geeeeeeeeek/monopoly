@@ -6,14 +6,13 @@ from channels.auth import http_session_user, channel_session_user, \
 from monopoly.models import Profile
 from django.contrib.auth.models import User
 
-
 import json
-
 
 # Connected to websocket.connect
 # @login_required
 
 rooms = {}
+
 
 def ws_message(message):
     print 'message is: ', message.content
@@ -41,7 +40,7 @@ def ws_connect_for_join(message):
     # hostname = path[1:-2]
     print 'path is: ', path
     fields = path.split('/')
-    hostname =fields[-1]
+    hostname = fields[-1]
     print 'hostname is', hostname
 
     message.reply_channel.send({"accept": "True"})
@@ -49,7 +48,7 @@ def ws_connect_for_join(message):
     # Add to the chat group
     room_name = hostname
     player_name = message.user.username
-    print 'user is: ',message.user
+    print 'user is: ', message.user
     print 'player name: ', player_name
     print 'room name: ', room_name
     add_player(room_name, player_name)
@@ -61,6 +60,7 @@ def ws_connect_for_join(message):
         "text": build_join_reply_msg(room_name)
     })
     print 'join finished'
+
 
 # def ws_message(message):
 #     Group("monopoly_room").send({
@@ -85,27 +85,16 @@ def build_join_reply_msg(room_name):
         print 'player is: ', player
         profile_user = User.objects.get(username=player)
         print 'profile user: ', profile_user.username
-        data.append({"id":profile_user.id, "name":player})
-        # profiles = Profile.objects.filter(user = profile_user)
-        # # username = player
-        # avatar = None
-        # if len(profiles) == 0:
-        #     print 'profile is None'
-        #     avatar = None
-        # else:
-        #     for item in profile:
-        #         avatar = profile.avatar
-
-        # print 'profile_user: ', profile_user.username
-        # profile = Profile.objects.get(user=profile_user)
-
-        # print profile.user.user_name
-        # print profile.user.id
-        # print profile.avatar
+        try:
+            profile = Profile.objects.get(user=profile_user)
+        except Exception:
+            profile = None
+        avatar = profile.avatar.url if profile else ""
+        data.append({"id": profile_user.id, "name": player, "avatar": avatar})
 
     ret = {"action": "join",
-                "data": data
-                }
+           "data": data
+           }
     print json.dumps(ret)
     return json.dumps(ret)
 
@@ -115,5 +104,3 @@ def add_player(room_name, player_name):
         rooms[room_name] = set()
         rooms[room_name].add(room_name)
     rooms[room_name].add(player_name)
-
-
