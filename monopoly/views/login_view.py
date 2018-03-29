@@ -31,6 +31,3 @@ class LoginView(View):
                    "error": "Invalid username or password."}
             return render(request, self.template_name, res)
 
-
-
-

@@ -21,7 +21,7 @@ class JoinView {
     constructor() {
         this.userName = document.getElementById("user-name").value;
         this.hostName = document.getElementById("host-name").value;
-        this.friends = [this.hostName];
+        this.friends = [this.userName];
 
         this.initComponents();
         this.initWebSocket();
@@ -34,14 +34,17 @@ class JoinView {
             this.startGame();
         });
 
-        this.$invitationLink = document.getElementById("invitation-url");
-        this.$invitationLink.value = `${window.location.host}/join/${this.hostName}`;
+        if (this.userName === this.hostName) {
+            this.$invitationLink = document.getElementById("invitation-url");
+            this.$invitationLink.value = `${window.location.host}/monopoly/join/${this.hostName}`;
+        }
     }
 
     initWebSocket() {
         this.socket = new WebSocket(`ws://${window.location.host}/join/${this.hostName}`);
 
         this.socket.onmessage = (event) => {
+            console.log(event.data)
             const message = JSON.parse(event.data);
             this.handleStatusChange(message);
         }
@@ -51,10 +54,12 @@ class JoinView {
         if (message.action = "join") {
             this.addFriend(message.data);
 
-            if (this.friends.length >= 1) {
+            if (this.friends.length > 1) {
                 this.$startGame.disabled = false;
-                if (this.hostName === this.userName) {
+                if (this.hostName !== this.userName) {
                     this.$startGame.innerHTML = "Waiting for host to start the game...";
+                } else {
+                    this.$startGame.innerHTML = "Start Game";
                 }
             }
         } else if (message.action = "start") {
@@ -64,9 +69,9 @@ class JoinView {
 
     addFriend(friends) {
         for (let friend of friends) {
-            if (friend.id in this.friends || friend.id === this.userName) continue;
+            if (friend.name in this.friends || friend.name === this.userName) continue;
 
-            this.friends.push(friend.id);
+            this.friends.push(friend.name);
 
             const template = `<img class="joined-user-avatar" src="${friend.avatar}" title="${friend.name}">`;
             this.$usersContainer.innerHTML += template;
