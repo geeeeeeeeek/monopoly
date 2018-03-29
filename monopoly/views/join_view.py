@@ -8,6 +8,7 @@ class JoinView(View):
     template_name = 'join_view.html'
 
     def get(self, request, *args, **kwargs):
+        print request.path
         user = request.user
         host_name = kwargs.get('host_name', user.username)
 
@@ -17,7 +18,6 @@ class JoinView(View):
             profile = None
 
         return render(request, self.template_name, {
-            "invitation_url": "http://monopo.ly/room/ztong",
             "user": {
                 "name": user.username,
                 "avatar": profile.avatar.url if profile else ""
