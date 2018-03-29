@@ -19,9 +19,9 @@ const sentMessage = {
 
 class JoinView {
     constructor() {
-        this.friends = [];
         this.userName = document.getElementById("user-name").value;
         this.hostName = document.getElementById("host-name").value;
+        this.friends = [this.hostName];
 
         this.initComponents();
         this.initWebSocket();
@@ -33,6 +33,9 @@ class JoinView {
         this.$startGame.addEventListener("click", () => {
             this.startGame();
         });
+
+        this.$invitationLink = document.getElementById("invitation-url");
+        this.$invitationLink.value = `${window.location.host}/join/${this.hostName}`;
     }
 
     initWebSocket() {
