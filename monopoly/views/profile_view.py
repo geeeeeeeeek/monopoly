@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views import View
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
+from django.http import Http404
 
 from monopoly.models import Profile
 from monopoly.forms.profile_form import ProfileForm
@@ -17,6 +18,7 @@ class ProfileView(View):
         except Exception:
             self.error = "User {id} not existed.".format(id=kwargs.get("profile_user"))
             self.profile_user = None
+            raise Http404
 
         try:
             self.profile_info = Profile.objects.get(user=self.profile_user)
@@ -36,6 +38,7 @@ class ProfileView(View):
         except Exception:
             self.error = "User {id} not existed.".format(id=kwargs.get("profile_user"))
             self.profile_user = None
+            raise Http404
 
         try:
             self.profile_info = Profile.objects.get(user=self.profile_user)
@@ -71,20 +74,3 @@ class ProfileView(View):
         }}
         return render(request, self.template_name, res)
 
-        #     return template.render({
-        #         "active_page": "profile",
-        #         "meta": {
-        #             "user": self.request.user,
-        #             "info": self.info
-        #         },
-        #         "profile": {
-        #             "user": self.profile_user,
-        #             "info": self.profile_info
-        #         },
-        #         "has_followed": self.has_followed,
-        #         "followers": self.followers,
-        #         "new_follower": self.profile_user
-        #     }, request=self.request)
-        # res = {'active_page': 'register',
-        #                    "error": "Invalid token."}
-        #             return render(request, self.template_name, res)
