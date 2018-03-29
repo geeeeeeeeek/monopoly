@@ -1,11 +1,11 @@
-from django.shortcuts import render
-from django.views import View
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
+from django.shortcuts import render
+from django.views import View
 
-from monopoly.models import Profile
 from monopoly.forms.profile_form import ProfileForm
+from monopoly.models import Profile
 
 
 class ProfileView(View):
@@ -25,10 +25,10 @@ class ProfileView(View):
         except Exception:
             self.profile_info = None
 
-        res = {"profile": {
+        res = {
             "user": self.profile_user,
-            "info": self.profile_info
-        }}
+            "profile": self.profile_info
+        }
         return render(request, self.template_name, res)
 
     def post(self, request, *args, **kwargs):
@@ -52,8 +52,10 @@ class ProfileView(View):
         avatar = request.FILES.get("avatar", None)
 
         if self.profile_info:
-            if bio: self.profile_info.bio = bio
-            if avatar: self.profile_info.avatar = avatar
+            if bio:
+                self.profile_info.bio = bio
+            if avatar:
+                self.profile_info.avatar = avatar
 
         else:
             self.profile_info = Profile(user=request.user, bio=bio, avatar=avatar)
@@ -68,9 +70,8 @@ class ProfileView(View):
             print form.errors
             self.errors = str(form.errors)
 
-        res = {"profile": {
+        res = {
             "user": self.profile_user,
-            "info": self.profile_info
-        }}
+            "profile": self.profile_info
+        }
         return render(request, self.template_name, res)
-
