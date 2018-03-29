@@ -11,10 +11,11 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+
 from configparser import ConfigParser
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -26,7 +27,6 @@ SECRET_KEY = '7d#m%i!ed32ei5v(i2da*#w9od=_m9u&*6&-6jla1fqdb=66_('
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -47,7 +47,6 @@ CHANNEL_LAYERS = {
         "ROUTING": "monopoly.routing.channel_routing",
     },
 }
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -79,7 +78,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webapps.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
@@ -89,7 +87,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -109,7 +106,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
@@ -122,7 +118,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -139,6 +134,7 @@ EMAIL_HOST_PASSWORD = config.get('Email', 'Password')
 EMAIL_USE_SSL = True
 
 print('Email host:port = {host}:{port}, user={user}'.format(
-        host=EMAIL_HOST, port=EMAIL_PORT, user=EMAIL_HOST_USER))
+    host=EMAIL_HOST, port=EMAIL_PORT, user=EMAIL_HOST_USER))
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'images/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'userdata')
+MEDIA_URL = '/userdata/'

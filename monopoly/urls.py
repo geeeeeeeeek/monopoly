@@ -11,10 +11,9 @@ from monopoly.views.register_view import RegisterView
 urlpatterns = [
     url(r'^$', GameView.as_view(), name='game'),
     url(r'^login', LoginView.as_view(), name='login'),
-    url(r'^profile/(?P<profile_user>[a-zA-Z0-9]+)$', ProfileView.as_view(), name='profile'),
-    url(r'^join/(?P<host_name>.+)', JoinView.as_view(), name="join"),
+    url(r'^profile/(?P<profile_user>.+)$', ProfileView.as_view(), name='profile'),
+    url(r'^join/(?P<host_name>.*)', JoinView.as_view(), name="join"),
     url(r'^register', RegisterView.as_view(), name='register'),
-    url(r'^photo/(?P<username>[a-zA-Z0-9]+)$', PhotoView.as_view(), name='photo'),
     url(r'^confirm-registration/(?P<username>[a-zA-Z0-9]+)/(?P<token>[a-z0-9\-]+)$',
         ConfirmRegistrationView.as_view(), name='confirm')
 ]

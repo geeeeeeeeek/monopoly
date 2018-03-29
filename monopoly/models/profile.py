@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
     user = models.OneToOneField(User)
     bio = models.CharField(max_length=140, blank=False)
-    avatar = models.FileField(upload_to="images", blank=True)
+    avatar = models.FileField(blank=True)
 
     def __str__(self):
         return str(self.user) + str(self.bio) + str(self.avatar)

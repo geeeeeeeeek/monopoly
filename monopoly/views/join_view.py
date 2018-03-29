@@ -14,15 +14,13 @@ class JoinView(View):
         try:
             profile = Profile.objects.get(user=user)
         except Exception:
-            profile = {
-                "avatar": ""
-            }
+            profile = None
 
         return render(request, self.template_name, {
             "invitation_url": "http://monopo.ly/room/ztong",
             "user": {
                 "name": user.username,
-                "avatar": profile["avatar"]
+                "avatar": profile.avatar.url if profile else ""
             },
             "host_name": host_name
         })
