@@ -6,21 +6,20 @@
 {% block files %}
 <link rel="stylesheet" href="{% static 'css/join.css' %}">
 <!--todo delete this test.js file after finish frontend ws dev-->
-<script src="{% static 'js/test.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/views/join.js' %}" type="text/javascript"></script>
 {% endblock %}
 
 {% block content %}
 <div id="join-card-container" class="card">
+    <input id="user-id" value="{{ user.id }}" hidden>
     <div class="card-blur-container">
         <div class="card-blur"></div>
     </div>
     <div class="card-content-container">
-        <img id="user-avatar" src="{{ profile.info.avatar }}">
+        <img id="user-avatar" src="{{ user.avatar }}">
         <span id="new-game-notice">New Game!</span>
         <div id="joined-users-container">
-            <img class="joined-user-avatar" src="">
-            <img class="joined-user-avatar" src="">
-            <img class="joined-user-avatar" src="">
+            <img class="joined-user-avatar" src="" title="">
         </div>
         <button id="start-game" class="large-button" disabled="{{waiting}}">
             {% if waiting %}

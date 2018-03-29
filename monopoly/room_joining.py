@@ -1,5 +1,5 @@
 from channels import Group
-from django.core import serializers
+
 
 # Connected to websocket.connect
 def ws_add(message):
@@ -13,11 +13,14 @@ def ws_add(message):
     # response_text = serializers.serialize('json', Item.objects.all())
     message.reply_channel.send({
         "text": "mock_for_avatar_url",
+        "msg": "2333"
     })
 
     Group('todolist').send({
-        'text': "Test for sending to all user"
+        'text': "Test for sending to all user",
+        "msg": "2333"
     })
+
 
 # Could be connected to websocket.receive
 # def ws_message(message):
