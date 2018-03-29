@@ -22,5 +22,5 @@ class JoinView(View):
                 "name": user.username,
                 "avatar": profile.avatar.url if profile else ""
             },
-            "host_name": host_name
+            "host_name": host_name if len(host_name) else user.username
         })
