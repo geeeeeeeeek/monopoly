@@ -6,6 +6,7 @@ from django.shortcuts import render
 
 from monopoly.models.session import Session
 
+
 # @csrf_protect
 class RegisterView(View):
     initial = {'active_page': 'register'}
@@ -24,6 +25,7 @@ class RegisterView(View):
             "email": request.POST.get("email", None)
         }
         successful, auth_or_error = Session().register(conf)
+
         if successful:
             res = {'active_page': 'register',
                    "error": "Confirmation sent to your email."}
@@ -31,9 +33,4 @@ class RegisterView(View):
         else:
             res = {'active_page': 'register',
                    "error": auth_or_error}
-            # page = LoginView.as_view({
-            #     "view": "register",
-            #     "error": auth_or_error
-            # }, request).render()
             return render(request, self.template_name, res)
-
