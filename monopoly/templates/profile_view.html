@@ -22,7 +22,7 @@
                 </svg>
                 <span>Upload</span>
             </div>
-            <img id="profile-user-avatar" src="{{ profile.info.avatar }}">
+            <img id="profile-user-avatar" src="{% url 'photo' profile.user.username %}">
             <div id="profile-meta">
                 <span id="profile-name">{{ profile.user.first_name }}&nbsp;{{ profile.user.last_name }}</span>
                 <form method="POST" enctype="multipart/form-data">

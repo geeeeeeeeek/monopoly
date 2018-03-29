@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import redirect, get_object_or_404
+from django.http import HttpResponse
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
