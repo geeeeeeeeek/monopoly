@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
+from django.http import Http404
 from django.shortcuts import render
 from django.views import View
 
@@ -17,6 +18,7 @@ class ProfileView(View):
         except Exception:
             self.error = "User {id} not existed.".format(id=kwargs.get("profile_user"))
             self.profile_user = None
+            raise Http404
 
         try:
             self.profile_info = Profile.objects.get(user=self.profile_user)
@@ -36,6 +38,7 @@ class ProfileView(View):
         except Exception:
             self.error = "User {id} not existed.".format(id=kwargs.get("profile_user"))
             self.profile_user = None
+            raise Http404
 
         try:
             self.profile_info = Profile.objects.get(user=self.profile_user)
