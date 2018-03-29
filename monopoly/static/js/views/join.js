@@ -14,16 +14,14 @@
 };
 
 const sentMessage = {
-    action: "start",
-    data: {
-        host: "user_id"
-    }
+    action: "start"
 };*/
 
 class JoinView {
     constructor() {
         this.friends = [];
-        this.userId = document.getElementById("user-id").value;
+        this.userName = document.getElementById("user-name").value;
+        this.hostName = document.getElementById("host-name").value;
 
         this.initComponents();
         this.initWebSocket();
@@ -38,7 +36,7 @@ class JoinView {
     }
 
     initWebSocket() {
-        this.socket = new WebSocket(`ws://${window.location.host}/join/${this.userId}`);
+        this.socket = new WebSocket(`ws://${window.location.host}/join/${this.hostName}`);
 
         this.socket.onmessage = (event) => {
             const message = JSON.parse(event.data);
@@ -52,6 +50,9 @@ class JoinView {
 
             if (this.friends.length >= 1) {
                 this.$startGame.disabled = false;
+                if (this.hostName === this.userName) {
+                    this.$startGame.innerHTML = "Waiting for host to start the game...";
+                }
             }
         } else if (message.action = "start") {
             this.navigateToGame();
@@ -60,7 +61,7 @@ class JoinView {
 
     addFriend(friends) {
         for (let friend of friends) {
-            if (friend.id in this.friends || friend.id === this.userId) continue;
+            if (friend.id in this.friends || friend.id === this.userName) continue;
 
             this.friends.push(friend.id);
 
@@ -71,10 +72,7 @@ class JoinView {
 
     startGame() {
         this.socket.send({
-            action: "start",
-            data: {
-                host: this.userId
-            }
+            action: "start"
         });
     }
 

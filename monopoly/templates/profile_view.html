@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %} {{ profile.user.username }} {% endblock %}
+{% block title %} {{ user.username }} {% endblock %}
 
 {% block files %}
 <link rel="stylesheet" href="{% static 'css/profile.css' %}">
@@ -22,12 +22,12 @@
                 </svg>
                 <span>Upload</span>
             </div>
-            <img id="profile-user-avatar" src="{% url 'photo' profile.user.username %}">
+            <img id="profile-user-avatar" src="{{ profile.avatar.url }}">
             <div id="profile-meta">
-                <span id="profile-name">{{ profile.user.first_name }}&nbsp;{{ profile.user.last_name }}</span>
+                <span id="profile-name">{{ user.first_name }}&nbsp;{{ user.last_name }}</span>
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <textarea id="profile-bio" readonly name="bio">{{ profile.info.bio }}</textarea>
+                    <textarea id="profile-bio" readonly name="bio">{{ profile.bio }}</textarea>
                     <input type="file" id="profile-avatar-file" name="avatar" hidden>
                     <div id="profile-actions">
                         <button type="button" id="profile-edit" class="light-button">Edit Profile</button>
