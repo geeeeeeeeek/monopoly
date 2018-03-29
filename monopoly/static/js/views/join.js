@@ -44,7 +44,6 @@ class JoinView {
         this.socket = new WebSocket(`ws://${window.location.host}/join/${this.hostName}`);
 
         this.socket.onmessage = (event) => {
-            console.log(event.data)
             const message = JSON.parse(event.data);
             this.handleStatusChange(message);
         }
@@ -69,7 +68,7 @@ class JoinView {
 
     addFriend(friends) {
         for (let friend of friends) {
-            if (friend.name in this.friends || friend.name === this.userName) continue;
+            if (this.friends.indexOf(friend.name) !== -1 || friend.name === this.userName) continue;
 
             this.friends.push(friend.name);
 
@@ -79,13 +78,17 @@ class JoinView {
     }
 
     startGame() {
-        this.socket.send({
+        this.socket.send(JSON.stringify({
             action: "start"
-        });
+        }));
+
+        // TODO: temporally navigate to game for demo purpose
+        // TODO: need to wait for server to initialize game
+        this.navigateToGame();
     }
 
     navigateToGame() {
-        window.location = `${window.location.host}/monopoly`
+        window.location = `http://${window.location.host}/monopoly`;
     }
 }
 

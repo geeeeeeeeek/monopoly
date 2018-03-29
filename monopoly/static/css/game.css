@@ -69,6 +69,7 @@
     top: 82px;
     right: 31px;
     position: absolute;
+    cursor: pointer;
 }
 
 #chat-card {
