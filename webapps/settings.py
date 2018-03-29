@@ -60,6 +60,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'webapps.urls'
 
+LOGIN_URL = '/monopoly/login'
+LOGIN_REDIRECT_URL = '/monopoly/'
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
