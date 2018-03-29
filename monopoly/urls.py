@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import views as auth_views
 
 from monopoly.views.login_view import LoginView
 from monopoly.views.register_view import RegisterView
@@ -11,6 +12,7 @@ from monopoly.views.photo_view import PhotoView
 
 urlpatterns = [
     url(r'^$', login_required(GameView.as_view()), name='game'),
+    url(r'^logout$', auth_views.logout_then_login, name='logout'),
     url(r'^login', LoginView.as_view(), name='login'),
     url(r'^profile/(?P<profile_user>[a-zA-Z0-9]+)$', login_required(ProfileView.as_view()), name='profile'),
     url(r'^join', login_required(JoinView.as_view()), name="join"),
