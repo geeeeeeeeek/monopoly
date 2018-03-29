@@ -3,6 +3,7 @@
 migrations
 db.sqlite3
 .idea/misc.xml
+userdata
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template
