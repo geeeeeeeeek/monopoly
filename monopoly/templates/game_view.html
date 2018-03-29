@@ -5,6 +5,7 @@
 
 {% block files %}
 <link rel="stylesheet" href="{% static 'css/game.css' %}">
+<script src="{% static 'js/views/game.js' %}" type="text/javascript"></script>
 {% endblock %}
 
 {% block content %}
@@ -18,7 +19,7 @@
             $2333
         </div>
     </div>
-    <div id="chat-card" class="card center-card">
+    <div id="chat-card" class="card center-card hidden">
         <div class="card-blur-container">
             <div class="card-blur"></div>
         </div>
