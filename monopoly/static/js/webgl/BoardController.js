@@ -53,7 +53,7 @@ class BoardController {
         this.initLights();
         this.initMaterials();
 
-        this.initObjects( ()=> {
+        this.initObjects(() => {
             this.onAnimationFrame();
 
             callback();
@@ -242,7 +242,7 @@ class BoardController {
         }
 
         // load this.board
-        loader.load(this.assetsUrl + 'board.js',  (geom) =>{
+        loader.load(this.assetsUrl + 'board.js', (geom) => {
             this.boardModel = new THREE.Mesh(geom, this.materials.boardMaterial);
             this.boardModel.position.y = -0.02;
 
@@ -252,7 +252,7 @@ class BoardController {
         });
 
         // load piece
-        loader.load(this.assetsUrl + 'piece.js',  (geometry) =>{
+        loader.load(this.assetsUrl + 'piece.js', (geometry) => {
             this.pieceGeometry = geometry;
 
             checkLoad();
@@ -297,8 +297,8 @@ class BoardController {
     initListeners() {
         var domElement = this.renderer.domElement;
 
-        domElement.addEventListener('mousedown', this.onMouseDown, false);
-        domElement.addEventListener('mouseup', this.onMouseUp, false);
+        domElement.addEventListener('mousedown', (event) => this.onMouseDown(event), false);
+        domElement.addEventListener('mouseup', (event) => this.onMouseUp(event), false);
     }
 
     /**
