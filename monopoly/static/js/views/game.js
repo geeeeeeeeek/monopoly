@@ -24,7 +24,7 @@ class GameView {
     }
 
     initGameBoard() {
-        new CHECKERS.Game({
+        new GameController({
             // The DOM element in which the drawing will happen.
             containerEl: document.getElementById('game-container'),
 

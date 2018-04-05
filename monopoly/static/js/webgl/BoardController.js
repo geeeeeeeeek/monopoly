@@ -1,479 +1,400 @@
-CHECKERS.BoardController = function (options) {
-    'use strict';
-    
-    options = options || {};
+"use strict";
 
-    /**********************************************************************************************/
-    /* Private properties *************************************************************************/
+class BoardController {
+
+    constructor(options) {
+        this.containerEl = options.containerEl || null;
+
+        this.assetsUrl = options.assetsUrl || '';
+
+        this.renderer = null;
+
+        this.projector = null;
+
+        this.scene = null;
+
+        this.camera = null;
+
+        this.cameraController = null;
+
+        this.lights = {};
+
+        this.materials = {};
+
+        this.pieceGeometry = null;
+
+        this.boardModel = null;
+
+        this.groundModel = null;
+
+        this.squareSize = 10;
+
+        this.board = [
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0]
+        ];
+
+        this.selectedPiece = null;
+
+        this.callbacks = options.callbacks || {};
+    }
 
     /**
-     * Store the instance of 'this' object.
-     * @type CHECKERS.BoardController
+     * Draws the this.board.
      */
-    var instance = this;
+    drawBoard(callback) {
+        this.initEngine();
+        this.initLights();
+        this.initMaterials();
 
-    /**
-     * The DOM Element in which the drawing will happen.
-     * @type HTMLDivElement
-     */
-    var containerEl = options.containerEl || null;
-    
-    /** @type String */
-    var assetsUrl = options.assetsUrl || '';
-    
-    /** @type THREE.WebGLRenderer */
-    var renderer;
+        this.initObjects( ()=> {
+            this.onAnimationFrame();
 
-    /** @type THREE.Projector */
-    var projector;
-
-    /** @type THREE.Scene */
-    var scene;
-    
-    /** @type THREE.PerspectiveCamera */
-    var camera;
-    
-    /** @type THREE.OrbitControls */
-    var cameraController;
-    
-	/** @type Object */
-	var lights = {};
-	    
-	/** @type Object */
-	var materials = {};
-	
-	/** @type THREE.Geometry */
-	var pieceGeometry = null;
-	
-	/** @type THREE.Mesh */
-	var boardModel;
-	
-	/** @type THREE.Mesh */
-	var groundModel;
-	
-	/**
-	 * The board square size.
-	 * @type Number
-	 * @constant
-	 */
-	var squareSize = 10;
-	
-	/**
-     * The board representation.
-     * @type Array
-     */
-    var board = [
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0]
-    ];
-
-    /** @type Object */
-    var selectedPiece = null;
-
-    /** @type Object */
-    var callbacks = options.callbacks || {};
-    
-    
-    /**********************************************************************************************/
-    /* Public methods *****************************************************************************/
-    
-    /**
-     * Draws the board.
-     */
-    this.drawBoard = function (callback) {
-        initEngine();
-        initLights();
-        initMaterials();
-        
-        initObjects(function () {
-            onAnimationFrame();
-            
             callback();
         });
 
-        initListeners();
-    };
-    
-    /**
-     * Adds a piece to the board.
-     * @param {Object} piece The piece properties.
-     */
-    this.addPiece = function (piece) {
-	    var pieceMesh = new THREE.Mesh(pieceGeometry);
-	    var pieceObjGroup = new THREE.Object3D();
-	    //
-	    if (piece.color === CHECKERS.WHITE) {
-	        pieceObjGroup.color = CHECKERS.WHITE;
-	        pieceMesh.material = materials.whitePieceMaterial;
-	    } else {
-	        pieceObjGroup.color = CHECKERS.BLACK;
-	        pieceMesh.material = materials.blackPieceMaterial;
-	    }
-	 
-	    // create shadow plane
-	    var shadowPlane = new THREE.Mesh(new THREE.PlaneGeometry(squareSize, squareSize, 1, 1), materials.pieceShadowPlane);
-	    shadowPlane.rotation.x = -90 * Math.PI / 180;
-	 
-	    pieceObjGroup.add(pieceMesh);
-	    pieceObjGroup.add(shadowPlane);
-	 
-	    pieceObjGroup.position = boardToWorld(piece.pos);
-	 
-	    board[ piece.pos[0] ][ piece.pos[1] ] = pieceObjGroup;
-	 
-	    scene.add(pieceObjGroup);
-	};
+        this.initListeners();
+    }
 
-    /**
-     * Removes a piece from the board.
-     */
-    this.removePiece = function (row, col) {
-        if (board[row][col]) {
-            scene.remove(board[row][col]);
+    addPiece(piece) {
+        var pieceMesh = new THREE.Mesh(this.pieceGeometry);
+        var pieceObjGroup = new THREE.Object3D();
+        //
+        if (piece.color === GameController.WHITE) {
+            pieceObjGroup.color = GameController.WHITE;
+            pieceMesh.material = this.materials.whitePieceMaterial;
+        } else {
+            pieceObjGroup.color = GameController.BLACK;
+            pieceMesh.material = this.materials.blackPieceMaterial;
         }
-     
-        board[row][col] = 0;
-    };
 
-    /**
-     * Moves a piece using internal board array positions.
-     * @param {Array} from
-     * @param {Array} to
-     */
-    this.movePiece = function (from, to) {
-        var piece = board[ from[0] ][ from[1] ];
-        var capturedPiece = board[ to[0] ][ to[1] ];
-        var toWorldPos = boardToWorld(to);
-     
-        // update internal board
-        board[ from[0] ][ from[1] ] = 0;
-        delete board[ to[0] ][ to[1] ];
-        board[ to[0] ][ to[1] ] = piece;
-     
+        // create shadow plane
+        var shadowPlane = new THREE.Mesh(new THREE.PlaneGeometry(this.squareSize, this.squareSize, 1, 1), this.materials.pieceShadowPlane);
+        shadowPlane.rotation.x = -90 * Math.PI / 180;
+
+        pieceObjGroup.add(pieceMesh);
+        pieceObjGroup.add(shadowPlane);
+
+        pieceObjGroup.position = this.boardToWorld(piece.pos);
+
+        this.board[piece.pos[0]][piece.pos[1]] = pieceObjGroup;
+
+        this.scene.add(pieceObjGroup);
+    }
+
+    removePiece(row, col) {
+        if (this.board[row][col]) {
+            this.scene.remove(this.board[row][col]);
+        }
+
+        this.board[row][col] = 0;
+    }
+
+    movePiece(from, to) {
+        var piece = this.board[from[0]][from[1]];
+        var capturedPiece = this.board[to[0]][to[1]];
+        var toWorldPos = this.boardToWorld(to);
+
+        // update internal this.board
+        this.board[from[0]][from[1]] = 0;
+        delete this.board[to[0]][to[1]];
+        this.board[to[0]][to[1]] = piece;
+
         // capture piece
         if (capturedPiece !== 0) {
-            scene.remove(capturedPiece);
+            this.scene.remove(capturedPiece);
         }
-     
+
         // move piece
         piece.position.x = toWorldPos.x;
         piece.position.z = toWorldPos.z;
-     
-        piece.children[0].position.y = 0;
-    };
-    
-    
-    /**********************************************************************************************/
-    /* Private methods ****************************************************************************/
 
-    /**
-     * Initialize some basic 3D engine elements. 
-     */
-    function initEngine() {
-        var viewWidth = containerEl.offsetWidth;
-        var viewHeight = containerEl.offsetHeight;
-        
-        // instantiate the WebGL Renderer
-        renderer = new THREE.WebGLRenderer({
+        piece.children[0].position.y = 0;
+    }
+
+
+    initEngine() {
+        var viewWidth = this.containerEl.offsetWidth;
+        var viewHeight = this.containerEl.offsetHeight;
+
+        // instantiate the WebGL this.renderer
+        this.renderer = new THREE.WebGLRenderer({
             antialias: true
         });
-        renderer.setSize(viewWidth, viewHeight);
+        this.renderer.setSize(viewWidth, viewHeight);
 
-        projector = new THREE.Projector();
-        
-        // create the scene
-        scene = new THREE.Scene();
-        
-        // create camera
-		camera = new THREE.PerspectiveCamera(35, viewWidth / viewHeight, 1, 1000);
-		camera.position.set(squareSize * 4, 120, 150);
-		cameraController = new THREE.OrbitControls(camera, containerEl);
-		cameraController.center = new THREE.Vector3(squareSize * 4, 0, squareSize * 4);
+        this.projector = new THREE.Projector();
+
+        // create the this.scene
+        this.scene = new THREE.Scene();
+
+        // create this.camera
+        this.camera = new THREE.PerspectiveCamera(35, viewWidth / viewHeight, 1, 1000);
+        this.camera.position.set(this.squareSize * 4, 120, 150);
+        this.cameraController = new THREE.OrbitControls(this.camera, this.containerEl);
+        this.cameraController.center = new THREE.Vector3(this.squareSize * 4, 0, this.squareSize * 4);
         //
-        scene.add(camera);
-        
-        containerEl.appendChild(renderer.domElement);
+        this.scene.add(this.camera);
+
+        this.containerEl.appendChild(this.renderer.domElement);
     }
-    
+
     /**
-     * Initialize the lights.
+     * Initialize the this.lights.
      */
-	function initLights() {
-	    // top light
-        lights.topLight = new THREE.PointLight();
-        lights.topLight.position.set(squareSize * 4, 150, squareSize * 4);
-        lights.topLight.intensity = 0.4;
-        
+    initLights() {
+        // top light
+        this.lights.topLight = new THREE.PointLight();
+        this.lights.topLight.position.set(this.squareSize * 4, 150, this.squareSize * 4);
+        this.lights.topLight.intensity = 0.4;
+
         // white's side light
-        lights.whiteSideLight = new THREE.SpotLight();
-        lights.whiteSideLight.position.set( squareSize * 4, 100, squareSize * 4 + 200);
-        lights.whiteSideLight.intensity = 0.8;
-        lights.whiteSideLight.shadowCameraFov = 55;
+        this.lights.whiteSideLight = new THREE.SpotLight();
+        this.lights.whiteSideLight.position.set(this.squareSize * 4, 100, this.squareSize * 4 + 200);
+        this.lights.whiteSideLight.intensity = 0.8;
+        this.lights.whiteSideLight.shadowCameraFov = 55;
 
         // black's side light
-        lights.blackSideLight = new THREE.SpotLight();
-        lights.blackSideLight.position.set( squareSize * 4, 100, squareSize * 4 - 200);
-        lights.blackSideLight.intensity = 0.8;
-        lights.blackSideLight.shadowCameraFov = 55;
-        
-        // light that will follow the camera position
-        lights.movingLight = new THREE.PointLight(0xf9edc9);
-        lights.movingLight.position.set(0, 10, 0);
-        lights.movingLight.intensity = 0.5;
-        lights.movingLight.distance = 500;
-        
-        // add the lights in the scene
-        scene.add(lights.topLight);
-        scene.add(lights.whiteSideLight);
-        scene.add(lights.blackSideLight);
-        scene.add(lights.movingLight);
-	}
-	
-	/**
-     * Initialize the materials.
+        this.lights.blackSideLight = new THREE.SpotLight();
+        this.lights.blackSideLight.position.set(this.squareSize * 4, 100, this.squareSize * 4 - 200);
+        this.lights.blackSideLight.intensity = 0.8;
+        this.lights.blackSideLight.shadowCameraFov = 55;
+
+        // light that will follow the this.camera position
+        this.lights.movingLight = new THREE.PointLight(0xf9edc9);
+        this.lights.movingLight.position.set(0, 10, 0);
+        this.lights.movingLight.intensity = 0.5;
+        this.lights.movingLight.distance = 500;
+
+        // add the this.lights in the this.scene
+        this.scene.add(this.lights.topLight);
+        this.scene.add(this.lights.whiteSideLight);
+        this.scene.add(this.lights.blackSideLight);
+        this.scene.add(this.lights.movingLight);
+    }
+
+    /**
+     * Initialize the this.materials.
      */
-	function initMaterials() {
-	    // board material
-	    materials.boardMaterial = new THREE.MeshLambertMaterial({
-	        map: THREE.ImageUtils.loadTexture(assetsUrl + 'board_texture.jpg')
-	    });
-	 
-	    // ground material
-	    materials.groundMaterial = new THREE.MeshBasicMaterial({
-	        transparent: true,
-	        map: THREE.ImageUtils.loadTexture(assetsUrl + 'ground.png')
-	    });
-	 
-	    // dark square material
-	    materials.darkSquareMaterial = new THREE.MeshLambertMaterial({
-	        map: THREE.ImageUtils.loadTexture(assetsUrl + 'square_dark_texture.jpg')
-	    });
-	    //
-	    // light square material
-	    materials.lightSquareMaterial = new THREE.MeshLambertMaterial({
-	        map: THREE.ImageUtils.loadTexture(assetsUrl + 'square_light_texture.jpg')
-	    });
-	 
-	    // white piece material
-	    materials.whitePieceMaterial = new THREE.MeshPhongMaterial({
-	        color: 0xe9e4bd,
-	        shininess: 20
-	    });
-	 
-	    // black piece material
-	    materials.blackPieceMaterial = new THREE.MeshPhongMaterial({
-	        color: 0x9f2200,
-	        shininess: 20
-	    });
-	 
-	    // pieces shadow plane material
-	    materials.pieceShadowPlane = new THREE.MeshBasicMaterial({
-	        transparent: true,
-	        map: THREE.ImageUtils.loadTexture(assetsUrl + 'piece_shadow.png')
-	    });
-	}
-    
+    initMaterials() {
+        // this.board material
+        this.materials.boardMaterial = new THREE.MeshLambertMaterial({
+            map: THREE.ImageUtils.loadTexture(this.assetsUrl + 'board_texture.jpg')
+        });
+
+        // ground material
+        this.materials.groundMaterial = new THREE.MeshBasicMaterial({
+            transparent: true,
+            map: THREE.ImageUtils.loadTexture(this.assetsUrl + 'ground.png')
+        });
+
+        // dark square material
+        this.materials.darkSquareMaterial = new THREE.MeshLambertMaterial({
+            map: THREE.ImageUtils.loadTexture(this.assetsUrl + 'square_dark_texture.jpg')
+        });
+        //
+        // light square material
+        this.materials.lightsquareMaterial = new THREE.MeshLambertMaterial({
+            map: THREE.ImageUtils.loadTexture(this.assetsUrl + 'square_light_texture.jpg')
+        });
+
+        // white piece material
+        this.materials.whitePieceMaterial = new THREE.MeshPhongMaterial({
+            color: 0xe9e4bd,
+            shininess: 20
+        });
+
+        // black piece material
+        this.materials.blackPieceMaterial = new THREE.MeshPhongMaterial({
+            color: 0x9f2200,
+            shininess: 20
+        });
+
+        // pieces shadow plane material
+        this.materials.pieceShadowPlane = new THREE.MeshBasicMaterial({
+            transparent: true,
+            map: THREE.ImageUtils.loadTexture(this.assetsUrl + 'piece_shadow.png')
+        });
+    }
+
     /**
      * Initialize the objects.
      * @param {Object} callback Function to call when the objects have been loaded.
      */
-	function initObjects(callback) {
-	    var loader = new THREE.JSONLoader();
-	    var totalObjectsToLoad = 2; // board + the piece
-	    var loadedObjects = 0; // count the loaded pieces
-	 
-	    // checks if all the objects have been loaded
-	    function checkLoad() {
-	        loadedObjects++;
-	 
-	        if (loadedObjects === totalObjectsToLoad && callback) {
-	            callback();
-	        }
-	    }
-	 
-	    // load board
-	    loader.load(assetsUrl + 'board.js', function (geom) {
-	        boardModel = new THREE.Mesh(geom, materials.boardMaterial);
-	        boardModel.position.y = -0.02;
-	 
-	        scene.add(boardModel);
-	 
-	        checkLoad();
-	    });
-	 
-	    // load piece
-	    loader.load(assetsUrl + 'piece.js', function (geometry) {
-	        pieceGeometry = geometry;
-	 
-	        checkLoad();
-	    });
-	    
-	    // add ground
-		groundModel = new THREE.Mesh(new THREE.PlaneGeometry(100, 100, 1, 1), materials.groundMaterial);
-		groundModel.position.set(squareSize * 4, -1.52, squareSize * 4);
-		groundModel.rotation.x = -90 * Math.PI / 180;
-		//
-		scene.add(groundModel);
-		 
-		// create the board squares
-		var squareMaterial;
-		//
-		for (var row = 0; row < 8; row++) {
-		    for (var col = 0; col < 8; col++) {
-		        if ((row + col) % 2 === 0) { // light square
-		            squareMaterial = materials.lightSquareMaterial;
-		        } else { // dark square
-		            squareMaterial = materials.darkSquareMaterial;
-		        }
-		 
-		        var square = new THREE.Mesh(new THREE.PlaneGeometry(squareSize, squareSize, 1, 1), squareMaterial);
-		 
-		        square.position.x = col * squareSize + squareSize / 2;
-		        square.position.z = row * squareSize + squareSize / 2;
-		        square.position.y = -0.01;
-		 
-		        square.rotation.x = -90 * Math.PI / 180;
-		 
-		        scene.add(square);
-		    }
-		}
-	 
-	    //scene.add(new THREE.AxisHelper(200));
-	}
+    initObjects(callback) {
+        var loader = new THREE.JSONLoader();
+        var totalObjectsToLoad = 2; // this.board + the piece
+        var loadedObjects = 0; // count the loaded pieces
+
+        // checks if all the objects have been loaded
+        function checkLoad() {
+            loadedObjects++;
+
+            if (loadedObjects === totalObjectsToLoad && callback) {
+                callback();
+            }
+        }
+
+        // load this.board
+        loader.load(this.assetsUrl + 'board.js',  (geom) =>{
+            this.boardModel = new THREE.Mesh(geom, this.materials.boardMaterial);
+            this.boardModel.position.y = -0.02;
+
+            this.scene.add(this.boardModel);
+
+            checkLoad();
+        });
+
+        // load piece
+        loader.load(this.assetsUrl + 'piece.js',  (geometry) =>{
+            this.pieceGeometry = geometry;
+
+            checkLoad();
+        });
+
+        // add ground
+        this.groundModel = new THREE.Mesh(new THREE.PlaneGeometry(100, 100, 1, 1), this.materials.groundMaterial);
+        this.groundModel.position.set(this.squareSize * 4, -1.52, this.squareSize * 4);
+        this.groundModel.rotation.x = -90 * Math.PI / 180;
+        //
+        this.scene.add(this.groundModel);
+
+        // create the this.board squares
+        var squareMaterial;
+        //
+        for (var row = 0; row < 8; row++) {
+            for (var col = 0; col < 8; col++) {
+                if ((row + col) % 2 === 0) { // light square
+                    squareMaterial = this.materials.lightsquareMaterial;
+                } else { // dark square
+                    squareMaterial = this.materials.darkSquareMaterial;
+                }
+
+                var square = new THREE.Mesh(new THREE.PlaneGeometry(this.squareSize, this.squareSize, 1, 1), squareMaterial);
+
+                square.position.x = col * this.squareSize + this.squareSize / 2;
+                square.position.z = row * this.squareSize + this.squareSize / 2;
+                square.position.y = -0.01;
+
+                square.rotation.x = -90 * Math.PI / 180;
+
+                this.scene.add(square);
+            }
+        }
+
+        //this.scene.add(new THREE.AxisHelper(200));
+    }
 
     /**
      * Initialize listeners.
      */
-    function initListeners() {
-        var domElement = renderer.domElement;
-     
-        domElement.addEventListener('mousedown', onMouseDown, false);
-        domElement.addEventListener('mouseup', onMouseUp, false);
+    initListeners() {
+        var domElement = this.renderer.domElement;
+
+        domElement.addEventListener('mousedown', this.onMouseDown, false);
+        domElement.addEventListener('mouseup', this.onMouseUp, false);
     }
-    
+
     /**
      * The render loop.
      */
-    function onAnimationFrame() {
-        requestAnimationFrame(onAnimationFrame);
-        
-        cameraController.update();
-        
+    onAnimationFrame() {
+        requestAnimationFrame(() => this.onAnimationFrame());
+
+        this.cameraController.update();
+
         // update moving light position
-        lights.movingLight.position.x = camera.position.x;
-        lights.movingLight.position.z = camera.position.z;
-        
-        renderer.render(scene, camera);
+        this.lights.movingLight.position.x = this.camera.position.x;
+        this.lights.movingLight.position.z = this.camera.position.z;
+
+        this.renderer.render(this.scene, this.camera);
     }
 
     /**
      * On mouse down.
      * @param {MouseEvent} event
      */
-    function onMouseDown(event) {
-        var mouse3D = getMouse3D(event);
-     
-        if (isMouseOnBoard(mouse3D)) {
-            if (isPieceOnMousePosition(mouse3D)) {
-                selectPiece(mouse3D);
-                renderer.domElement.addEventListener('mousemove', onMouseMove, false);
+    onMouseDown(event) {
+        var mouse3D = this.getMouse3D(event);
+
+        if (this.isMouseOnBoard(mouse3D)) {
+            if (this.isPieceOnMousePosition(mouse3D)) {
+                this.selectPiece(mouse3D);
+                this.renderer.domElement.addEventListener('mousemove', this.onMouseMove, false);
             }
-         
-            cameraController.userRotate = false;
+
+            this.cameraController.userRotate = false;
         }
     }
-    
-    /**
-     * On mouse up.
-     * @param {MouseEvent} event
-     */
-    function onMouseUp(event) {
-        renderer.domElement.removeEventListener('mousemove', onMouseMove, false);
-     
-        var mouse3D = getMouse3D(event);
-     
-        if (isMouseOnBoard(mouse3D) && selectedPiece) {
-            var toBoardPos = worldToBoard(mouse3D);
-     
-            if (toBoardPos[0] === selectedPiece.boardPos[0] && toBoardPos[1] === selectedPiece.boardPos[1]) {
-                deselectPiece();
+
+    onMouseUp(event) {
+        this.renderer.domElement.removeEventListener('mousemove', this.onMouseMove, false);
+
+        var mouse3D = this.getMouse3D(event);
+
+        if (this.isMouseOnBoard(mouse3D) && this.selectedPiece) {
+            var toBoardPos = this.worldToBoard(mouse3D);
+
+            if (toBoardPos[0] === this.selectedPiece.boardPos[0] && toBoardPos[1] === this.selectedPiece.boardPos[1]) {
+                this.deselectPiece();
             } else {
-                if (callbacks.pieceCanDrop && callbacks.pieceCanDrop(selectedPiece.boardPos, toBoardPos, selectedPiece.obj.color)) {
-                    instance.movePiece(selectedPiece.boardPos, toBoardPos);
-     
-                    if (callbacks.pieceDropped) {
-                        callbacks.pieceDropped(selectedPiece.boardPos, toBoardPos, selectedPiece.obj.color);
+                if (this.callbacks.pieceCanDrop && this.callbacks.pieceCanDrop(this.selectedPiece.boardPos, toBoardPos, this.selectedPiece.obj.color)) {
+                    this.movePiece(this.selectedPiece.boardPos, toBoardPos);
+
+                    if (this.callbacks.pieceDropped) {
+                        this.callbacks.pieceDropped(this.selectedPiece.boardPos, toBoardPos, this.selectedPiece.obj.color);
                     }
-     
-                    selectedPiece = null;
+
+                    this.selectedPiece = null;
                 } else {
-                    deselectPiece();
+                    this.deselectPiece();
                 }
             }
         } else {
-            deselectPiece();
+            this.deselectPiece();
         }
-     
-        cameraController.userRotate = true;
+
+        this.cameraController.userRotate = true;
     }
 
-    /**
-     * On mouse move.
-     * @param {MouseEvent} event
-     */
-    function onMouseMove(event) {
-        var mouse3D = getMouse3D(event);
-        
+    onMouseMove(event) {
+        var mouse3D = this.getMouse3D(event);
+
         // drag selected piece
-        if (selectedPiece) {
-            selectedPiece.obj.position.x = mouse3D.x;
-            selectedPiece.obj.position.z = mouse3D.z;
-            
+        if (this.selectedPiece) {
+            this.selectedPiece.obj.position.x = mouse3D.x;
+            this.selectedPiece.obj.position.z = mouse3D.z;
+
             // lift piece
-            selectedPiece.obj.children[0].position.y = 0.75;
+            this.selectedPiece.obj.children[0].position.y = 0.75;
         }
     }
-    
-    /**
-     * Converts the board position to 3D world position.
-     * @param {Array} pos The board position.
-     * @returns {THREE.Vector3}
-     */
-    function boardToWorld (pos) {
-	    var x = (1 + pos[1]) * squareSize - squareSize / 2;
-	    var z = (1 + pos[0]) * squareSize - squareSize / 2;
-	 
-	    return new THREE.Vector3(x, 0, z);
-	}
 
-    /**
-     * Converts the world position to board position array.
-     * @param {THREE.Vector3} pos
-     * @returns {Array|Boolean} False if position was outside the board.
-     */
-    function worldToBoard(pos) {
-        var i = 8 - Math.ceil((squareSize * 8 - pos.z) / squareSize);
-        var j = Math.ceil(pos.x / squareSize) - 1;
-     
+    boardToWorld(pos) {
+        var x = (1 + pos[1]) * this.squareSize - this.squareSize / 2;
+        var z = (1 + pos[0]) * this.squareSize - this.squareSize / 2;
+
+        return new THREE.Vector3(x, 0, z);
+    }
+
+    worldToBoard(pos) {
+        var i = 8 - Math.ceil((this.squareSize * 8 - pos.z) / this.squareSize);
+        var j = Math.ceil(pos.x / this.squareSize) - 1;
+
         if (i > 7 || i < 0 || j > 7 || j < 0 || isNaN(i) || isNaN(j)) {
             return false;
         }
-     
+
         return [i, j];
     }
 
-    /**
-     * Gets the mouse point in 3D for the XZ plane (Y == 0).
-     * @param {MouseEvent} mouseEvent
-     * @returns {THREE.Vector3}
-     */
-    function getMouse3D(mouseEvent) {
+    getMouse3D(mouseEvent) {
         var x, y;
         //
         if (mouseEvent.offsetX !== undefined) {
@@ -483,88 +404,69 @@ CHECKERS.BoardController = function (options) {
             x = mouseEvent.layerX;
             y = mouseEvent.layerY;
         }
-     
+
         var pos = new THREE.Vector3(0, 0, 0);
         var pMouse = new THREE.Vector3(
-            (x / renderer.domElement.width) * 2 - 1,
-           -(y / renderer.domElement.height) * 2 + 1,
-           1
+            (x / this.renderer.domElement.width) * 2 - 1,
+            -(y / this.renderer.domElement.height) * 2 + 1,
+            1
         );
         //
-        projector.unprojectVector(pMouse, camera);
-     
-        var cam = camera.position;
-        var m = pMouse.y / ( pMouse.y - cam.y );
-     
-        pos.x = pMouse.x + ( cam.x - pMouse.x ) * m;
-        pos.z = pMouse.z + ( cam.z - pMouse.z ) * m;
-     
+        this.projector.unprojectVector(pMouse, this.camera);
+
+        var cam = this.camera.position;
+        var m = pMouse.y / (pMouse.y - cam.y);
+
+        pos.x = pMouse.x + (cam.x - pMouse.x) * m;
+        pos.z = pMouse.z + (cam.z - pMouse.z) * m;
+
         return pos;
     }
 
-    /**
-     * Test if the mouse position is on the board.
-     * @param {THREE.Vector3} pos Mouse position.
-     * @returns {Boolean}
-     */
-    function isMouseOnBoard(pos) {
-        if (pos.x >= 0 && pos.x <= squareSize * 8 &&
-            pos.z >= 0 && pos.z <= squareSize * 8) {
+    isMouseOnBoard(pos) {
+        if (pos.x >= 0 && pos.x <= this.squareSize * 8 &&
+            pos.z >= 0 && pos.z <= this.squareSize * 8) {
             return true;
         } else {
             return false;
         }
     }
 
-    /**
-     * Test if there's a piece on mouse position.
-     * @param {THREE.Vector3} pos Mouse position.
-     * @returns {Boolean}
-     */
-    function isPieceOnMousePosition(pos) {
-        var boardPos = worldToBoard(pos);
-     
-        if (boardPos && board[ boardPos[0] ][ boardPos[1] ] !== 0) {
+    isPieceOnMousePosition(pos) {
+        var boardPos = this.worldToBoard(pos);
+
+        if (boardPos && this.board[boardPos[0]][boardPos[1]] !== 0) {
             return true;
         }
-     
+
         return false;
     }
 
-    /**
-     * Selects a piece on the board.
-     * @param {THREE.Vector3} pos The projected mouse coordinates to 3D.
-     * @returns {Boolean} False if there's no piece to select.
-     */
-    function selectPiece(pos) {
-        var boardPos = worldToBoard(pos);
-     
+    selectPiece(pos) {
+        var boardPos = this.worldToBoard(pos);
+
         // check for piece presence
-        if (board[ boardPos[0] ][ boardPos[1] ] === 0) {
-            selectedPiece = null;
+        if (this.board[boardPos[0]][boardPos[1]] === 0) {
+            this.selectedPiece = null;
             return false;
         }
-     
-        selectedPiece = {};
-        selectedPiece.boardPos = boardPos;
-        selectedPiece.obj = board[ boardPos[0] ][ boardPos[1] ];
-        selectedPiece.origPos = selectedPiece.obj.position.clone();
-     
+
+        this.selectedPiece = {};
+        this.selectedPiece.boardPos = boardPos;
+        this.selectedPiece.obj = this.board[boardPos[0]][boardPos[1]];
+        this.selectedPiece.origPos = this.selectedPiece.obj.position.clone();
+
         return true;
     }
 
-    /**
-     * Deselects the selected piece.
-     */
-    function deselectPiece() {
-        if (!selectedPiece) {
+    deselectPiece() {
+        if (!this.selectedPiece) {
             return;
         }
-     
-        selectedPiece.obj.position = selectedPiece.origPos;
-        selectedPiece.obj.children[0].position.y = 0;
-     
-        selectedPiece = null;
-    }
-};
 
+        this.selectedPiece.obj.position = this.selectedPiece.origPos;
+        this.selectedPiece.obj.children[0].position.y = 0;
+
+        this.selectedPiece = null;
+    }
+}
