@@ -16,7 +16,7 @@ class GameController {
             [0, 0, 0, 0, 0, 0, 0, 0]
         ];
 
-        this.boardController = new BoardController({
+        this.boardController = new Board_controller({
             containerEl: options.containerEl,
             assetsUrl: options.assetsUrl,
             callbacks: {

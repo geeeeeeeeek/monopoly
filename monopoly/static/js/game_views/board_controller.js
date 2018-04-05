@@ -1,6 +1,6 @@
 "use strict";
 
-class BoardController {
+class Board_controller {
 
     constructor(options) {
         this.containerEl = options.containerEl || null;
