@@ -28,6 +28,7 @@ class BoardController {
                 index: i,
                 modelUrl: `${this.assetsUrl}/players/${i}/model.json`,
                 scene: this.scene,
+                initTileId: 0,
                 initPos: this.boardToWorld({
                     tileId: 0,
                     type: BoardController.MODEL_PLAYER,
@@ -44,15 +45,30 @@ class BoardController {
     }
 
     movePlayer(index, newTileId) {
+        // Remove previous player position
+        this.board.updateTileInfo(this.players[index].getTileId(), {
+            type: BoardController.MODEL_PLAYER,
+            action: "remove",
+            playerIndex: index
+        });
+
+        // move the player
         const tileInfo = this.board.getTileInfo(newTileId);
         const tilePlayerCount = tileInfo.players.reduce((a, b) => a + b, 0);
 
-        this.players[index].advanceTo(this.boardToWorld({
+        this.players[index].advanceTo(newTileId, this.boardToWorld({
             tileId: newTileId,
             type: BoardController.MODEL_PLAYER,
-            total: tilePlayerCount,
+            total: tilePlayerCount + 1,
             index: tilePlayerCount
         }));
+
+        // Register new player position
+        this.board.updateTileInfo(newTileId, {
+            type: BoardController.MODEL_PLAYER,
+            action: "add",
+            playerIndex: index
+        });
     }
 
     initEngine() {

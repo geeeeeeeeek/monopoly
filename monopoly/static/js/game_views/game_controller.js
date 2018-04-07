@@ -16,11 +16,15 @@ class GameController {
 
         this.boardController.drawBoard(() => {
             this.boardController.drawPlayers(2);
-            // this.movePlayer(0, 10);
+            setTimeout(() => {
+                this.movePlayer(0, 5);
+                this.movePlayer(1, 6);
+            }, 5000);
         });
     }
 
     movePlayer(playerIndex, newTileId) {
+        // TODO: change viewport
         this.boardController.movePlayer(playerIndex, newTileId);
     }
 }

@@ -3,14 +3,15 @@
 class Player {
 
     constructor(options) {
-        const {index, modelUrl, scene, initPos} = options;
+        const {index, modelUrl, scene, initPos, initTileId} = options;
 
         this.scene = scene;
         this.index = index;
-        this.initModel(modelUrl, initPos);
+        this.initModel(modelUrl, initPos, initTileId);
     }
 
-    initModel(modelUrl, initPos) {
+    initModel(modelUrl, initPos, initTileId) {
+        this.tileId = initTileId;
         let loader = new THREE.ObjectLoader();
         loader.load(
             modelUrl,
@@ -36,8 +37,13 @@ class Player {
             });
     }
 
-    advanceTo(newPos) {
+    advanceTo(newTileId, newPos) {
         this.model.position.set(newPos[0], Player.ELEVATION[this.index], newPos[2]);
+        this.tileId = newTileId;
+    }
+
+    getTileId() {
+        return this.tileId;
     }
 }
 
