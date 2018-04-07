@@ -24,10 +24,12 @@ class BoardController {
     addPiece(piece) {
         let loader = new THREE.ObjectLoader();
         loader.load(
-            "models/json/example.json",
+            `${this.assetsUrl}/players/1/1.json`,
 
             (obj) => {
                 // Add the loaded object to the scene
+                obj.position.set(...this.boardToWorld(piece.pos));
+                obj.scale.set(0.05, 0.05, 0.05);
                 this.scene.add(obj);
             },
 
@@ -40,27 +42,6 @@ class BoardController {
             (err) => {
                 console.error('An error happened');
             });
-
-
-        //
-        // let pieceMesh = new THREE.Mesh(this.pieceGeometry);
-        // let pieceObjGroup = new THREE.Object3D();
-        //
-        // pieceObjGroup.color = GameController.WHITE;
-        // pieceMesh.material = this.materials.whitePieceMaterial;
-        //
-        // // create shadow plane
-        // let shadowPlane = new THREE.Mesh(new THREE.PlaneGeometry(BoardController.SQUARE_SIZE, BoardController.SQUARE_SIZE, 1, 1), this.materials.pieceShadowPlane);
-        // shadowPlane.rotation.x = -90 * Math.PI / 180;
-        //
-        // pieceObjGroup.add(pieceMesh);
-        // pieceObjGroup.add(shadowPlane);
-        //
-        pieceObjGroup.position = this.boardToWorld(piece.pos);
-
-        // this.board[piece.pos[0]][piece.pos[1]] = pieceObjGroup;
-
-        this.scene.add(pieceObjGroup);
     }
 
 
@@ -254,7 +235,7 @@ class BoardController {
         let x = (1 + pos[1]) * BoardController.SQUARE_SIZE - BoardController.SQUARE_SIZE / 2;
         let z = (1 + pos[0]) * BoardController.SQUARE_SIZE - BoardController.SQUARE_SIZE / 2;
 
-        return new THREE.Vector3(x, 0, z);
+        return [x, 0, z];
     }
 }
 
