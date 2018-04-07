@@ -17,14 +17,16 @@ class Player {
 
             (obj) => {
                 // Add the loaded object to the scene
-                obj.position.set(...initPos);
+                obj.position.set(initPos[0], Player.ELEVATION[this.index], initPos[2]);
                 obj.scale.set(...Player.SCALES[this.index]);
                 this.scene.add(obj);
             },
 
             // onProgress callback
             (xhr) => {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                if (xhr.loaded === xhr.total) {
+                    console.log(modelUrl + " loaded!")
+                }
             },
 
             // onError callback
@@ -40,7 +42,9 @@ class Player {
 
 Player.SCALES = [
     [0.03, 0.03, 0.03],
-    [0.03, 0.03, 0.03],
-    [0.03, 0.03, 0.03],
+    [0.02, 0.02, 0.02],
+    [0.04, 0.04, 0.04],
     [0.03, 0.03, 0.03]
 ];
+
+Player.ELEVATION = [0, 1.1, 2.5, 0];
