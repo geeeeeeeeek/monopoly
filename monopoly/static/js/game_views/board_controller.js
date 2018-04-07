@@ -22,27 +22,43 @@ class BoardController {
     }
 
     addPiece(piece) {
-        let pieceMesh = new THREE.Mesh(this.pieceGeometry);
-        let pieceObjGroup = new THREE.Object3D();
+        let loader = new THREE.ObjectLoader();
+        loader.load(
+            "models/json/example.json",
+
+            (obj) => {
+                // Add the loaded object to the scene
+                this.scene.add(obj);
+            },
+
+            // onProgress callback
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+
+            // onError callback
+            (err) => {
+                console.error('An error happened');
+            });
+
+
         //
-        if (piece.color === GameController.WHITE) {
-            pieceObjGroup.color = GameController.WHITE;
-            pieceMesh.material = this.materials.whitePieceMaterial;
-        } else {
-            pieceObjGroup.color = GameController.BLACK;
-            pieceMesh.material = this.materials.blackPieceMaterial;
-        }
-
-        // create shadow plane
-        let shadowPlane = new THREE.Mesh(new THREE.PlaneGeometry(BoardController.SQUARE_SIZE, BoardController.SQUARE_SIZE, 1, 1), this.materials.pieceShadowPlane);
-        shadowPlane.rotation.x = -90 * Math.PI / 180;
-
-        pieceObjGroup.add(pieceMesh);
-        pieceObjGroup.add(shadowPlane);
-
+        // let pieceMesh = new THREE.Mesh(this.pieceGeometry);
+        // let pieceObjGroup = new THREE.Object3D();
+        //
+        // pieceObjGroup.color = GameController.WHITE;
+        // pieceMesh.material = this.materials.whitePieceMaterial;
+        //
+        // // create shadow plane
+        // let shadowPlane = new THREE.Mesh(new THREE.PlaneGeometry(BoardController.SQUARE_SIZE, BoardController.SQUARE_SIZE, 1, 1), this.materials.pieceShadowPlane);
+        // shadowPlane.rotation.x = -90 * Math.PI / 180;
+        //
+        // pieceObjGroup.add(pieceMesh);
+        // pieceObjGroup.add(shadowPlane);
+        //
         pieceObjGroup.position = this.boardToWorld(piece.pos);
 
-        this.board[piece.pos[0]][piece.pos[1]] = pieceObjGroup;
+        // this.board[piece.pos[0]][piece.pos[1]] = pieceObjGroup;
 
         this.scene.add(pieceObjGroup);
     }
@@ -54,11 +70,10 @@ class BoardController {
 
         // instantiate the WebGL this.renderer
         this.renderer = new THREE.WebGLRenderer({
-            antialias: true
+            antialias: true,
+            alpha: true
         });
         this.renderer.setSize(viewWidth, viewHeight);
-
-        this.projector = new THREE.Projector();
 
         // create the this.scene
         this.scene = new THREE.Scene();
@@ -86,13 +101,13 @@ class BoardController {
         this.lights.whiteSideLight = new THREE.SpotLight();
         this.lights.whiteSideLight.position.set(BoardController.SQUARE_SIZE * Board.SIZE / 2, 100, BoardController.SQUARE_SIZE * Board.SIZE / 2 - 300);
         this.lights.whiteSideLight.intensity = 1;
-        this.lights.whiteSideLight.shadowCameraFov = 55;
+        this.lights.whiteSideLight.shadow.camera.Fov = 55;
 
         // black's side light
         this.lights.blackSideLight = new THREE.SpotLight();
         this.lights.blackSideLight.position.set(BoardController.SQUARE_SIZE * Board.SIZE / 2, 100, BoardController.SQUARE_SIZE * Board.SIZE / 2 + 300);
         this.lights.blackSideLight.intensity = 1;
-        this.lights.blackSideLight.shadowCameraFov = 55;
+        this.lights.blackSideLight.shadow.camera.Fov = 55;
 
         // light that will follow the this.camera position
         this.lights.movingLight = new THREE.PointLight(0xf9edc9);
@@ -112,23 +127,23 @@ class BoardController {
 
         // board material
         this.materials.boardMaterial = new THREE.MeshLambertMaterial({
-            map: THREE.ImageUtils.loadTexture(this.assetsUrl + 'board_texture.jpg')
+            map: new THREE.TextureLoader().load(this.assetsUrl + 'board_texture.jpg')
         });
 
         // ground material
         this.materials.groundMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
-            map: THREE.ImageUtils.loadTexture(this.assetsUrl + 'ground.png')
+            map: new THREE.TextureLoader().load(this.assetsUrl + 'ground.png')
         });
 
         // dark square material
         this.materials.darkSquareMaterial = new THREE.MeshLambertMaterial({
-            map: THREE.ImageUtils.loadTexture(this.assetsUrl + 'square_dark_texture.jpg')
+            map: new THREE.TextureLoader().load(this.assetsUrl + 'square_dark_texture.jpg')
         });
         //
         // light square material
         this.materials.lightsquareMaterial = new THREE.MeshLambertMaterial({
-            map: THREE.ImageUtils.loadTexture(this.assetsUrl + 'square_light_texture.jpg')
+            map: new THREE.TextureLoader().load(this.assetsUrl + 'square_light_texture.jpg')
         });
 
         // white piece material
@@ -146,11 +161,11 @@ class BoardController {
         // pieces shadow plane material
         this.materials.pieceShadowPlane = new THREE.MeshBasicMaterial({
             transparent: true,
-            map: THREE.ImageUtils.loadTexture(this.assetsUrl + 'piece_shadow.png')
+            map: new THREE.TextureLoader().load(this.assetsUrl + 'piece_shadow.png')
         });
 
         const defaultTileMaterial = new THREE.MeshLambertMaterial({
-            map: THREE.ImageUtils.loadTexture(`${this.assetsUrl}/tiles/-1.png`)
+            map: new THREE.TextureLoader().load(`${this.assetsUrl}/tiles/-1.png`)
         });
 
         // tile material
@@ -160,7 +175,7 @@ class BoardController {
             for (let col = 0; col < Board.SIZE; col++) {
                 const tileModelIndex = Board.locToIndex(row, col);
                 const tileMaterial = (tileModelIndex === -1) ? defaultTileMaterial : new THREE.MeshLambertMaterial({
-                    map: THREE.ImageUtils.loadTexture(`${this.assetsUrl}/tiles/${tileModelIndex}.png`)
+                    map: new THREE.TextureLoader().load(`${this.assetsUrl}/tiles/${tileModelIndex}.png`)
                 });
                 rowMaterial.push(tileMaterial);
             }

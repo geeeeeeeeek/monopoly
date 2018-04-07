@@ -14,7 +14,9 @@ class GameController {
         });
 
         this.boardController.drawBoard(() => {
-
+            // this.boardController.addPiece({
+            //     pos: [0, 0]
+            // })
         });
     }
 }
