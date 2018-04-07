@@ -9,16 +9,30 @@ class Board {
     initBoard() {
         this.board = [];
         for (let row = 0; row < Board.SIZE; row++) {
-            row = [];
+            let boardRow = [];
             for (let col = 0; col < Board.SIZE; col++) {
-                row.push({
-                    player: null,
-                    owner: null,
+                boardRow.push({
+                    players: [false, false, false, false],
                     properties: []
                 })
             }
-            this.board.push(row);
+            this.board.push(boardRow);
         }
+    }
+
+    updateTileInfo(tileId, tileInfo) {
+        const pos = Board.tileIdToPos(tileId);
+        const {type, action, playerIndex} = tileInfo;
+        switch (type) {
+            case BoardController.MODEL_PLAYER:
+                this.board[pos[0]][pos[1]]["players"][playerIndex] = (action === "add");
+                break;
+        }
+    }
+
+    getTileInfo(tileId) {
+        const pos = Board.tileIdToPos(tileId);
+        return this.board[pos[0]][pos[1]];
     }
 
     static tileIdToPos(tileId) {

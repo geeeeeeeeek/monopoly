@@ -34,8 +34,25 @@ class BoardController {
                     total: number,
                     index: i
                 })
-            }))
+            }));
+            this.board.updateTileInfo(0, {
+                type: BoardController.MODEL_PLAYER,
+                action: "add",
+                playerIndex: i
+            });
         }
+    }
+
+    movePlayer(index, newTileId) {
+        const tileInfo = this.board.getTileInfo(newTileId);
+        const tilePlayerCount = tileInfo.players.reduce((a, b) => a + b, 0);
+
+        this.players[index].advanceTo(this.boardToWorld({
+            tileId: newTileId,
+            type: BoardController.MODEL_PLAYER,
+            total: tilePlayerCount,
+            index: tilePlayerCount
+        }));
     }
 
     initEngine() {

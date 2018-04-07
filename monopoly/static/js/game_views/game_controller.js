@@ -15,7 +15,12 @@ class GameController {
         });
 
         this.boardController.drawBoard(() => {
-            this.boardController.drawPlayers(4);
+            this.boardController.drawPlayers(2);
+            // this.movePlayer(0, 10);
         });
+    }
+
+    movePlayer(playerIndex, newTileId) {
+        this.boardController.movePlayer(playerIndex, newTileId);
     }
 }

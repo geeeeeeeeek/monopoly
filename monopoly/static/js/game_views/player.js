@@ -17,9 +17,10 @@ class Player {
 
             (obj) => {
                 // Add the loaded object to the scene
-                obj.position.set(initPos[0], Player.ELEVATION[this.index], initPos[2]);
-                obj.scale.set(...Player.SCALES[this.index]);
-                this.scene.add(obj);
+                this.model = obj;
+                this.model.position.set(initPos[0], Player.ELEVATION[this.index], initPos[2]);
+                this.model.scale.set(...Player.SCALES[this.index]);
+                this.scene.add(this.model);
             },
 
             // onProgress callback
@@ -35,8 +36,8 @@ class Player {
             });
     }
 
-    advanceTo() {
-        //TODO
+    advanceTo(newPos) {
+        this.model.position.set(newPos[0], Player.ELEVATION[this.index], newPos[2]);
     }
 }
 
