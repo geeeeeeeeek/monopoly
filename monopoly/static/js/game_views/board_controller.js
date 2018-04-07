@@ -7,6 +7,7 @@ class BoardController {
         this.assetsUrl = options.assetsUrl;
 
         this.board = new Board();
+        this.players = [];
     }
 
     drawBoard(callback) {
@@ -21,29 +22,21 @@ class BoardController {
         });
     }
 
-    addPiece(piece) {
-        let loader = new THREE.ObjectLoader();
-        loader.load(
-            `${this.assetsUrl}/players/1/1.json`,
-
-            (obj) => {
-                // Add the loaded object to the scene
-                obj.position.set(...this.boardToWorld(piece.pos));
-                obj.scale.set(0.05, 0.05, 0.05);
-                this.scene.add(obj);
-            },
-
-            // onProgress callback
-            (xhr) => {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-            },
-
-            // onError callback
-            (err) => {
-                console.error('An error happened');
-            });
+    drawPlayers(number) {
+        for (let i = 0; i < number; i++) {
+            this.players.push(new Player({
+                index: i,
+                modelUrl: `${this.assetsUrl}/players/${i}/model.json`,
+                scene: this.scene,
+                initPos: this.boardToWorld({
+                    tileId: 0,
+                    type: BoardController.MODEL_PLAYER,
+                    total: number,
+                    index: i
+                })
+            }))
+        }
     }
-
 
     initEngine() {
         let viewWidth = this.containerEl.offsetWidth;
@@ -154,7 +147,7 @@ class BoardController {
         for (let row = 0; row < Board.SIZE; row++) {
             let rowMaterial = [];
             for (let col = 0; col < Board.SIZE; col++) {
-                const tileModelIndex = Board.locToIndex(row, col);
+                const tileModelIndex = Board.posToTileId(row, col);
                 const tileMaterial = (tileModelIndex === -1) ? defaultTileMaterial : new THREE.MeshLambertMaterial({
                     map: new THREE.TextureLoader().load(`${this.assetsUrl}/tiles/${tileModelIndex}.png`)
                 });
@@ -199,7 +192,6 @@ class BoardController {
         this.groundModel = new THREE.Mesh(new THREE.PlaneGeometry(100, 100, 1, 1), this.materials.groundMaterial);
         this.groundModel.position.set(BoardController.SQUARE_SIZE * Board.SIZE / 2, -1.52, BoardController.SQUARE_SIZE * Board.SIZE / 2);
         this.groundModel.rotation.x = -90 * Math.PI / 180;
-        //
         this.scene.add(this.groundModel);
 
         for (let row = 0; row < Board.SIZE; row++) {
@@ -215,8 +207,6 @@ class BoardController {
                 this.scene.add(square);
             }
         }
-
-        //this.scene.add(new THREE.AxisHelper(200));
     }
 
     onAnimationFrame() {
@@ -231,12 +221,48 @@ class BoardController {
         this.renderer.render(this.scene, this.camera);
     }
 
-    boardToWorld(pos) {
-        let x = (1 + pos[1]) * BoardController.SQUARE_SIZE - BoardController.SQUARE_SIZE / 2;
-        let z = (1 + pos[0]) * BoardController.SQUARE_SIZE - BoardController.SQUARE_SIZE / 2;
+    boardToWorld(options) {
+        const {tileId, type, total, index} = options;
+        const pos = Board.tileIdToPos(tileId);
+        let x = 0.5 + pos[1];
+        let z = 0.5 + pos[0];
 
-        return [x, 0, z];
+        const side = Board.tileIdToSide(tileId);
+
+        if (type === BoardController.MODEL_PLAYER) {
+            if (total === 1) {
+                return [x * BoardController.SQUARE_SIZE, 0, z * BoardController.SQUARE_SIZE];
+            } else {
+                switch (side) {
+                    case Board.SIDE_TOP:
+                        z -= BoardController.MODEL_PLAYER_MARGIN;
+                        x = (index % 2 === 0) ? x + BoardController.MODEL_PLAYER_OFFSET : x - BoardController.MODEL_PLAYER_OFFSET;
+                        if (total > 2) z = (index < 2) ? z + BoardController.MODEL_PLAYER_OFFSET : z - BoardController.MODEL_PLAYER_OFFSET;
+                        break;
+                    case Board.SIDE_BOTTOM:
+                        z += BoardController.MODEL_PLAYER_MARGIN;
+                        x = (index % 2 === 0) ? x - BoardController.MODEL_PLAYER_OFFSET : x + BoardController.MODEL_PLAYER_OFFSET;
+                        if (total > 2) z = (index < 2) ? z - BoardController.MODEL_PLAYER_OFFSET : z + BoardController.MODEL_PLAYER_OFFSET;
+                        break;
+                    case Board.SIDE_LEFT:
+                        x -= BoardController.MODEL_PLAYER_MARGIN;
+                        z = (index % 2 === 0) ? z - BoardController.MODEL_PLAYER_OFFSET : z + BoardController.MODEL_PLAYER_OFFSET;
+                        if (total > 2) x = (index < 2) ? x + BoardController.MODEL_PLAYER_OFFSET : x - BoardController.MODEL_PLAYER_OFFSET;
+                        break;
+                    case Board.SIDE_RIGHT:
+                        x += BoardController.MODEL_PLAYER_MARGIN;
+                        z = (index % 2 === 0) ? z + BoardController.MODEL_PLAYER_OFFSET : z - BoardController.MODEL_PLAYER_OFFSET;
+                        if (total > 2) x = (index < 2) ? x - BoardController.MODEL_PLAYER_OFFSET : x + BoardController.MODEL_PLAYER_OFFSET;
+                        break;
+                }
+            }
+        }
+        return [x * BoardController.SQUARE_SIZE, 0, z * BoardController.SQUARE_SIZE];
     }
 }
 
 BoardController.SQUARE_SIZE = 7.273;
+BoardController.MODEL_PLAYER = 0;
+BoardController.MODEL_PROPERTY = 1;
+BoardController.MODEL_PLAYER_OFFSET = 0.2;
+BoardController.MODEL_PLAYER_MARGIN = 0.1;
