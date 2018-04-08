@@ -13,7 +13,7 @@ class Board {
             for (let col = 0; col < Board.SIZE; col++) {
                 boardRow.push({
                     players: [false, false, false, false],
-                    properties: []
+                    propertyManager: null
                 })
             }
             this.board.push(boardRow);
@@ -22,10 +22,13 @@ class Board {
 
     updateTileInfo(tileId, tileInfo) {
         const pos = Board.tileIdToPos(tileId);
-        const {type, action, playerIndex} = tileInfo;
+        const {type, action, playerIndex, options} = tileInfo;
         switch (type) {
             case BoardController.MODEL_PLAYER:
-                this.board[pos[0]][pos[1]]["players"][playerIndex] = (action === "add");
+                this.board[pos[0]][pos[1]].players[playerIndex] = (action === "add");
+                break;
+            case BoardController.MODEL_PROPERTY:
+                this.board[pos[0]][pos[1]].propertyManager = new PropertyManager(options);
                 break;
         }
     }

@@ -71,6 +71,35 @@ class BoardController {
         });
     }
 
+    addProperty(type, tileId) {
+        let tileInfo = this.board.getTileInfo(tileId);
+        if (!tileInfo.propertyManager) {
+            this.board.updateTileInfo(tileId, {
+                type: BoardController.MODEL_PROPERTY,
+                options: {
+                    loadedHouseJson: this.houseModelJson,
+                    loadedHotelJson: this.hotelModelJson,
+                    scene: this.scene
+                }
+            });
+        }
+        const tilePropertyCount = tileInfo.propertyManager.getPropertyCount();
+
+        if (type === PropertyManager.PROPERTY_HOUSE) {
+            tileInfo.propertyManager.buildHouse(this.boardToWorld({
+                tileId: tileId,
+                type: BoardController.MODEL_PROPERTY,
+                total: tilePropertyCount + 1
+            }));
+        } else {
+            tileInfo.propertyManager.buildHotel(this.boardToWorld({
+                tileId: tileId,
+                type: BoardController.MODEL_PROPERTY,
+                total: 1
+            }), tileId);
+        }
+    }
+
     initEngine() {
         let viewWidth = this.containerEl.offsetWidth;
         let viewHeight = this.containerEl.offsetHeight;
@@ -143,34 +172,6 @@ class BoardController {
             map: new THREE.TextureLoader().load(this.assetsUrl + 'ground.png')
         });
 
-        // dark square material
-        this.materials.darkSquareMaterial = new THREE.MeshLambertMaterial({
-            map: new THREE.TextureLoader().load(this.assetsUrl + 'square_dark_texture.jpg')
-        });
-        //
-        // light square material
-        this.materials.lightsquareMaterial = new THREE.MeshLambertMaterial({
-            map: new THREE.TextureLoader().load(this.assetsUrl + 'square_light_texture.jpg')
-        });
-
-        // white piece material
-        this.materials.whitePieceMaterial = new THREE.MeshPhongMaterial({
-            color: 0xe9e4bd,
-            shininess: 20
-        });
-
-        // black piece material
-        this.materials.blackPieceMaterial = new THREE.MeshPhongMaterial({
-            color: 0x9f2200,
-            shininess: 20
-        });
-
-        // pieces shadow plane material
-        this.materials.pieceShadowPlane = new THREE.MeshBasicMaterial({
-            transparent: true,
-            map: new THREE.TextureLoader().load(this.assetsUrl + 'piece_shadow.png')
-        });
-
         const defaultTileMaterial = new THREE.MeshLambertMaterial({
             map: new THREE.TextureLoader().load(`${this.assetsUrl}/tiles/-1.png`)
         });
@@ -192,17 +193,17 @@ class BoardController {
 
     initObjects(callback) {
         let loader = new THREE.JSONLoader();
-        let totalObjectsToLoad = 2; // board + the piece
+        let totalObjectsToLoad = 1; // board
         let loadedObjects = 0; // count the loaded pieces
 
         // checks if all the objects have been loaded
-        function checkLoad() {
+        let checkLoad = () => {
             loadedObjects++;
 
             if (loadedObjects === totalObjectsToLoad && callback) {
                 callback();
             }
-        }
+        };
 
         // load board
         loader.load(this.assetsUrl + 'board.js', (geom) => {
@@ -210,13 +211,6 @@ class BoardController {
             this.boardModel.position.y = -0.02;
 
             this.scene.add(this.boardModel);
-
-            checkLoad();
-        });
-
-        // load piece
-        loader.load(this.assetsUrl + 'piece.js', (geometry) => {
-            this.pieceGeometry = geometry;
 
             checkLoad();
         });
@@ -240,6 +234,17 @@ class BoardController {
                 this.scene.add(square);
             }
         }
+
+        // pre-load house model
+        let requestModelJson = (type) => {
+            let request = new XMLHttpRequest();
+            request.open("GET", `${this.assetsUrl}/${type}/model.json`, false);
+            request.send(null);
+            return JSON.parse(request.responseText);
+        };
+
+        this.houseModelJson = requestModelJson("house");
+        this.hotelModelJson = requestModelJson("hotel");
     }
 
     onAnimationFrame() {
@@ -289,6 +294,29 @@ class BoardController {
                         break;
                 }
             }
+        } else if (type === BoardController.MODEL_PROPERTY) {
+            switch (side) {
+                case Board.SIDE_TOP:
+                    z += BoardController.MODEL_PROPERTY_TOP_MARGIN;
+                    x += BoardController.MODEL_PROPERTY_LEFT_MARGIN;
+                    x -= (total - 1) * BoardController.MODEL_PROPERTY_LEFT_MARGIN;
+                    break;
+                case Board.SIDE_BOTTOM:
+                    z -= BoardController.MODEL_PROPERTY_TOP_MARGIN;
+                    x -= BoardController.MODEL_PROPERTY_LEFT_MARGIN;
+                    x += (total - 1) * BoardController.MODEL_PROPERTY_LEFT_MARGIN;
+                    break;
+                case Board.SIDE_LEFT:
+                    x += BoardController.MODEL_PROPERTY_TOP_MARGIN;
+                    z -= BoardController.MODEL_PROPERTY_LEFT_MARGIN;
+                    z += (total - 1) * BoardController.MODEL_PROPERTY_LEFT_MARGIN;
+                    break;
+                case Board.SIDE_RIGHT:
+                    x -= BoardController.MODEL_PROPERTY_TOP_MARGIN;
+                    z += BoardController.MODEL_PROPERTY_LEFT_MARGIN;
+                    z -= (total - 1) * BoardController.MODEL_PROPERTY_LEFT_MARGIN;
+                    break;
+            }
         }
         return [x * BoardController.SQUARE_SIZE, 0, z * BoardController.SQUARE_SIZE];
     }
@@ -299,3 +327,5 @@ BoardController.MODEL_PLAYER = 0;
 BoardController.MODEL_PROPERTY = 1;
 BoardController.MODEL_PLAYER_OFFSET = 0.2;
 BoardController.MODEL_PLAYER_MARGIN = 0.1;
+BoardController.MODEL_PROPERTY_TOP_MARGIN = 0.33;
+BoardController.MODEL_PROPERTY_LEFT_MARGIN = 0.25;
