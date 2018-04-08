@@ -9,6 +9,7 @@
     position: relative;
     height: 100%;
     width: 100%;
+    opacity: 0.85;
 }
 
 #user-avatar {
@@ -69,6 +70,7 @@
     top: 82px;
     right: 31px;
     position: absolute;
+    cursor: pointer;
 }
 
 #chat-card {

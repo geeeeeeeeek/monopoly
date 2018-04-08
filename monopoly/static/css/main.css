@@ -181,3 +181,7 @@ a {
     from { opacity: 0; }
     to   { opacity: 0.90; }
 }
+
+.hidden {
+    display: none;
+}
