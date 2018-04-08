@@ -4,4 +4,4 @@ class MoveResult(object):
 
     def __init__(self, move_result_type, value):
         self.move_result_type = move_result_type
-        self.value = value
+        self.value = value #testing
