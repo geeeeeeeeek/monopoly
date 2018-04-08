@@ -19,6 +19,18 @@ class GameView {
                 this.$chatCard.classList.add("hidden");
             }
         });
+
+        this.initGameBoard();
+    }
+
+    initGameBoard() {
+        new GameController({
+            // The DOM element in which the drawing will happen.
+            containerEl: document.getElementById('game-container'),
+
+            // The base URL from where the BoardController will load its data.
+            assetsUrl: '/static/3d_assets/'
+        });
     }
 }
 
