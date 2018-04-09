@@ -95,7 +95,7 @@ class JoinView {
     }
 
     navigateToGame() {
-        window.location = `http://${window.location.host}/monopoly`;
+        window.location = `http://${window.location.host}/monopoly/game/${this.hostName}`;
     }
 }
 

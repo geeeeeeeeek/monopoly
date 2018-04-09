@@ -7,6 +7,7 @@ from monopoly.models import Profile
 from django.contrib.auth.models import User
 
 import json
+from monopoly.ws_handlers.game_handler import *
 
 # Connected to websocket.connect
 # @login_required
@@ -30,8 +31,8 @@ def ws_add(message):
         ws_connect_for_join(message)
     # elif 'start' in mypath:
     #     ws_connect_for_start(message)
-        # elif 'game' in mypath:
-        #     ws_connect_for_game(message)
+    elif 'game' in mypath:
+        ws_connect_for_game(message)
 
 
 @channel_session_user_from_http

@@ -11,7 +11,7 @@ from monopoly.views.register_confirm_view import ConfirmRegistrationView
 from monopoly.views.register_view import RegisterView
 
 urlpatterns = [
-    url(r'^$', login_required(GameView.as_view()), name='game'),
+    url(r'^game/(?P<host_name>.*)', login_required(GameView.as_view()), name='game'),
     url(r'^logout$', auth_views.logout_then_login, name='logout'),
     url(r'^login', LoginView.as_view(), name='login'),
     url(r'^profile/(?P<profile_user>.+)$', login_required(ProfileView.as_view()), name='profile'),

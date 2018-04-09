@@ -7,5 +7,6 @@ class GameView(View):
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {
-            "username": request.user.username
+            "username": request.user.username,
+            "hostname": kwargs.get("host_name")
         })

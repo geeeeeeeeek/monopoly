@@ -8,6 +8,7 @@ class GameView {
 
     initComponents() {
         this.userName = document.getElementById("username").value;
+        this.hostName = document.getElementById("hostname").value;
 
         this.isChatShown = false;
         this.$chatSwitch = document.getElementById("chat-switch");
@@ -46,6 +47,14 @@ class GameView {
         });
     }
 
+    initWebSocket() {
+        this.socket = new WebSocket(`ws://${window.location.host}/game/${this.hostName}`);
+
+        this.socket.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            this.handleStatusChange(message);
+        }
+    }
     /*
     * Init game status, called after ws.connect
     * players: @see initPlayers
