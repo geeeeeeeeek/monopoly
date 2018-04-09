@@ -47,13 +47,6 @@ class JoinView {
             const message = JSON.parse(event.data);
             this.handleStatusChange(message);
         }
-        //
-        // //
-        // let rollRice = () => {
-        //     this.socket.send();
-        // }
-        //
-        // showModal(msg, buttonText, buttonCallback)
     }
 
     handleStatusChange(message) {
@@ -61,10 +54,10 @@ class JoinView {
             this.addFriend(message.data);
 
             if (this.friends.length > 1) {
-                this.$startGame.disabled = false;
                 if (this.hostName !== this.userName) {
                     this.$startGame.innerHTML = "Waiting for host to start the game...";
                 } else {
+                    this.$startGame.disabled = false;
                     this.$startGame.innerHTML = "Start Game";
                 }
             }
