@@ -47,10 +47,17 @@ class JoinView {
             const message = JSON.parse(event.data);
             this.handleStatusChange(message);
         }
+        //
+        // //
+        // let rollRice = () => {
+        //     this.socket.send();
+        // }
+        //
+        // showModal(msg, buttonText, buttonCallback)
     }
 
     handleStatusChange(message) {
-        if (message.action = "join") {
+        if (message.action === "join") {
             this.addFriend(message.data);
 
             if (this.friends.length > 1) {
@@ -61,7 +68,7 @@ class JoinView {
                     this.$startGame.innerHTML = "Start Game";
                 }
             }
-        } else if (message.action = "start") {
+        } else if (message.action === "start") {
             this.navigateToGame();
         }
     }
@@ -84,7 +91,7 @@ class JoinView {
 
         // TODO: temporally navigate to game for demo purpose
         // TODO: need to wait for server to initialize game
-        this.navigateToGame();
+        // this.navigateToGame();
     }
 
     navigateToGame() {
