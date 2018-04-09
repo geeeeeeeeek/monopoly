@@ -9,7 +9,6 @@
     position: relative;
     height: 100%;
     width: 100%;
-    opacity: 0.85;
 }
 
 #user-avatar {
@@ -76,6 +75,11 @@
 #chat-card {
     width: 432px;
     height: 520px;
+}
+
+#dice-card {
+    width: 432px;
+    z-index: 1000;
 }
 
 .center-card {
