@@ -163,13 +163,13 @@ class BoardController {
 
         // board material
         this.materials.boardMaterial = new THREE.MeshLambertMaterial({
-            map: new THREE.TextureLoader().load(this.assetsUrl + 'board_texture.jpg')
+            map: new THREE.TextureLoader().load(`${this.assetsUrl}/board_texture.jpg`)
         });
 
         // ground material
         this.materials.groundMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
-            map: new THREE.TextureLoader().load(this.assetsUrl + 'ground.png')
+            map: new THREE.TextureLoader().load(`${this.assetsUrl}/ground.png`)
         });
 
         const defaultTileMaterial = new THREE.MeshLambertMaterial({
@@ -206,7 +206,7 @@ class BoardController {
         };
 
         // load board
-        loader.load(this.assetsUrl + 'board.js', (geom) => {
+        loader.load(`${this.assetsUrl}/board.js`, (geom) => {
             this.boardModel = new THREE.Mesh(geom, this.materials.boardMaterial);
             this.boardModel.position.y = -0.02;
 

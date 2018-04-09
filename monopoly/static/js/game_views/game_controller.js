@@ -7,36 +7,18 @@ class GameController {
     }
 
     initGame(options) {
-        const {containerEl, assetsUrl} = options;
+        const {containerEl, assetsUrl, onBoardPainted} = options;
 
         this.boardController = new BoardController({
             containerEl: containerEl,
             assetsUrl: assetsUrl
         });
 
-        this.boardController.drawBoard(() => {
-            this.boardController.drawPlayers(4);
-            // setTimeout(() => {
-            //     this.movePlayer(0, 3);
-            //     this.movePlayer(1, 9);
-            //     this.movePlayer(2, 14);
-            //     this.movePlayer(3, 28);
-            // }, 10000);
-            this.addProperty(PropertyManager.PROPERTY_HOUSE, 3);
-            // this.addProperty(PropertyManager.PROPERTY_HOUSE, 3);
-            // this.addProperty(PropertyManager.PROPERTY_HOUSE, 3);
-            //
-            // this.addProperty(PropertyManager.PROPERTY_HOUSE, 26);
-            // this.addProperty(PropertyManager.PROPERTY_HOUSE, 26);
-            //
-            // this.addProperty(PropertyManager.PROPERTY_HOUSE, 13);
-            // this.addProperty(PropertyManager.PROPERTY_HOUSE, 13);
-            //
-            // this.addProperty(PropertyManager.PROPERTY_HOTEL, 6);
-            this.addProperty(PropertyManager.PROPERTY_HOTEL, 8);
-            // this.addProperty(PropertyManager.PROPERTY_HOTEL, 37);
-            // this.addProperty(PropertyManager.PROPERTY_HOTEL, 31);
-        });
+        this.boardController.drawBoard(onBoardPainted);
+    }
+
+    addPlayer(count) {
+        this.boardController.addPlayer(count);
     }
 
     movePlayer(playerIndex, newTileId) {

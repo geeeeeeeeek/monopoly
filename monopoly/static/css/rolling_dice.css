@@ -1,0 +1,257 @@
+@keyframes spin {
+    0% {
+        transform: translateZ(-50px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+    }
+    16% {
+        transform: translateZ(50px) rotateX(180deg) rotateY(180deg) rotateZ(0deg);
+    }
+    33% {
+        transform: translateZ(-50px) rotateX(360deg) rotateY(90deg) rotateZ(180deg);
+    }
+    50% {
+        transform: translateZ(50px) rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+    }
+    66% {
+        transform: translateZ(-50px) rotateX(180deg) rotateY(360deg) rotateZ(270deg);
+    }
+    83% {
+        transform: translateZ(50px) rotateX(270deg) rotateY(180deg) rotateZ(180deg);
+    }
+    100% {
+        transform: translateZ(-50px) rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+    }
+}
+
+@keyframes spin-duplicate {
+    0% {
+        transform: translateZ(-100px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+    }
+    16% {
+        transform: translateZ(-100px) rotateX(180deg) rotateY(180deg) rotateZ(0deg);
+    }
+    33% {
+        transform: translateZ(-100px) rotateX(360deg) rotateY(90deg) rotateZ(180deg);
+    }
+    50% {
+        transform: translateZ(-100px) rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+    }
+    66% {
+        transform: translateZ(-100px) rotateX(180deg) rotateY(360deg) rotateZ(270deg);
+    }
+    83% {
+        transform: translateZ(-100px) rotateX(270deg) rotateY(180deg) rotateZ(180deg);
+    }
+    100% {
+        transform: translateZ(-100px) rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+    }
+}
+
+@keyframes roll {
+    0% {
+        transform: translate3d(-40px, -25px, -40px)
+    }
+    12% {
+        transform: translate3d(0, 0, -5px)
+    }
+    25% {
+        transform: translate3d(40px, -25px, -40px)
+    }
+    37% {
+        transform: translate3d(0, -5px, -40px)
+    }
+    50% {
+        transform: translate3d(-40px, -25px, -40px)
+    }
+    62% {
+        transform: translate3d(0, 0, -5px)
+    }
+    75% {
+        transform: translate3d(40px, -25px, -40px)
+    }
+    87% {
+        transform: translate3d(0, -5px, -40px)
+    }
+    100% {
+        transform: translate3d(-40px, -25px, -40px)
+    }
+}
+
+#roll:checked ~ #platform > .dice:nth-child(1) {
+    animation: spin 2s infinite linear;
+}
+
+#roll:checked ~ #platform > .dice:nth-child(2) {
+    animation: spin-duplicate 2s infinite linear;
+}
+
+#roll:checked ~ #platform {
+    width: 200px;
+    height: 100px;
+    transform-style: preserve-3d;
+    animation: roll 1.6s infinite linear;
+}
+
+#dice-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    perspective: 600px;
+}
+
+#platform {
+    height: 100px;
+    align-self: center;
+    width: 200px;
+    padding: 80px 0;
+}
+
+.dice span {
+    position: absolute;
+    margin: 50px 0 0 50px;
+    display: block;
+    font-size: 2.5em;
+    padding: 5px;
+}
+
+.dice {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    transform-style: preserve-3d;
+    animation: spin 50s infinite linear;
+}
+
+.side {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: #fff;
+    box-shadow: inset 0 0 20px #ccc;
+    border-radius: 20px;
+}
+
+.dice .cover, .dice .inner {
+    background: #e0e0e0;
+    box-shadow: none;
+}
+
+.dice .cover {
+    border-radius: 0;
+    transform: translateZ(0);
+}
+
+.dice .cover.x {
+    transform: rotateY(90deg);
+}
+
+.dice .cover.z {
+    transform: rotateX(90deg);
+}
+
+.dice .front {
+    transform: translateZ(50px);
+}
+
+.dice .front.inner {
+    transform: translateZ(49px);
+}
+
+.dice .back {
+    transform: rotateX(-180deg) translateZ(50px);
+}
+
+.dice .back.inner {
+    transform: rotateX(-180deg) translateZ(49px);
+}
+
+.dice .right {
+    transform: rotateY(90deg) translateZ(50px);
+}
+
+.dice .right.inner {
+    transform: rotateY(90deg) translateZ(49px);
+}
+
+.dice .left {
+    transform: rotateY(-90deg) translateZ(50px);
+}
+
+.dice .left.inner {
+    transform: rotateY(-90deg) translateZ(49px);
+}
+
+.dice .top {
+    transform: rotateX(90deg) translateZ(50px);
+}
+
+.dice .top.inner {
+    transform: rotateX(90deg) translateZ(49px);
+}
+
+.dice .bottom {
+    transform: rotateX(-90deg) translateZ(50px);
+}
+
+.dice .bottom.inner {
+    transform: rotateX(-90deg) translateZ(49px);
+}
+
+.dot {
+    position: absolute;
+    width: 23px;
+    height: 23px;
+    border-radius: 12px;
+    background: #444;
+    box-shadow: inset 2px 0 5px #000;
+}
+
+.dot.center {
+    margin: 38px 0 0 38px;
+}
+
+.dot.dtop {
+    margin-top: 10px;
+}
+
+.dot.dleft {
+    margin-left: 62px;
+}
+
+.dot.dright {
+    margin-left: 10px;
+}
+
+.dot.dbottom {
+    margin-top: 62px;
+}
+
+.dot.center.dleft {
+    margin: 38px 0 0 10px;
+}
+
+.dot.center.dright {
+    margin: 38px 0 0 67px;
+}
+
+label, input[type=checkbox]:before {
+    cursor: pointer;
+    text-align: center;
+}
+
+input[type=checkbox]:before {
+    background: transparent;
+    border-color: transparent;
+}
+
+input[type=checkbox] {
+    display: none;
+}
+
+label[for=roll] {
+    z-index: 1000;
+    transition: all .3s ease;
+    width: 60px;
+    align-self: center;
+    line-height: 32px;
+}

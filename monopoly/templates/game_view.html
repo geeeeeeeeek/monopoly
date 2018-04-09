@@ -5,6 +5,7 @@
 
 {% block files %}
 <link rel="stylesheet" href="{% static 'css/game.css' %}">
+<link rel="stylesheet" href="{% static 'css/rolling_dice.css' %}">
 <script src="{% static 'js/views/game.js' %}" type="text/javascript"></script>
 <script src="{% static 'js/game_views/three/three.js' %}" type="text/javascript"></script>
 <script src="{% static 'js/game_views/three/orbit_controls.js' %}" type="text/javascript"></script>
@@ -17,15 +18,18 @@
 
 {% block content %}
 <div id="game-container">
-    <img id="user-avatar" src="{{ profile.info.avatar }}">
-    <!--<div id="cash-card" class="card">-->
-        <!--<div class="card-blur-container">-->
-            <!--<div class="card-blur"></div>-->
-        <!--</div>-->
-        <!--<div class="card-content-container">-->
-            <!--$2333-->
-        <!--</div>-->
-    <!--</div>-->
+    <input id="username" hidden value="{{ username }}">
+    <div id="users-container"></div>
+
+    <div id="cash-card" class="card">
+        <div class="card-blur-container">
+            <div class="card-blur"></div>
+        </div>
+        <div class="card-content-container">
+            $2333
+        </div>
+    </div>
+
     <div id="chat-card" class="card center-card hidden">
         <div class="card-blur-container">
             <div class="card-blur"></div>
@@ -41,6 +45,21 @@
             </div>
         </div>
     </div>
-    <img id="chat-switch">
+
+    <div id="modal-card" class="card center-card hidden">
+        <div class="card-blur-container">
+            <div class="card-blur"></div>
+        </div>
+        <div class="card-content-container">
+            <img id="modal-user-avatar" class="active" src="">
+            <div id="modal-message-container"></div>
+            <div id="modal-buttons-container"></div>
+        </div>
+    </div>
+
+    <div id="dice-message" class="hidden">
+        {% include "rolling_dice.html" %}
+    </div>
+    <!--<img id="chat-switch">-->
 </div>
 {% endblock %}
