@@ -18,7 +18,7 @@
 
 {% block content %}
 <div id="game-container">
-    <img id="user-avatar" src="{{ profile.info.avatar }}">
+    <div id="users-container"></div>
     <!--<div id="cash-card" class="card">-->
         <!--<div class="card-blur-container">-->
             <!--<div class="card-blur"></div>-->
@@ -42,7 +42,7 @@
             </div>
         </div>
     </div>
-    <div id="dice-card" class="card center-card">
+    <div id="dice-card" class="card center-card hidden">
         <div class="card-blur-container">
             <div class="card-blur"></div>
         </div>
@@ -50,6 +50,6 @@
             {% include "rolling_dice.html" %}
         </div>
     </div>
-    <img id="chat-switch">
+    <!--<img id="chat-switch">-->
 </div>
 {% endblock %}

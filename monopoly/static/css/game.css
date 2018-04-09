@@ -7,11 +7,30 @@
 
 #game-container {
     position: relative;
-    height: 100%;
     width: 100%;
+    height: 100%;
 }
 
-#user-avatar {
+#users-container {
+    top: 0;
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    margin: 40px 80px;
+    right: 0;
+}
+
+.user-group {
+    position: relative;
+    margin-left: 40px;
+}
+
+.user-group.active .user-avatar {
+    border-color: #0084ff;
+    box-shadow: 0 0 20px #0084ff;
+}
+
+.user-avatar {
     background: #ccc;
     border-radius: 36px;
     overflow: hidden;
@@ -19,12 +38,10 @@
     width: 64px;
     height: 64px;
     vertical-align: middle;
-    top: 40px;
-    right: 40px;
-    position: absolute;
+    position: relative;
 }
 
-#user-avatar:before {
+.user-avatar:before {
     content: ' ';
     display: block;
     position: absolute;
@@ -32,6 +49,16 @@
     width: 64px;
     background-size: 64px 64px;
     background-image: url("/static/images/default_avatar.png");
+}
+
+.user-role {
+    overflow: hidden;
+    width: 64px;
+    height: 64px;
+    vertical-align: middle;
+    top: 16px;
+    left: 30px;
+    position: absolute;
 }
 
 #cash-card {
