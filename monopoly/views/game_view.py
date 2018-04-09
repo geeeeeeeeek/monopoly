@@ -3,8 +3,9 @@ from django.views import View
 
 
 class GameView(View):
-    initial = {'key': 'value'}
     template_name = 'game_view.html'
 
     def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, {})
+        return render(request, self.template_name, {
+            "username": request.user.username
+        })

@@ -26,8 +26,8 @@
 }
 
 .user-group.active .user-avatar {
-    border-color: #0084ff;
-    box-shadow: 0 0 20px #0084ff;
+    border-color: #7cbdf9;
+    box-shadow: 0 0 20px #5db0fd;
 }
 
 .user-avatar {
@@ -105,11 +105,6 @@
     height: 520px;
 }
 
-#dice-card {
-    width: 432px;
-    z-index: 1000;
-}
-
 .center-card {
     position: absolute;
     margin: auto;
@@ -153,4 +148,60 @@
 #chat-send-container {
     display: flex;
     justify-content: space-between;
+}
+
+#modal-card {
+    width: 432px;
+    height: fit-content;
+    overflow: initial;
+}
+
+#modal-card .card-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 100px 20px 20px 20px;
+    position: relative;
+}
+
+#modal-user-avatar {
+    top: -72px;
+    left: 144px;
+    background: #ccc;
+    border-radius: 68px;
+    overflow: hidden;
+    border: 4px solid #fff;
+    width: 128px;
+    height: 128px;
+    vertical-align: middle;
+    position: absolute;
+}
+
+#modal-user-avatar:before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    height: 128px;
+    width: 128px;
+    background-size: 128px 128px;
+    background-image: url("/static/images/default_avatar.png");
+}
+
+#modal-user-avatar.active {
+    border-color: #7cbdf9;
+    box-shadow: 0 0 40px #5db0fd;
+}
+
+#modal-buttons-container {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#modal-buttons-container button {
+    margin: 0 10px;
+}
+
+.monopoly-cash {
+    text-decoration: line-through;
 }

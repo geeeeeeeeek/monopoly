@@ -1,8 +1,3 @@
-body {
-    font-size: .9em;
-    font-family: sans-serif;
-}
-
 @keyframes spin {
     0% {
         transform: translateZ(-50px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
