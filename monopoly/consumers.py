@@ -28,8 +28,10 @@ def ws_add(message):
     print 'path is', mypath
     if 'join' in mypath:
         ws_connect_for_join(message)
-    elif 'start' in mypath:
-        ws_connect_for_start(message)
+    # elif 'start' in mypath:
+    #     ws_connect_for_start(message)
+        # elif 'game' in mypath:
+        #     ws_connect_for_game(message)
 
 
 @channel_session_user_from_http
@@ -40,6 +42,7 @@ def ws_connect_for_join(message):
     # hostname = path[1:-2]
     print 'path is: ', path
     fields = path.split('/')
+
     hostname = fields[-1]
     print 'hostname is', hostname
 
@@ -62,10 +65,19 @@ def ws_connect_for_join(message):
     print 'join finished'
 
 
-# def ws_message(message):
-#     Group("monopoly_room").send({
-#         "text": "blah, blah, blah",
-#     })
+def ws_message(message):
+    msg = json.loads(message.content["text"])
+    action = msg["action"]
+    path = message.content['path']
+    fields = path.split('/')
+    hostname = fields[-1]
+    print 'action is: ', action
+    print 'hostname is: ', hostname
+
+    Group(hostname).send({
+        "text": build_start_msg()
+    })
+    print "start finish"
 
 # @login_required
 def ws_disconnect(message):
@@ -75,6 +87,11 @@ def ws_disconnect(message):
 def ws_connect_for_start(message):
     print 'now is connecting for start'
 
+
+def build_start_msg():
+    ret = {"action": "start"}
+    print json.dumps(ret)
+    return json.dumps(ret)
 
 def build_join_reply_msg(room_name):
     # todo profile
