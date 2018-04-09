@@ -21,11 +21,10 @@ class GameView {
         //     }
         // });
 
-        // this.initGameBoard();
-        this.initGame();
+        // this.initBoard();
     }
 
-    initGameBoard() {
+    initBoard() {
         new GameController({
             // The DOM element in which the drawing will happen.
             containerEl: document.getElementById('game-container'),
@@ -36,27 +35,67 @@ class GameView {
     }
 
     initGame() {
-        this.initPlayers([
-            {
-                avatar: "/static/images/favicon.png"
-            }, {
-                avatar: "/static/images/favicon.png"
-            }, {
-                avatar: "/static/images/favicon.png"
-            }, {
-                avatar: "/static/images/favicon.png"
-            }
-        ])
+        // Init players
+        this.initPlayers(players);
+
+        // Init cash amount
+        this.changeCashAmount(amount)
     }
 
-    initPlayers(users) {
-        for (let i = 0; i < users.length; i++) {
+    /*
+    * Display players on the top
+    * players: [{
+    *   name: string, //"user full name"
+    *   avatar: string // "user avatar url"
+    * }]
+    * */
+    initPlayers(players) {
+        this.players = players;
+        for (let i = 0; i < players.length; i++) {
             this.$usersContainer.innerHTML += `
                 <div class="user-group">
-                    <img class="user-avatar" src="${users[i].avatar}">
+                    <img class="user-avatar" src="${players[i].avatar}">
                     <img class="user-role" src="/static/images/player_${i}.png">
                 </div>`;
         }
+    }
+
+
+    /*
+    * Change the cash balance
+    * amount: int
+    * */
+    changeCashAmount(amount) {
+        // TODO
+    }
+
+    changePlayer() {
+        // roll dice
+        // TODO
+    }
+
+    performAction() {
+        // show modal
+        // TODO
+    }
+
+    /*
+    * Display a pop-up modal
+    * message: a snippet of text or HTML
+    * buttons: [{
+    *   text: string, // "button text"
+    *   callback: function
+    * }]
+    * */
+    showModal(message, buttons) {
+
+    }
+
+    /*
+    * Hide the modal
+    * */
+    hideModal() {
+        // TODO
     }
 }
 
