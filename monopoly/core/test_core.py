@@ -1,6 +1,7 @@
 from game import Game
 from move_result_enum import MoveResultType
 from util import *
+from land import *
 
 
 def testing(x):
@@ -143,15 +144,77 @@ def test6():
     print 'successful test6'
 
 
-def test_suite():
-    # for i in xrange(1, 11):
-    #     testing(i)
-    # testing2()
+# try construct a house
+def test7():
+    print "new test---test7----"
+    game = Game(1)
+    steps, move_result = game.roll(3)
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print "steps: ", steps
+    print move_result
+    game.make_decision(move_result)
+    steps, move_result = game.roll(40)
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print 'money', game.get_current_player().get_money()
+    money = game.get_current_player().get_money()
+    game.make_decision(move_result)
+    assert money == game.get_current_player().get_money() + \
+           HOUSE_CONSTRUCTION_COST
+    print 'money', game.get_current_player().get_money()
+
+    print 'successful test7'
+
+
+# another player go to the construciton land
+def test8():
+    print "new test---test8----"
+    game = Game(2)
+    steps, move_result = game.roll(3)
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print "steps: ", steps
+    print move_result
+    game.make_decision(move_result)
+
+    steps, move_result = game.roll(2)
+    game.make_decision(move_result)
+
+    print '---round2---'
+    steps, move_result = game.roll(40)
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print 'money', game.get_current_player().get_money()
+    money = game.get_current_player().get_money()
+    game.make_decision(move_result)
+    assert money == game.get_player(0).get_money() + \
+           HOUSE_CONSTRUCTION_COST
+    print 'money', game.get_current_player().get_money()
     #
-    # test3()
-    # test4()
-    # test5()
+    print 'money of player2', game.get_player(1).get_money()
+    steps, move_result = game.roll(41)
+    game.make_decision(move_result)
+    print 'money of player2', game.get_player(1).get_money()
+    print 'successful test8'
+
+
+def test_suite():
+    for i in xrange(1, 11):
+        testing(i)
+    testing2()
+
+    test3()
+    test4()
+    test5()
     test6()
+    test7()
+    test8()
+
 
 if __name__ == "__main__":
     test_suite()

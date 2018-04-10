@@ -102,15 +102,17 @@ class ConstructionLand(object):
 
     def get_rent(self):
         if self._properties == BuildingType.NOTHING:
-            return 0
+            ret = 0
         if self._properties == BuildingType.HOTEL:
-            return (self._price + HOTEL_CONSTRUCTION_COST) / \
+            ret = (self._price + HOTEL_CONSTRUCTION_COST) / \
                    RATIO_RENT_TO_PRICE_FOR_HOTEL
         else:
-            return (self._price + \
+            ret = (self._price + \
                     self._building_num *
                     HOUSE_CONSTRUCTION_COST) / \
                    RATIO_RENT_TO_PRICE_FOR_HOUSE
+        print 'debug114, rent is', ret
+        return ret
 
 
 class Infra(object):

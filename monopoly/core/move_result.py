@@ -26,11 +26,13 @@ class MoveResult(object):
         return self.land
 
     def set_decision(self, decision):
-        assert self.move_result_type == MoveResultType.BUY_LAND_OPTION
+        assert self.move_result_type == MoveResultType.BUY_LAND_OPTION or \
+            self.move_result_type == MoveResultType.CONSTRUCTION_OPTION
         self.yes = decision
 
     def get_decision(self):
-        assert self.move_result_type == MoveResultType.BUY_LAND_OPTION
+        assert self.move_result_type == MoveResultType.BUY_LAND_OPTION or \
+            self.move_result_type == MoveResultType.CONSTRUCTION_OPTION
         return self.yes
 
     def __str__(self):
