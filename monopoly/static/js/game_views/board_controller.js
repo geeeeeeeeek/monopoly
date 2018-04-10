@@ -119,7 +119,7 @@ class BoardController {
         this.camera.position.set(BoardController.SQUARE_SIZE * Board.SIZE / 2, 100, 160);
         this.cameraController = new THREE.OrbitControls(this.camera, this.containerEl);
         this.cameraController.center = new THREE.Vector3(BoardController.SQUARE_SIZE * Board.SIZE / 2, -6, BoardController.SQUARE_SIZE * Board.SIZE / 2);
-        //
+
         this.scene.add(this.camera);
 
         this.containerEl.appendChild(this.renderer.domElement);
