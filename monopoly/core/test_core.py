@@ -16,7 +16,8 @@ def testing(x):
     game.make_decision(move_result)
 
 
-def testing2():
+# test the infra bought and payment
+def test2():
     print "new test, step num is: ", 5
     game = Game(4)
     steps, move_result = game.roll(5)
@@ -52,7 +53,7 @@ def test3():
     print move_result
     print 'success test3'
 
-
+# test the first player did not buy, the second buy
 def test4():
     print "new test, step num is: ", 5
     game = Game(4)
@@ -75,12 +76,15 @@ def test4():
     steps, move_result = game.roll(5)
     print 'move result', move_result
     move_result.set_decision(True)
+
+    print 'player1 money is: ', game.get_player(1).get_money()
     game.make_decision(move_result)
     print 'player1 money is: ', game.get_player(1).get_money()
     print 'successful test4'
 
 
 # only 2 players
+# 2 rounds, the player pays
 def test5():
     print "new test---test5----"
     game = Game(2)
@@ -203,10 +207,9 @@ def test8():
 
 
 def test_suite():
-    for i in xrange(1, 11):
+    for i in xrange(1, 12):
         testing(i)
-    testing2()
-
+    test2()
     test3()
     test4()
     test5()
