@@ -10,6 +10,7 @@ class GameView {
         this.userName = document.getElementById("username").value;
         this.hostName = document.getElementById("hostname").value;
 
+
         this.isChatShown = false;
         this.$chatSwitch = document.getElementById("chat-switch");
         this.$chatCard = document.getElementById("chat-card");
@@ -35,14 +36,14 @@ class GameView {
     }
 
     initBoard() {
-        new GameController({
+        this.gameController = new GameController({
             // The DOM element in which the drawing will happen.
             containerEl: document.getElementById("game-container"),
 
             // The base URL from where the BoardController will load its data.
             assetsUrl: "/static/3d_assets",
 
-            onBoardPainted: this.initWebSocket
+            onBoardPainted: this.initWebSocket.bind(this)
         });
     }
 
@@ -54,6 +55,32 @@ class GameView {
             this.handleStatusChange(message);
         }
     }
+
+    onDiceRolled() {
+        this.socket.send(JSON.stringify({
+            action: "roll"
+        }));
+    }
+
+    handleStatusChange(message) {
+
+        if (message.action === "init") {
+            this.handle_init(message);
+        }
+        else if (message.action === "roll_res") {
+            this.handle_roll_res(message);
+        }
+        else if (message.action === "buy_land") {
+            this.handle_buy_land(message);
+        }
+        else if (message.action === "construct") {
+            this.handle_construct(message);
+        }
+        else if (message.action === "cancel_decision") {
+            this.handle_cancel(message);
+        }
+    }
+
     /*
     * Init game status, called after ws.connect
     * players: @see initPlayers
@@ -77,6 +104,8 @@ class GameView {
     * */
     initPlayers(players) {
         this.players = players;
+        this.currentPlayer = null;
+
         for (let i = 0; i < players.length; i++) {
             if (this.userName === players[i].userName) this.myPlayerIndex = i;
             this.$usersContainer.innerHTML += `
@@ -89,6 +118,8 @@ class GameView {
                     <img class="user-role" src="/static/images/player_${i}.png">
                 </div>`;
         }
+
+        this.gameController.addPlayer(players.length);
     }
 
     /*
@@ -104,17 +135,20 @@ class GameView {
 
     /*
     * Change player
-    * currentPlayer: int,
     * nextPlayer: int,
     * onDiceRolled: function
     * */
-    changePlayer(currentPlayer, nextPlayer, onDiceRolled) {
+    changePlayer(nextPlayer, onDiceRolled) {
         // update user indicator
-        let $currentUserGroup = document.getElementById(`user-group-${currentPlayer}`);
-        let $nextUserGroup = document.getElementById(`user-group-${nextPlayer}`);
+        if (this.currentPlayer !== null) {
+            let $currentUserGroup = document.getElementById(`user-group-${this.currentPlayer}`);
+            $currentUserGroup.classList.remove("active");
+        }
 
-        $currentUserGroup.classList.remove("active");
+        let $nextUserGroup = document.getElementById(`user-group-${nextPlayer}`);
         $nextUserGroup.classList.add("active");
+
+        this.currentPlayer = nextPlayer;
 
         // role dice
         const button = (nextPlayer !== this.myPlayerIndex) ? [] :
@@ -167,6 +201,101 @@ class GameView {
     * */
     hideModal() {
         this.$modalCard.classList.add("hidden");
+    }
+
+    handle_init(message) {
+        // debugger;
+        let players = message.players;
+        let changeCash = message.changeCash;
+        let nextPlayer = message.nextPlayer;
+        this.initGame(players, changeCash);
+        this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
+    }
+
+    handle_roll_res(message) {
+        let currPlayer = message.curr_player;
+        let nextPlayer = message.next_player;
+        let steps = message.steps;
+        let newPos = message.new_pos;
+        let eventMsg = message.result;
+        let rollResMsg = this.players[currPlayer].fullName + "gets a roll result" + steps.toString();
+        setTimeout(function () {
+            this.showModal(currPlayer, rollResMsg, []);
+        }, 1500);
+
+        this.gameController.movePlayer(currPlayer, newPos);
+        if (message.is_option === "true") {
+            let buttons = [];
+            buttons.append({
+                text: "confirm",
+                callback: this.confirm_decision()
+            });
+            buttons.append({
+                text: "cancel",
+                callback: this.cancel_decision()
+            });
+            this.showModal(currPlayer, eventMsg, buttons);
+        }
+        else {
+            if (message.is_cash_change === "true") {
+                setTimeout(function () {
+                    this.showModal(currPlayer, eventMsg, []);
+                }, 1500);
+                let cash = message.curr_cash;
+                this.changeCashAmount(cash);
+            }
+            else if (message.new_event === "true") {
+                setTimeout(function () {
+                    this.showModal(currPlayer, eventMsg, []);
+                }, 1500);
+            }
+            this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
+        }
+
+
+    }
+
+    handle_buy_land(message) {
+        const {curr_player, curr_cash, tile_id} = message;
+
+        this.changeCashAmount(curr_cash);
+        // TODO: one player get the land
+
+        let next_player = message.next_player;
+        this.changePlayer(next_player, this.onDiceRolled.bind(this));
+    }
+
+    handle_construct(message) {
+        let curr_cash = message.curr_cash;
+        let tile_id = message.tile_id;
+        this.changeCashAmount(curr_cash);
+        if (message.build_type === 0) {
+            this.gameController.addProperty(PropertyManager.PROPERTY_HOUSE, tile_id);
+        } else {
+            this.gameController.addProperty(PropertyManager.PROPERTY_HOTEL, tile_id);
+        }
+        this.changePlayer(message.next_player, this.onDiceRolled.bind(this));
+    }
+
+    handle_cancel(message) {
+        let next_player = message.next_player;
+        this.changePlayer(next_player, this.onDiceRolled.bind(this));
+    }
+
+    confirm_decision() {
+        this.socket.send(JSON.stringify({
+            action: "confirm_decision",
+            hostname: this.hostName,
+        }));
+        this.hideModal();
+    }
+
+    cancel_decision() {
+        this.socket.send(JSON.stringify({
+            action: "cancel_decision",
+            hostname: this.hostName,
+        }));
+        this.hideModal();
     }
 }
 
