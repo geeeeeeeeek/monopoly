@@ -207,8 +207,8 @@ def test8():
 
 
 def test_suite():
-    # for i in xrange(1, 11):
-    #     testing(i)
+    for i in xrange(1, 12):
+        testing(i)
     test2()
     test3()
     test4()
@@ -216,7 +216,6 @@ def test_suite():
     test6()
     test7()
     test8()
-    test4()
 
 
 if __name__ == "__main__":
