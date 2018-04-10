@@ -53,6 +53,7 @@ def test3():
     print move_result
     print 'success test3'
 
+
 # test the first player did not buy, the second buy
 def test4():
     print "new test, step num is: ", 5
