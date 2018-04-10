@@ -105,7 +105,7 @@ class Game(object):
                 result_type = MoveResultType.REWARD
                 val = card.get_money_deduction() * -1
             ret = MoveResult(result_type, val, land)
-            ret.set_msg(str(card))
+            ret.set_msg(" Chance Card: " + str(card))
             return ret
         else:
             print "Error, the land is", land_type
