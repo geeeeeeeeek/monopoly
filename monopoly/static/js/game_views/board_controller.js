@@ -110,7 +110,7 @@ class BoardController {
             alpha: true
         });
         this.renderer.setSize(viewWidth, viewHeight);
-
+        this.renderer.setPixelRatio(window.devicePixelRatio);
         // create the this.scene
         this.scene = new THREE.Scene();
 
