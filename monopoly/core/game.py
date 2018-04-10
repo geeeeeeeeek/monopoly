@@ -118,7 +118,7 @@ class Game(object):
         val = move_result.get_value()
         if move_result_type == MoveResultType.BUY_LAND_OPTION:
             print 'debug99'
-            construction_land = move_result.land.get_content()
+            construction_land = move_result.get_land().get_content()
             if move_result.yes is True:
                 construction_land.set_owner(self._current_player_index)
                 self.get_current_player().add_properties(construction_land)
@@ -127,8 +127,8 @@ class Game(object):
             else:
                 return
         elif move_result_type == MoveResultType.CONSTRUCTION_OPTION:
-            construction_land = move_result.land.get_content()
-            assert construction_land.get_type() == BuildingType.HOUSE
+            construction_land = move_result.get_land().get_content()
+            assert construction_land.get_owner_index() == self._current_player_index
             if move_result.yes is True:
                 self.get_current_player().deduct_money(
                     construction_land.get_next_construction_price())
@@ -137,9 +137,10 @@ class Game(object):
             if move_result_type == MoveResultType.PAYMENT:
                 print 'debug129'
                 self.get_current_player().deduct_money(val)
-                land = move_result.land.get_content()
+                land = move_result.get_land().get_content()
                 if land.get_type() == LandType.CONSTRUCTION_LAND or \
                         land.get_type() == LandType.INFRA:
+                    # this is the payment to the player
                     print 'debug133'
                     assert land.get_owner_index() is not None
                     print 'owner index is: ', land.get_owner_index()
