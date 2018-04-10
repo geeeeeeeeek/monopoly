@@ -8,10 +8,10 @@ class MoveResultType(object):
 
     @staticmethod
     def get_description(val):
-        ret = ["Choosing to buy or not", \
-               "The player should make a payment", \
-               "The player is rewarded a fortune", \
-               "The player is stopped for one round",
-               "Chossing to build a new buildingor not", \
-               "Nothing actually happened"]
+        ret = ["Choosing to buy or not. ",
+               "The player should make a payment. ",
+               "The player is rewarded a fortune. ",
+               "The player is stopped for one round. ",
+               "Choosing to build a new building or not. ",
+               "Nothing actually happened. "]
         return ret[val]

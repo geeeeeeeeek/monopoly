@@ -9,10 +9,10 @@ class CardDeck(object):
     def __init__(self):
         self._index = 0
         self._cards = []
-        self._cards.append(Card("Get One More Grace day", 100, 0))
-        self._cards.append(Card("Scholarship", 200, 0))
-        self._cards.append(Card("Autolab rank awarding", 300, 0))
-        self._cards.append(Card("Illegal Parking", 500, 0))
+        self._cards.append(Card("Get One More Grace day ", 100, 0))
+        self._cards.append(Card("Overspeed ", 200, 0))
+        # self._cards.append(Card("Autolab rank awarding ", 300, 0))
+        self._cards.append(Card("Illegal Parking ", 500, 0))
         # self._cards.append(Card("Stop one round", 0, 1))
         # self._cards.append(Card("first one", 100, 0))
 
