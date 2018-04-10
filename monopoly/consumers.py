@@ -5,6 +5,7 @@ from channels.auth import http_session_user, channel_session_user, \
     channel_session_user_from_http
 from monopoly.models import Profile
 from django.contrib.auth.models import User
+from core.game import *
 
 import json
 from monopoly.ws_handlers.game_handler import *
@@ -13,6 +14,7 @@ from monopoly.ws_handlers.game_handler import *
 # @login_required
 
 rooms = {}
+games = {}
 
 
 def ws_message(message):
@@ -32,7 +34,7 @@ def ws_add(message):
     # elif 'start' in mypath:
     #     ws_connect_for_start(message)
     elif 'game' in mypath:
-        ws_connect_for_game(message)
+        ws_connect_for_game(message, rooms, games, Group)
 
 
 @channel_session_user_from_http
@@ -75,10 +77,15 @@ def ws_message(message):
     print 'action is: ', action
     print 'hostname is: ', hostname
 
-    Group(hostname).send({
-        "text": build_start_msg()
-    })
-    print "start finish"
+    if action == "start":
+        handle_start(hostname)
+    if action == "roll":
+        handle_roll(hostname, games, Group)
+    if action == "confirm_decision":
+        handle_confirm_decision(hostname, games, Group)
+    if action == "cancel_decision":
+        handle_cancel_decision(hostname, games, Group)
+
 
 # @login_required
 def ws_disconnect(message):
@@ -93,6 +100,7 @@ def build_start_msg():
     ret = {"action": "start"}
     print json.dumps(ret)
     return json.dumps(ret)
+
 
 def build_join_reply_msg(room_name):
     # todo profile
@@ -122,3 +130,16 @@ def add_player(room_name, player_name):
         rooms[room_name] = set()
         rooms[room_name].add(room_name)
     rooms[room_name].add(player_name)
+
+
+def handle_start(hostname):
+    # init game
+    if hostname not in games:
+        players = rooms[hostname]
+        player_num = len(players)
+        games[hostname] = Game(player_num)
+
+    Group(hostname).send({
+        "text": build_start_msg()
+    })
+    print "start finish"

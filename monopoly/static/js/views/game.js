@@ -31,7 +31,7 @@ class GameView {
         //         this.$chatCard.classList.add("hidden");
         //     }
         // });
-        
+
         this.initBoard();
     }
 
@@ -55,6 +55,31 @@ class GameView {
             this.handleStatusChange(message);
         }
     }
+
+    onDiceRolled() {
+        this.socket.send(JSON.stringify({
+            action: "roll"
+        }));
+    }
+
+    handleStatusChange(message) {
+        if (message.action === "init") {
+            this.handle_init(message)
+        }
+        else if (message.action === "roll_res") {
+            this.handle_roll_res(message)
+        }
+        else if (message.action === "buy_land") {
+            this.handle_buy_land(message)
+        }
+        else if (message.action === "construct") {
+            this.handle_construct(message)
+        }
+        else if (message.action === "cancel_decision") {
+            this.handle_cancel(message)
+        }
+    }
+
     /*
     * Init game status, called after ws.connect
     * players: @see initPlayers
@@ -78,6 +103,8 @@ class GameView {
     * */
     initPlayers(players) {
         this.players = players;
+        this.currentPlayer = null;
+
         for (let i = 0; i < players.length; i++) {
             if (this.userName === players[i].userName) this.myPlayerIndex = i;
             this.$usersContainer.innerHTML += `
@@ -98,17 +125,20 @@ class GameView {
 
     /*
     * Change player
-    * currentPlayer: int,
     * nextPlayer: int,
     * onDiceRolled: function
     * */
-    changePlayer(currentPlayer, nextPlayer, onDiceRolled) {
+    changePlayer(nextPlayer, onDiceRolled) {
         // update user indicator
-        let $currentUserGroup = document.getElementById(`user-group-${currentPlayer}`);
-        let $nextUserGroup = document.getElementById(`user-group-${nextPlayer}`);
+        if (this.currentPlayer !== null) {
+            let $currentUserGroup = document.getElementById(`user-group-${this.currentPlayer}`);
+            $currentUserGroup.classList.remove("active");
+        }
 
-        $currentUserGroup.classList.remove("active");
+        let $nextUserGroup = document.getElementById(`user-group-${nextPlayer}`);
         $nextUserGroup.classList.add("active");
+
+        this.currentPlayer = nextPlayer;
 
         // role dice
         const button = (nextPlayer !== this.myPlayerIndex) ? [] :
@@ -161,6 +191,102 @@ class GameView {
     * */
     hideModal() {
         this.$modalCard.classList.add("hidden");
+    }
+
+    handle_init(message) {
+        let players = message.players;
+        let changeCash = message.changeCash;
+        let nextPlayer = message.nextPlayer;
+        this.initGame(players, changeCash);
+        this.changePlayer(nextPlayer, this.onDiceRolled);
+    }
+
+    handle_roll_res(message) {
+        let curr_player = message.curr_player;
+        let next_player = message.next_player;
+        let steps = message.steps;
+        let new_pos = message.new_pos;
+        let event_msg = message.result;
+        let roll_res_msg = this.players[curr_player].fullName + "gets a roll result" + steps.toString();
+        setTimeout(function(){
+            this.showModal(curr_player, roll_res_msg, []);
+        }, 1500);
+
+        this.board_controller.movePlayer(curr_player, new_pos);
+        if (message.is_option === "true") {
+            let buttons = [];
+            buttons.append({
+                text: "confirm",
+                callback: this.confirm_decision()
+            });
+            buttons.append({
+                text: "cancel",
+                callback: this.cancel_decision()
+            });
+            this.showModal(curr_player, event_msg, buttons);
+        }
+        else {
+            if (message.is_cash_change === "true") {
+                 setTimeout(function(){
+                     this.showModal(curr_player, event_msg, []);
+                 }, 1500);
+                 let cash = message.curr_cash;
+                 // TODO: update the cash amount of all player
+            }
+            else if (message.new_event === "true") {
+                setTimeout(function(){
+                     this.showModal(curr_player, event_msg, []);
+                 }, 1500);
+            }
+            this.changePlayer(next_player, this.onDiceRolled());
+        }
+
+
+    }
+
+    handle_buy_land(message) {
+        let curr_player = message.curr_player;
+        let curr_cash = message.curr_cash;
+        let tile_id = message.tile_id;
+        // TODO: update the cash amount of all player
+        // TODO: one player get the land
+
+        let next_player = message.next_player;
+        this.changePlayer(next_player, this.onDiceRolled());
+    }
+
+    handle_construct(message) {
+        let curr_cash = message.curr_cash;
+        let tile_id = message.tile_id;
+        // TODO: update the cash amount of all player
+        if (message.build_type === 0)
+            this.board_controller.addProperty(PropertyManager.PROPERTY_HOUSE, tile_id);
+        else
+            this.board_controller.addProperty(PropertyManager.PROPERTY_HOTEL, tile_id);
+
+        let next_player = message.next_player;
+        this.changePlayer(next_player, this.onDiceRolled());
+    }
+
+    handle_cancel(message) {
+        let next_player = message.next_player;
+        this.changePlayer(next_player, this.onDiceRolled());
+    }
+
+    confirm_decision() {
+        this.socket.send(JSON.stringify({
+            action: "confirm_decision",
+            hostname: this.hostName,
+        }));
+        this.hideModal();
+    }
+
+    cancel_decision() {
+        this.socket.send(JSON.stringify({
+            action: "cancel_decision",
+            hostname: this.hostName,
+        }))
+        this.hideModal();
     }
 }
 

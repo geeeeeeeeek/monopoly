@@ -1,0 +1,1 @@
+source ./web/bin/activate
