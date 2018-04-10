@@ -1,14 +1,23 @@
 # Building class
 import unittest
 
-#immutable
+RATIO_RENT_TO_PRICE_FOR_HOUSE = 4
+RATIO_RENT_TO_PRICE_FOR_HOTEL = 2
+
+HOTEL_CONSTRUCTION_COST = 150
+HOUSE_CONSTRUCTION_COST = 100
+
+START_REWARD = 200
+
+
+# immutable
 class Building(object):
-    land_index = None
-    building_type = None
-    price = 0
-    description = "Empty Building"
-    id = 0
-    owner = None
+    # land_index = None
+    # building_type = None
+    # price = 0
+    # description = "Empty Building"
+    # id = 0
+    # owner = None
 
     def __init__(self, id, land_index, building_type, price, description,
                  owner):
@@ -44,11 +53,19 @@ class Building(object):
         return not self.__eq__(other)
 
 
-def test_answer():
-    b = Building(1,1,1,1)
-    assert 1 == b.get_price()
+class BuildingType(object):
+    HOUSE = 0
+    HOTEL = 1
+    NOTHING = 2
+
+
+# def test_answer():
+#     b = Building(1, 1, 1, 1)
+#     assert 1 == b.get_price()
+
 
 if __name__ == '__main__':
+    pass
     # unittest.main()
-    test_answer()
+    # test_answer()
     # print b.get_description()
