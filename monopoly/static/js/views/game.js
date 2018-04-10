@@ -190,7 +190,7 @@ class GameView {
                <button class="large-button" id="modal-button-${i}">${buttons[i].text}</button>
             `;
 
-            document.getElementById(`modal-button-${i}`).addEventListener("click", buttons[i].callback.bind(this))
+            document.getElementById(`modal-button-${i}`).addEventListener("click", buttons[i].callback)
         }
 
         this.$modalCard.classList.remove("hidden");
@@ -218,40 +218,44 @@ class GameView {
         let steps = message.steps;
         let newPos = message.new_pos;
         let eventMsg = message.result;
-        let rollResMsg = this.players[currPlayer].fullName + "gets a roll result" + steps.toString();
-        setTimeout(function () {
-            this.showModal(currPlayer, rollResMsg, []);
-        }, 1500);
-
-        this.gameController.movePlayer(currPlayer, newPos);
-        if (message.is_option === "true") {
-            let buttons = [];
-            buttons.append({
-                text: "confirm",
-                callback: this.confirm_decision()
-            });
-            buttons.append({
-                text: "cancel",
-                callback: this.cancel_decision()
-            });
-            this.showModal(currPlayer, eventMsg, buttons);
-        }
-        else {
-            if (message.is_cash_change === "true") {
-                setTimeout(function () {
-                    this.showModal(currPlayer, eventMsg, []);
-                }, 1500);
-                let cash = message.curr_cash;
-                this.changeCashAmount(cash);
+        let rollResMsg = this.players[currPlayer].userName + " gets a roll result " + steps.toString();
+        this.showModal(currPlayer, rollResMsg, []);
+        setTimeout(() => {
+            this.hideModal();
+            this.gameController.movePlayer(currPlayer, newPos);
+            if (message.is_option === "true") {
+                // debugger;
+                let buttons = [];
+                if (this.myPlayerIndex === currPlayer) {
+                    buttons.push({
+                        text: "confirm",
+                        callback: this.confirm_decision.bind(this)
+                    });
+                    buttons.push({
+                        text: "cancel",
+                        callback: this.cancel_decision.bind(this)
+                    });
+                }
+                this.showModal(currPlayer, eventMsg, buttons);
             }
-            else if (message.new_event === "true") {
-                setTimeout(function () {
+            else {
+                if (message.is_cash_change === "true") {
                     this.showModal(currPlayer, eventMsg, []);
-                }, 1500);
+                    setTimeout(() => {
+                        this.hideModal();
+                        let cash = message.curr_cash;
+                        this.changeCashAmount(cash);
+                    }, 2000);
+                }
+                else if (message.new_event === "true") {
+                    this.showModal(currPlayer, eventMsg, []);
+                    setTimeout(() => {
+                        this.hideModal();
+                        this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
+                    }, 2000);
+                }
             }
-            this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
-        }
-
+        }, 2000);
 
     }
 
