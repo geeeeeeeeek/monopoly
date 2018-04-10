@@ -148,7 +148,7 @@ class Game(object):
                     rewarded_player.add_money(val)
 
             elif move_result_type == MoveResultType.REWARD:
-                self.get_current_player().reward_money(val)
+                self.get_current_player().add_money(val)
 
             elif move_result_type == MoveResultType.STOP_ROUND:
                 self.get_current_player().add_one_stop()

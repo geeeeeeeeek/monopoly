@@ -44,9 +44,6 @@ class Player(object):
     def deduct_money(self, val):
         self._money -= val
 
-    def reward_money(self, val):
-        self._money += val
-
     def get_stop_num(self):
         return self._remaining_stop
 
