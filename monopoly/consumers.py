@@ -34,7 +34,7 @@ def ws_add(message):
     # elif 'start' in mypath:
     #     ws_connect_for_start(message)
     elif 'game' in mypath:
-        ws_connect_for_game(message, rooms, games, Group)
+        ws_connect_for_game(message, rooms, games)
 
 
 @channel_session_user_from_http
@@ -80,11 +80,11 @@ def ws_message(message):
     if action == "start":
         handle_start(hostname)
     if action == "roll":
-        handle_roll(hostname, games, Group)
+        handle_roll(hostname, games)
     if action == "confirm_decision":
-        handle_confirm_decision(hostname, games, Group)
+        handle_confirm_decision(hostname, games)
     if action == "cancel_decision":
-        handle_cancel_decision(hostname, games, Group)
+        handle_cancel_decision(hostname, games)
 
 
 # @login_required
@@ -142,4 +142,5 @@ def handle_start(hostname):
     Group(hostname).send({
         "text": build_start_msg()
     })
+    print len(games)
     print "start finish"
