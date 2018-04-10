@@ -17,7 +17,6 @@ class GameView {
         this.diceMessage = document.getElementById("dice-message").innerHTML;
         this.$usersContainer = document.getElementById("users-container");
 
-        this.$cashCardAmount = document.querySelector("#cash-card .card-content-container");
         this.$modalCard = document.getElementById("modal-card");
         this.$modalAvatar = document.getElementById("modal-user-avatar");
         this.$modalMessage = document.getElementById("modal-message-container");
@@ -31,7 +30,7 @@ class GameView {
         //         this.$chatCard.classList.add("hidden");
         //     }
         // });
-        
+
         this.initBoard();
     }
 
@@ -83,6 +82,10 @@ class GameView {
             this.$usersContainer.innerHTML += `
                 <div id="user-group-${i}" class="user-group">
                     <img class="user-avatar" src="${players[i].avatar}">
+                    <span class="user-cash">
+                        <div class="monopoly-cash">M</div>
+                        <div class="user-cash-num">1500</div>
+                    </span>
                     <img class="user-role" src="/static/images/player_${i}.png">
                 </div>`;
         }
@@ -90,10 +93,13 @@ class GameView {
 
     /*
     * Change the cash balance
-    * amount: int
+    * amounts: [int]
     * */
-    changeCashAmount(amount) {
-        this.$cashCardAmount.innerHTML = amount;
+    changeCashAmount(amounts) {
+        for (let i in amounts) {
+            const $cashAmount = document.querySelector(`#user-group-${i} .user-cash-num`);
+            $cashAmount.innerText = amounts[i];
+        }
     }
 
     /*
