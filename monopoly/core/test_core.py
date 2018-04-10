@@ -53,6 +53,7 @@ def test3():
     print move_result
     print 'success test3'
 
+
 # test the first player did not buy, the second buy
 def test4():
     print "new test, step num is: ", 5
@@ -207,6 +208,58 @@ def test8():
     print 'successful test8'
 
 
+# go to the first grid
+def test9():
+    print "new test---test9----"
+    game = Game(1)
+    steps, move_result = game.roll(20)
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print "steps: ", steps
+    print move_result
+    game.make_decision(move_result)
+    money = game.get_current_player().get_money()
+    steps, move_result = game.roll(21)
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print 'money', game.get_current_player().get_money()
+    assert money + 200 == game.get_current_player().get_money()
+
+    print 'successful test9'
+
+# just roll a random
+def test10():
+    print "new test---test10----"
+    game = Game(1)
+    steps, move_result = game.roll()
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print "steps: ", steps
+    print move_result
+    game.make_decision(move_result)
+    print 'successful test10'
+
+
+# go to the first grid
+def test11():
+    print "new test---test11----"
+    game = Game(1)
+    money = game.get_current_player().get_money()
+    print money
+    steps, move_result = game.roll(40)
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print "steps: ", steps
+    print move_result
+    game.make_decision(move_result)
+    assert money + 200 == game.get_current_player().get_money()
+
+    print 'successful test9'
+
 def test_suite():
     for i in xrange(1, 12):
         testing(i)
@@ -217,6 +270,9 @@ def test_suite():
     test6()
     test7()
     test8()
+    test9()
+    test10()
+    test11()
 
 
 if __name__ == "__main__":
