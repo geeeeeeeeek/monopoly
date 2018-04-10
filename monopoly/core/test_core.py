@@ -195,7 +195,6 @@ def test8():
     assert money == game.get_player(0).get_money() + \
            HOUSE_CONSTRUCTION_COST
     print 'money', game.get_current_player().get_money()
-    #
     print 'money of player2', game.get_player(1).get_money()
     steps, move_result = game.roll(41)
     game.make_decision(move_result)
