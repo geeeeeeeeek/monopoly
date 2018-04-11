@@ -1,4 +1,5 @@
 # Project
+*.imi
 *.ini
 migrations
 db.sqlite3
