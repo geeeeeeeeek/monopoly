@@ -63,22 +63,15 @@ class GameView {
     }
 
     handleStatusChange(message) {
+        const messageHandlers = {
+            "init": this.handleInit,
+            "roll_res": this.handleRollRes,
+            "buy_land": this.handleBuyLand,
+            "construct": this.handleConstruct,
+            "cancel_decision": this.handleCancel
+        };
 
-        if (message.action === "init") {
-            this.handle_init(message);
-        }
-        else if (message.action === "roll_res") {
-            this.handle_roll_res(message);
-        }
-        else if (message.action === "buy_land") {
-            this.handle_buy_land(message);
-        }
-        else if (message.action === "construct") {
-            this.handle_construct(message);
-        }
-        else if (message.action === "cancel_decision") {
-            this.handle_cancel(message);
-        }
+        messageHandlers[message.action].bind(this)(message);
     }
 
     /*
@@ -186,11 +179,13 @@ class GameView {
         this.$modalButtons.innerHTML = "";
 
         for (let i in buttons) {
-            this.$modalButtons.innerHTML += `
-               <button class="large-button" id="modal-button-${i}">${buttons[i].text}</button>
-            `;
+            let button = document.createElement("button");
+            button.classList.add("large-button");
+            button.id = `modal-button-${i}`;
+            button.innerText = buttons[i].text;
 
-            document.getElementById(`modal-button-${i}`).addEventListener("click", buttons[i].callback)
+            button.addEventListener("click", buttons[i].callback);
+            this.$modalButtons.appendChild(button);
         }
 
         this.$modalCard.classList.remove("hidden");
@@ -203,7 +198,7 @@ class GameView {
         this.$modalCard.classList.add("hidden");
     }
 
-    handle_init(message) {
+    handleInit(message) {
         // debugger;
         let players = message.players;
         let changeCash = message.changeCash;
@@ -212,7 +207,7 @@ class GameView {
         this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
     }
 
-    handle_roll_res(message) {
+    handleRollRes(message) {
         let currPlayer = message.curr_player;
         let nextPlayer = message.next_player;
         let steps = message.steps;
@@ -220,25 +215,20 @@ class GameView {
         let eventMsg = message.result;
         let rollResMsg = this.players[currPlayer].userName + " gets a roll result " + steps.toString();
         this.showModal(currPlayer, rollResMsg, []);
-        setTimeout(() => {
+
+        const showDecisionModal = () => {
             this.hideModal();
             this.gameController.movePlayer(currPlayer, newPos);
             if (message.is_option === "true") {
-                // debugger;
-                let buttons = [];
-                if (this.myPlayerIndex === currPlayer) {
-                    buttons.push({
-                        text: "confirm",
-                        callback: this.confirm_decision.bind(this)
-                    });
-                    buttons.push({
-                        text: "cancel",
-                        callback: this.cancel_decision.bind(this)
-                    });
-                }
+                const buttons = (this.myPlayerIndex === currPlayer) ? [{
+                    text: "Yes",
+                    callback: this.confirmDecision.bind(this)
+                }, {
+                    text: "No",
+                    callback: this.cancelDecision.bind(this)
+                }] : [];
                 this.showModal(currPlayer, eventMsg, buttons);
-            }
-            else {
+            } else {
                 if (message.is_cash_change === "true") {
                     this.showModal(currPlayer, eventMsg, []);
                     setTimeout(() => {
@@ -246,8 +236,7 @@ class GameView {
                         let cash = message.curr_cash;
                         this.changeCashAmount(cash);
                     }, 2000);
-                }
-                else if (message.new_event === "true") {
+                } else if (message.new_event === "true") {
                     this.showModal(currPlayer, eventMsg, []);
                     setTimeout(() => {
                         this.hideModal();
@@ -255,11 +244,12 @@ class GameView {
                     }, 2000);
                 }
             }
-        }, 2000);
+        };
+        setTimeout(showDecisionModal.bind(this), 2000);
 
     }
 
-    handle_buy_land(message) {
+    handleBuyLand(message) {
         const {curr_player, curr_cash, tile_id} = message;
 
         this.changeCashAmount(curr_cash);
@@ -269,7 +259,7 @@ class GameView {
         this.changePlayer(next_player, this.onDiceRolled.bind(this));
     }
 
-    handle_construct(message) {
+    handleConstruct(message) {
         let curr_cash = message.curr_cash;
         let tile_id = message.tile_id;
         this.changeCashAmount(curr_cash);
@@ -281,22 +271,22 @@ class GameView {
         this.changePlayer(message.next_player, this.onDiceRolled.bind(this));
     }
 
-    handle_cancel(message) {
+    handleCancel(message) {
         let next_player = message.next_player;
         this.changePlayer(next_player, this.onDiceRolled.bind(this));
     }
 
-    confirm_decision() {
+    confirmDecision() {
         this.socket.send(JSON.stringify({
-            action: "confirm_decision",
+            action: "confirmDecision",
             hostname: this.hostName,
         }));
         this.hideModal();
     }
 
-    cancel_decision() {
+    cancelDecision() {
         this.socket.send(JSON.stringify({
-            action: "cancel_decision",
+            action: "cancelDecision",
             hostname: this.hostName,
         }));
         this.hideModal();
