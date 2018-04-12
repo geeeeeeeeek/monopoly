@@ -26,9 +26,9 @@ class GameView {
         // this.$chatSwitch.addEventListener("click", () => {
         //     this.isChatShown = !this.isChatShown;
         //     if (this.isChatShown) {
-        //         this.$chatCard.classList.remove("hidden");
+        //         this.$chatCard.classList.remove("modal-hidden");
         //     } else {
-        //         this.$chatCard.classList.add("hidden");
+        //         this.$chatCard.classList.add("modal-hidden");
         //     }
         // });
 
@@ -197,6 +197,7 @@ class GameView {
             }
 
             this.$modalCard.classList.remove("hidden");
+            this.$modalCard.classList.remove("modal-hidden");
 
             // hide modal after a period of time if displayTime is set
             if (displayTime !== undefined && displayTime > 0) {
@@ -214,7 +215,7 @@ class GameView {
     * Hide the modal
     * */
     hideModal() {
-        this.$modalCard.classList.add("hidden");
+        this.$modalCard.classList.add("modal-hidden");
     }
 
     handleInit(message) {

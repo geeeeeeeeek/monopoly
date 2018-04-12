@@ -44,6 +44,7 @@ a {
     opacity: 0.90;
     display: flex;
     animation: fadein 0.8s;
+    transition: opacity 0.8s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .large-button {
@@ -184,4 +185,8 @@ a {
 
 .hidden {
     display: none;
+}
+
+.modal-hidden {
+    opacity: 0;
 }
