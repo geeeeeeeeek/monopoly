@@ -23,25 +23,35 @@ class BoardController {
     }
 
     drawPlayers(number) {
-        for (let i = 0; i < number; i++) {
-            this.players.push(new Player({
-                index: i,
-                modelUrl: `${this.assetsUrl}/players/${i}/model.json`,
-                scene: this.scene,
-                initTileId: 0,
-                initPos: this.boardToWorld({
-                    tileId: 0,
+        let promiseList = [];
+        return new Promise((resolve => {
+            for (let i = 0; i < number; i++) {
+                let player = new Player({
+                    index: i,
+                    modelUrl: `${this.assetsUrl}/players/${i}/model.json`,
+                    scene: this.scene,
+                    initTileId: 0,
+                    initPos: this.boardToWorld({
+                        tileId: 0,
+                        type: BoardController.MODEL_PLAYER,
+                        total: number,
+                        index: i
+                    }),
+                });
+
+                this.board.updateTileInfo(0, {
                     type: BoardController.MODEL_PLAYER,
-                    total: number,
-                    index: i
-                })
-            }));
-            this.board.updateTileInfo(0, {
-                type: BoardController.MODEL_PLAYER,
-                action: "add",
-                playerIndex: i
-            });
-        }
+                    action: "add",
+                    playerIndex: i
+                });
+                this.players.push(player);
+                promiseList.push(player.load());
+            }
+
+            Promise.all(promiseList).then(() => {
+                resolve();
+            })
+        }))
     }
 
     movePlayer(index, newTileId) {
@@ -193,13 +203,11 @@ class BoardController {
 
     initObjects(callback) {
         let loader = new THREE.JSONLoader();
-        let totalObjectsToLoad = 1; // board
-        let loadedObjects = 0; // count the loaded pieces
+        let totalObjectsToLoad = 3; // board
+        let loadedObjects = 0;
 
-        // checks if all the objects have been loaded
-        let checkLoad = () => {
-            loadedObjects++;
-
+        const checkLoading = () => {
+            loadedObjects += 1;
             if (loadedObjects === totalObjectsToLoad && callback) {
                 callback();
             }
@@ -212,7 +220,7 @@ class BoardController {
 
             this.scene.add(this.boardModel);
 
-            checkLoad();
+            checkLoading();
         });
 
         // add ground
@@ -240,6 +248,8 @@ class BoardController {
             let request = new XMLHttpRequest();
             request.open("GET", `${this.assetsUrl}/${type}/model.json`, false);
             request.send(null);
+
+            checkLoading();
             return JSON.parse(request.responseText);
         };
 
