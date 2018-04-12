@@ -252,8 +252,11 @@ class GameView {
                 await this.showModal(currPlayer, eventMsg, [], 2);
                 let cash = message.curr_cash;
                 this.changeCashAmount(cash);
+                this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else if (message.new_event === "true") {
                 await this.showModal(currPlayer, eventMsg, [], 2);
+                this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
+            } else {
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             }
         }
@@ -274,7 +277,7 @@ class GameView {
         let curr_cash = message.curr_cash;
         let tile_id = message.tile_id;
         this.changeCashAmount(curr_cash);
-        if (message.build_type === 0) {
+        if (message.build_type === "house") {
             this.gameController.addProperty(PropertyManager.PROPERTY_HOUSE, tile_id);
         } else {
             this.gameController.addProperty(PropertyManager.PROPERTY_HOTEL, tile_id);
@@ -289,7 +292,7 @@ class GameView {
 
     confirmDecision() {
         this.socket.send(JSON.stringify({
-            action: "confirmDecision",
+            action: "confirm_decision",
             hostname: this.hostName,
         }));
         this.hideModal();
@@ -297,7 +300,7 @@ class GameView {
 
     cancelDecision() {
         this.socket.send(JSON.stringify({
-            action: "cancelDecision",
+            action: "cancel_decision",
             hostname: this.hostName,
         }));
         this.hideModal();
