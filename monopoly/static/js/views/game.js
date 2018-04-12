@@ -57,9 +57,12 @@ class GameView {
     }
 
     onDiceRolled() {
-        this.socket.send(JSON.stringify({
-            action: "roll"
-        }));
+        const notifyServer = () => {
+            this.socket.send(JSON.stringify({
+                action: "roll"
+            }));
+        };
+        setTimeout(notifyServer, 2000);
     }
 
     handleStatusChange(message) {
@@ -164,31 +167,47 @@ class GameView {
     * buttons: [{
     *   text: string, // "button text"
     *   callback: function
-    * }]
+    * }],
+    * displayTime: int // seconds to display
     * */
-    showModal(playerIndex, message, buttons) {
-        this.$modalAvatar.src = this.players[playerIndex].avatar;
+    showModal(playerIndex, message, buttons, displayTime) {
+        return new Promise(resolve => {
+            this.$modalAvatar.src = this.players[playerIndex].avatar;
 
-        if (playerIndex === this.myPlayerIndex) {
-            this.$modalAvatar.classList.add("active");
-        } else {
-            this.$modalAvatar.classList.remove("active");
-        }
+            if (playerIndex === this.myPlayerIndex) {
+                this.$modalAvatar.classList.add("active");
+            } else {
+                this.$modalAvatar.classList.remove("active");
+            }
 
-        this.$modalMessage.innerHTML = message;
-        this.$modalButtons.innerHTML = "";
+            this.$modalMessage.innerHTML = message;
+            this.$modalButtons.innerHTML = "";
 
-        for (let i in buttons) {
-            let button = document.createElement("button");
-            button.classList.add("large-button");
-            button.id = `modal-button-${i}`;
-            button.innerText = buttons[i].text;
+            for (let i in buttons) {
+                let button = document.createElement("button");
+                button.classList.add("large-button");
+                button.id = `modal-button-${i}`;
+                button.innerText = buttons[i].text;
 
-            button.addEventListener("click", buttons[i].callback);
-            this.$modalButtons.appendChild(button);
-        }
+                button.addEventListener("click", () => {
+                    buttons[i].callback();
+                    resolve();
+                });
+                this.$modalButtons.appendChild(button);
+            }
 
-        this.$modalCard.classList.remove("hidden");
+            this.$modalCard.classList.remove("hidden");
+
+            // hide modal after a period of time if displayTime is set
+            if (displayTime !== undefined && displayTime > 0) {
+                setTimeout(() => {
+                    this.hideModal();
+                    resolve();
+                }, displayTime * 1000);
+            } else {
+                resolve();
+            }
+        });
     }
 
     /*
@@ -207,45 +226,37 @@ class GameView {
         this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
     }
 
-    handleRollRes(message) {
+    async handleRollRes(message) {
         let currPlayer = message.curr_player;
         let nextPlayer = message.next_player;
         let steps = message.steps;
         let newPos = message.new_pos;
         let eventMsg = message.result;
         let rollResMsg = this.players[currPlayer].userName + " gets a roll result " + steps.toString();
-        this.showModal(currPlayer, rollResMsg, []);
 
-        const showDecisionModal = () => {
-            this.hideModal();
-            this.gameController.movePlayer(currPlayer, newPos);
-            if (message.is_option === "true") {
-                const buttons = (this.myPlayerIndex === currPlayer) ? [{
-                    text: "Yes",
-                    callback: this.confirmDecision.bind(this)
-                }, {
-                    text: "No",
-                    callback: this.cancelDecision.bind(this)
-                }] : [];
-                this.showModal(currPlayer, eventMsg, buttons);
-            } else {
-                if (message.is_cash_change === "true") {
-                    this.showModal(currPlayer, eventMsg, []);
-                    setTimeout(() => {
-                        this.hideModal();
-                        let cash = message.curr_cash;
-                        this.changeCashAmount(cash);
-                    }, 2000);
-                } else if (message.new_event === "true") {
-                    this.showModal(currPlayer, eventMsg, []);
-                    setTimeout(() => {
-                        this.hideModal();
-                        this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
-                    }, 2000);
-                }
+        await this.showModal(currPlayer, rollResMsg, [], 2);
+
+        this.gameController.movePlayer(currPlayer, newPos);
+
+        if (message.is_option === "true") {
+            const buttons = (this.myPlayerIndex === currPlayer) ? [{
+                text: "Yes",
+                callback: this.confirmDecision.bind(this)
+            }, {
+                text: "No",
+                callback: this.cancelDecision.bind(this)
+            }] : [];
+            this.showModal(currPlayer, eventMsg, buttons);
+        } else {
+            if (message.is_cash_change === "true") {
+                await this.showModal(currPlayer, eventMsg, [], 2);
+                let cash = message.curr_cash;
+                this.changeCashAmount(cash);
+            } else if (message.new_event === "true") {
+                await this.showModal(currPlayer, eventMsg, [], 2);
+                this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             }
-        };
-        setTimeout(showDecisionModal.bind(this), 2000);
+        }
 
     }
 
