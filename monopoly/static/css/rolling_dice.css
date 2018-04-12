@@ -103,7 +103,8 @@
     height: 100px;
     align-self: center;
     width: 200px;
-    padding: 80px 0;
+    padding: 20px 0;
+    margin-right: 10px;
 }
 
 .dice span {

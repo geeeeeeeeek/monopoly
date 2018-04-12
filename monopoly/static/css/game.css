@@ -30,16 +30,16 @@
     display: flex;
 }
 
-.user-group.active .user-avatar {
-    border-color: #7cbdf9;
-    box-shadow: 0 0 20px #5db0fd;
+.user-group.active {
+    border-color: #4a9fef;
+    box-shadow: 0 0 20px #315677;
 }
 
 .user-cash {
     line-height: 54px;
     font-size: 30px;
     font-family: monospace;
-    margin: 0 13px 0 5px;
+    margin: 0 6px;
     color: #795548;
     display: flex;
 }
@@ -117,7 +117,7 @@
     text-align: center;
     font-size: 32px;
     color: #0084ff;
-    margin-bottom: 10px;
+    margin-bottom: 40px;
 }
 
 #chat-message-container {
@@ -179,7 +179,6 @@
 }
 
 #modal-user-avatar.active {
-    border-color: #7cbdf9;
     box-shadow: 0 0 40px #5db0fd;
 }
 
