@@ -206,8 +206,8 @@ class GameView {
 
             // hide modal after a period of time if displayTime is set
             if (displayTime !== undefined && displayTime > 0) {
-                setTimeout(() => {
-                    this.hideModal();
+                setTimeout(async () => {
+                    await this.hideModal(true);
                     resolve();
                 }, displayTime * 1000);
             } else {
@@ -219,8 +219,17 @@ class GameView {
     /*
     * Hide the modal
     * */
-    hideModal() {
-        this.$modalCard.classList.add("modal-hidden");
+    hideModal(delayAfter) {
+        return new Promise((resolve => {
+            this.$modalCard.classList.add("modal-hidden");
+            if (delayAfter === true) {
+                setTimeout(() => {
+                    resolve();
+                }, 500);
+            } else {
+                resolve();
+            }
+        }))
     }
 
     async handleInit(message) {
@@ -229,11 +238,9 @@ class GameView {
         let nextPlayer = message.nextPlayer;
         this.initGame(players, changeCash);
 
-        this.gameLoadingPromise.then(() => {
-            this.hideModal();
-
-            this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
-        });
+        await this.gameLoadingPromise;
+        await this.hideModal(true);
+        this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
     }
 
     async handleRollRes(message) {
@@ -297,20 +304,20 @@ class GameView {
         this.changePlayer(next_player, this.onDiceRolled.bind(this));
     }
 
-    confirmDecision() {
+    async confirmDecision() {
         this.socket.send(JSON.stringify({
             action: "confirmDecision",
             hostname: this.hostName,
         }));
-        this.hideModal();
+        await this.hideModal(true);
     }
 
-    cancelDecision() {
+    async cancelDecision() {
         this.socket.send(JSON.stringify({
             action: "cancelDecision",
             hostname: this.hostName,
         }));
-        this.hideModal();
+        await this.hideModal(true);
     }
 }
 
