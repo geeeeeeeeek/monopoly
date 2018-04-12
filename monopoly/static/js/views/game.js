@@ -32,6 +32,7 @@ class GameView {
         //     }
         // });
 
+        this.showModal(null, "Loading game resources...", []);
         this.initBoard();
     }
 
@@ -115,7 +116,7 @@ class GameView {
                 </div>`;
         }
 
-        this.gameController.addPlayer(players.length);
+        this.gameLoadingPromise = this.gameController.addPlayer(players.length);
     }
 
     /*
@@ -172,7 +173,11 @@ class GameView {
     * */
     showModal(playerIndex, message, buttons, displayTime) {
         return new Promise(resolve => {
-            this.$modalAvatar.src = this.players[playerIndex].avatar;
+            if (playerIndex === null) {
+                this.$modalAvatar.src = GameView.DEFAULT_AVATAR;
+            } else {
+                this.$modalAvatar.src = this.players[playerIndex].avatar;
+            }
 
             if (playerIndex === this.myPlayerIndex) {
                 this.$modalAvatar.classList.add("active");
@@ -218,13 +223,17 @@ class GameView {
         this.$modalCard.classList.add("modal-hidden");
     }
 
-    handleInit(message) {
-        // debugger;
+    async handleInit(message) {
         let players = message.players;
         let changeCash = message.changeCash;
         let nextPlayer = message.nextPlayer;
         this.initGame(players, changeCash);
-        this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
+
+        this.gameLoadingPromise.then(() => {
+            this.hideModal();
+
+            this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
+        });
     }
 
     async handleRollRes(message) {
@@ -309,18 +318,4 @@ window.onload = () => {
     new GameView();
 };
 
-class TestGameView {
-    static stubPlayers() {
-        return [
-            {
-                fullname: "Zhongyi Tong",
-                userName: "ztong",
-                avatar: "/static/images/favicon.png"
-            }, {
-                fullname: "Robot",
-                userName: "robot",
-                avatar: ""
-            }
-        ]
-    }
-}
+GameView.DEFAULT_AVATAR = "/static/images/favicon.png";

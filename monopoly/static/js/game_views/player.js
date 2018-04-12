@@ -7,34 +7,38 @@ class Player {
 
         this.scene = scene;
         this.index = index;
-        this.initModel(modelUrl, initPos, initTileId);
+
+        this.modelUrl = modelUrl;
+        this.initPos = initPos;
+        this.tileId = initTileId;
     }
 
-    initModel(modelUrl, initPos, initTileId) {
-        this.tileId = initTileId;
-        let loader = new THREE.ObjectLoader();
-        loader.load(
-            modelUrl,
+    load() {
+        return new Promise((resolve => {
+            new THREE.ObjectLoader().load(
+                this.modelUrl,
 
-            (obj) => {
-                // Add the loaded object to the scene
-                this.model = obj;
-                this.model.position.set(initPos[0], Player.ELEVATION[this.index], initPos[2]);
-                this.model.scale.set(...Player.SCALES[this.index]);
-                this.scene.add(this.model);
-            },
+                (obj) => {
+                    // Add the loaded object to the scene
+                    this.model = obj;
+                    this.model.position.set(this.initPos[0], Player.ELEVATION[this.index], this.initPos[2]);
+                    this.model.scale.set(...Player.SCALES[this.index]);
+                    this.scene.add(this.model);
+                },
 
-            // onProgress callback
-            (xhr) => {
-                if (xhr.loaded === xhr.total) {
-                    console.log(modelUrl + " loaded!")
-                }
-            },
+                // onProgress callback
+                (xhr) => {
+                    if (xhr.loaded === xhr.total) {
+                        console.log(this.modelUrl + " loaded!")
+                        resolve();
+                    }
+                },
 
-            // onError callback
-            (err) => {
-                console.error(err);
-            });
+                // onError callback
+                (err) => {
+                    console.error(err);
+                });
+        }))
     }
 
     advanceTo(newTileId, newPos) {

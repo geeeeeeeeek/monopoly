@@ -18,7 +18,7 @@ class GameController {
     }
 
     addPlayer(count) {
-        this.boardController.drawPlayers(count);
+        return this.boardController.drawPlayers(count);
     }
 
     movePlayer(playerIndex, newTileId) {
