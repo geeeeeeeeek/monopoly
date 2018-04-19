@@ -29,7 +29,12 @@
         <span id="invitation-note">Invite your friends to join the game by sharing the link.</span>
         <div id="invitation-container">
             <input id="invitation-url" readonly value="" placeholder="Generating shared link...">
-            <button id="share-invitation" class="large-button">Copy</button>
+            <div class="tooltip">
+                <button id="share-invitation" class="large-button">
+                    <span id="copied-tooltip" class="tooltiptext" >Copied! &#x1F44C;</span>
+                    Copy
+                </button>
+            </div>
         </div>
         {% endif %}
     </div>
