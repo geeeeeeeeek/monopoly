@@ -37,6 +37,12 @@ class JoinView {
         if (this.userName === this.hostName) {
             this.$invitationLink = document.getElementById("invitation-url");
             this.$invitationLink.value = `${window.location.host}/monopoly/join/${this.hostName}`;
+
+            this.$copyTooltip = document.getElementById("copied-tooltip");
+            this.$copyButton = document.getElementById("share-invitation");
+            this.$copyButton.addEventListener("click", () => {
+                this.copyToClipboard();
+            })
         }
     }
 
@@ -81,14 +87,21 @@ class JoinView {
         this.socket.send(JSON.stringify({
             action: "start"
         }));
-
-        // TODO: temporally navigate to game for demo purpose
-        // TODO: need to wait for server to initialize game
-        // this.navigateToGame();
     }
 
     navigateToGame() {
         window.location = `http://${window.location.host}/monopoly/game/${this.hostName}`;
+    }
+
+    copyToClipboard() {
+        let copyText = this.$invitationLink;
+        copyText.select();
+        document.execCommand("Copy");
+
+        this.$copyTooltip.classList.add("shown");
+        setTimeout(() => {
+            this.$copyTooltip.classList.remove("shown");
+        }, 2000);
     }
 }
 
