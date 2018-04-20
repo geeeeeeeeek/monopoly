@@ -4,16 +4,13 @@
 class GameView {
     constructor() {
         this.initComponents();
+        this.audioManager = new AudioManager();
     }
 
     initComponents() {
         this.userName = document.getElementById("username").value;
         this.hostName = document.getElementById("hostname").value;
 
-
-        this.isChatShown = false;
-        this.$chatSwitch = document.getElementById("chat-switch");
-        this.$chatCard = document.getElementById("chat-card");
 
         this.diceMessage = document.getElementById("dice-message").innerHTML;
         this.$usersContainer = document.getElementById("users-container");
@@ -22,15 +19,6 @@ class GameView {
         this.$modalAvatar = document.getElementById("modal-user-avatar");
         this.$modalMessage = document.getElementById("modal-message-container");
         this.$modalButtons = document.getElementById("modal-buttons-container");
-
-        // this.$chatSwitch.addEventListener("click", () => {
-        //     this.isChatShown = !this.isChatShown;
-        //     if (this.isChatShown) {
-        //         this.$chatCard.classList.remove("modal-hidden");
-        //     } else {
-        //         this.$chatCard.classList.add("modal-hidden");
-        //     }
-        // });
 
         this.showModal(null, "Loading game resources...", []);
         this.initBoard();
@@ -54,7 +42,9 @@ class GameView {
         this.socket.onmessage = (event) => {
             const message = JSON.parse(event.data);
             this.handleStatusChange(message);
-        }
+        };
+
+        this.audioManager.play("background");
     }
 
     onDiceRolled() {
@@ -155,6 +145,9 @@ class GameView {
                     document.getElementById("roll").checked = true;
                     document.querySelector("#modal-buttons-container button").disabled = true;
                     document.querySelector("#modal-buttons-container button").innerText = "Hold on...";
+
+                    this.audioManager.play("dice");
+
                     onDiceRolled();
                 }
             }];
@@ -198,6 +191,11 @@ class GameView {
                     buttons[i].callback();
                     resolve();
                 });
+
+                button.addEventListener("mouseover", () => {
+                    this.audioManager.play("hover");
+                });
+
                 this.$modalButtons.appendChild(button);
             }
 
@@ -255,6 +253,8 @@ class GameView {
 
         this.gameController.movePlayer(currPlayer, newPos);
 
+        this.audioManager.play("move");
+
         if (message.is_option === "true") {
             const buttons = (this.myPlayerIndex === currPlayer) ? [{
                 text: "Yes",
@@ -300,6 +300,8 @@ class GameView {
             this.gameController.addProperty(PropertyManager.PROPERTY_HOTEL, tile_id);
         }
         this.changePlayer(message.next_player, this.onDiceRolled.bind(this));
+
+        this.audioManager.play("build");
     }
 
     handleCancel(message) {
@@ -312,6 +314,8 @@ class GameView {
             action: "confirm_decision",
             hostname: this.hostName,
         }));
+
+        this.audioManager.play("cash");
         await this.hideModal(true);
     }
 
