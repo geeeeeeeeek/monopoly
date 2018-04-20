@@ -29,4 +29,8 @@ class GameController {
     addProperty(type, tileId) {
         this.boardController.addProperty(type, tileId);
     }
+
+    resizeBoard() {
+        this.boardController.resize();
+    }
 }
