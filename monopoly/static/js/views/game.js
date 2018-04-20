@@ -145,6 +145,9 @@ class GameView {
                     document.getElementById("roll").checked = true;
                     document.querySelector("#modal-buttons-container button").disabled = true;
                     document.querySelector("#modal-buttons-container button").innerText = "Hold on...";
+
+                    this.audioManager.play("dice");
+
                     onDiceRolled();
                 }
             }];
@@ -188,6 +191,11 @@ class GameView {
                     buttons[i].callback();
                     resolve();
                 });
+
+                button.addEventListener("mouseover", () => {
+                    this.audioManager.play("hover");
+                });
+
                 this.$modalButtons.appendChild(button);
             }
 
@@ -245,6 +253,8 @@ class GameView {
 
         this.gameController.movePlayer(currPlayer, newPos);
 
+        this.audioManager.play("move");
+
         if (message.is_option === "true") {
             const buttons = (this.myPlayerIndex === currPlayer) ? [{
                 text: "Yes",
@@ -290,6 +300,8 @@ class GameView {
             this.gameController.addProperty(PropertyManager.PROPERTY_HOTEL, tile_id);
         }
         this.changePlayer(message.next_player, this.onDiceRolled.bind(this));
+
+        this.audioManager.play("build");
     }
 
     handleCancel(message) {
@@ -302,6 +314,8 @@ class GameView {
             action: "confirm_decision",
             hostname: this.hostName,
         }));
+
+        this.audioManager.play("cash");
         await this.hideModal(true);
     }
 
