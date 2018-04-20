@@ -22,7 +22,7 @@ class BoardController {
         });
     }
 
-    drawPlayers(number) {
+    drawPlayers(number, initPos) {
         let promiseList = [];
         return new Promise((resolve => {
             for (let i = 0; i < number; i++) {
@@ -30,16 +30,16 @@ class BoardController {
                     index: i,
                     modelUrl: `${this.assetsUrl}/players/${i}/model.json`,
                     scene: this.scene,
-                    initTileId: 0,
+                    initTileId: initPos[i],
                     initPos: this.boardToWorld({
-                        tileId: 0,
+                        tileId: initPos[i],
                         type: BoardController.MODEL_PLAYER,
                         total: number,
                         index: i
                     }),
                 });
 
-                this.board.updateTileInfo(0, {
+                this.board.updateTileInfo(initPos[i], {
                     type: BoardController.MODEL_PLAYER,
                     action: "add",
                     playerIndex: i

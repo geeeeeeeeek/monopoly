@@ -77,12 +77,12 @@ class GameView {
     * players: @see initPlayers
     * amount: @see changeCashAmount
     * */
-    initGame(players, amount) {
+    initGame(players, amount, posChange) {
         // Init players
-        this.initPlayers(players);
+        this.initPlayers(players, posChange);
 
         // Init cash amount
-        this.changeCashAmount(amount)
+        this.changeCashAmount(amount);
     }
 
     /*
@@ -93,7 +93,7 @@ class GameView {
     *   avatar: string // user avatar url
     * }]
     * */
-    initPlayers(players) {
+    initPlayers(players, initPos) {
         this.players = players;
         this.currentPlayer = null;
 
@@ -110,7 +110,7 @@ class GameView {
                 </div>`;
         }
 
-        this.gameLoadingPromise = this.gameController.addPlayer(players.length);
+        this.gameLoadingPromise = this.gameController.addPlayer(players.length, initPos);
     }
 
     /*
@@ -238,7 +238,8 @@ class GameView {
         let players = message.players;
         let changeCash = message.changeCash;
         let nextPlayer = message.nextPlayer;
-        this.initGame(players, changeCash);
+        let posChange = message.posChange;
+        this.initGame(players, changeCash, posChange);
 
         await this.gameLoadingPromise;
         await this.hideModal(true);
