@@ -10,12 +10,6 @@ from building import *
 
 
 class Game(object):
-    # _current_player_index = 0
-    # _handlers = []  # done
-    # _players = []  # done
-    # _game_state = None  #
-    # _card_deck = None
-    # _board = None
 
     def __init__(self, player_num):
         assert player_num > 0
@@ -29,13 +23,13 @@ class Game(object):
         self._handlers = []
         self.add_game_change_listner(MonopolyHandler())
 
-    def add_game_change_listner(self, listner):
-        self._handlers.append(listner)
+    def add_game_change_listner(self, handler):
+        self._handlers.append(handler)
 
     def _move(self, steps):
         cur_player = self.get_current_player()
         new_position = (
-                                   cur_player.get_position() + steps) % self._board.get_grid_num()
+                               cur_player.get_position() + steps) % self._board.get_grid_num()
         if new_position < cur_player.get_position():
             self.get_current_player().add_money(START_REWARD)
         land_dest = self._board.get_land(new_position)
@@ -128,7 +122,8 @@ class Game(object):
                 return
         elif move_result_type == MoveResultType.CONSTRUCTION_OPTION:
             construction_land = move_result.get_land().get_content()
-            assert construction_land.get_owner_index() == self._current_player_index
+            assert construction_land.get_owner_index() \
+                   == self._current_player_index
             if move_result.yes is True:
                 self.get_current_player().deduct_money(
                     construction_land.get_next_construction_price())
@@ -224,29 +219,37 @@ class Game(object):
     def get_game_status(self):
         return self._game_state
 
+    # get the total status of the current game
+    # return: return a 4 element tuple:
+    # (players, board, current_player_index,game_state)
     def get_status(self):
-        return (self.get_player_status(), self._board,
-                self._current_player_index, self.get_game_status(),
-                self.get_players())
+        return (self.get_players(), self._board,
+                self._current_player_index, self.get_game_status())
 
     # notifications
     def notify_new_game(self):
-        pass
+        for handler in self._handlers:
+            handler.on_new_game()
 
     def notify_game_ended(self):
-        pass
+        for handler in self._handlers:
+            handler.on_game_ended()
 
     def notify_rolled(self):
-        pass
+        for handler in self._handlers:
+            handler.on_rolled()
 
-    def notify_player_change(self):
-        pass
+    def notify_player_changed(self):
+        for handler in self._handlers:
+            handler.on_player_changed()
 
     def notify_decision_made(self):
-        pass
+        for handler in self._handlers:
+            handler.on_decision_made()
 
     def notify_result_applied(self):
-        pass
+        for handler in self._handlers:
+            handler.on_result_applied()
 
     def notify_error(self, err_msg):
         for handler in self._handlers:
@@ -255,4 +258,22 @@ class Game(object):
 
 class MonopolyHandler(object):
     def on_error(self, err_msg):
+        pass
+
+    def on_new_game(self):
+        pass
+
+    def on_game_ended(self):
+        pass
+
+    def on_rolled(self):
+        pass
+
+    def on_player_changed(self):
+        pass
+
+    def on_decdision_made(self):
+        pass
+
+    def on_result_applied(self):
         pass
