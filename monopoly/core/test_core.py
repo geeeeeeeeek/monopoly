@@ -144,6 +144,7 @@ def test6():
     print '-------round3--------'
     assert game.get_current_player().get_index() == 0
     steps, result = game.roll(7)
+
     print 'player position is', game.get_current_player().get_position()
     game.make_decision(result)
     print 'successful test6'
