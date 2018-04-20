@@ -29,13 +29,13 @@ class Game(object):
         self._handlers = []
         self.add_game_change_listner(MonopolyHandler())
 
-    def add_game_change_listner(self, listner):
-        self._handlers.append(listner)
+    def add_game_change_listner(self, handler):
+        self._handlers.append(handler)
 
     def _move(self, steps):
         cur_player = self.get_current_player()
         new_position = (
-                                   cur_player.get_position() + steps) % self._board.get_grid_num()
+                               cur_player.get_position() + steps) % self._board.get_grid_num()
         if new_position < cur_player.get_position():
             self.get_current_player().add_money(START_REWARD)
         land_dest = self._board.get_land(new_position)
@@ -225,28 +225,34 @@ class Game(object):
         return self._game_state
 
     def get_status(self):
-        return (self.get_player_status(), self._board,
+        return (self.get_player(), self._board,
                 self._current_player_index, self.get_game_status(),
                 self.get_players())
 
     # notifications
     def notify_new_game(self):
-        pass
+        for handler in self._handlers:
+            handler.on_new_game()
 
     def notify_game_ended(self):
-        pass
+        for handler in self._handlers:
+            handler.on_game_ended()
 
     def notify_rolled(self):
-        pass
+        for handler in self._handlers:
+            handler.on_rolled()
 
     def notify_player_change(self):
-        pass
+        for handler in self._handlers:
+            handler.on_player_change()
 
     def notify_decision_made(self):
-        pass
+        for handler in self._handlers:
+            handler.on_decision_made()
 
     def notify_result_applied(self):
-        pass
+        for handler in self._handlers:
+            handler.on_result_applied()
 
     def notify_error(self, err_msg):
         for handler in self._handlers:
