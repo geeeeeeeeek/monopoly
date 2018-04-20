@@ -255,7 +255,7 @@ class GameView {
 
         await this.showModal(currPlayer, rollResMsg, [], 2);
 
-        this.gameController.movePlayer(currPlayer, newPos);
+        await this.gameController.movePlayer(currPlayer, newPos);
 
         this.audioManager.play("move");
 
