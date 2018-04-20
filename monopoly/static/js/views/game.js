@@ -34,6 +34,10 @@ class GameView {
 
             onBoardPainted: this.initWebSocket.bind(this)
         });
+
+        window.addEventListener("resize", () => {
+            this.gameController.resizeBoard();
+        }, false);
     }
 
     initWebSocket() {

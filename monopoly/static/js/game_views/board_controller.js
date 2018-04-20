@@ -269,6 +269,13 @@ class BoardController {
         this.renderer.render(this.scene, this.camera);
     }
 
+    resize() {
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
     boardToWorld(options) {
         const {tileId, type, total, index} = options;
         const pos = Board.tileIdToPos(tileId);
