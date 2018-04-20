@@ -4,16 +4,13 @@
 class GameView {
     constructor() {
         this.initComponents();
+        this.audioManager = new AudioManager();
     }
 
     initComponents() {
         this.userName = document.getElementById("username").value;
         this.hostName = document.getElementById("hostname").value;
 
-
-        this.isChatShown = false;
-        this.$chatSwitch = document.getElementById("chat-switch");
-        this.$chatCard = document.getElementById("chat-card");
 
         this.diceMessage = document.getElementById("dice-message").innerHTML;
         this.$usersContainer = document.getElementById("users-container");
@@ -22,15 +19,6 @@ class GameView {
         this.$modalAvatar = document.getElementById("modal-user-avatar");
         this.$modalMessage = document.getElementById("modal-message-container");
         this.$modalButtons = document.getElementById("modal-buttons-container");
-
-        // this.$chatSwitch.addEventListener("click", () => {
-        //     this.isChatShown = !this.isChatShown;
-        //     if (this.isChatShown) {
-        //         this.$chatCard.classList.remove("modal-hidden");
-        //     } else {
-        //         this.$chatCard.classList.add("modal-hidden");
-        //     }
-        // });
 
         this.showModal(null, "Loading game resources...", []);
         this.initBoard();
@@ -54,7 +42,9 @@ class GameView {
         this.socket.onmessage = (event) => {
             const message = JSON.parse(event.data);
             this.handleStatusChange(message);
-        }
+        };
+
+        this.audioManager.play("background");
     }
 
     onDiceRolled() {
