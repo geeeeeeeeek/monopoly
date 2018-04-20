@@ -239,11 +239,23 @@ class GameView {
         let changeCash = message.changeCash;
         let nextPlayer = message.nextPlayer;
         let posChange = message.posChange;
+        let eventMsg = message.decision;
         this.initGame(players, changeCash, posChange);
 
         await this.gameLoadingPromise;
         await this.hideModal(true);
-        this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
+        if (message.waitDecision === "false") {
+            this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
+        } else {
+            const buttons = (this.myPlayerIndex === nextPlayer) ? [{
+                text: "Yes",
+                callback: this.confirmDecision.bind(this)
+            }, {
+                text: "No",
+                callback: this.cancelDecision.bind(this)
+            }] : [];
+            this.showModal(nextPlayer, eventMsg, buttons);
+        }
     }
 
     async handleRollRes(message) {
