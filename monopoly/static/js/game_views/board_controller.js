@@ -55,23 +55,13 @@ class BoardController {
     }
 
     movePlayer(index, newTileId) {
+        let currTileId = this.players[index].getTileId();
         // Remove previous player position
-        this.board.updateTileInfo(this.players[index].getTileId(), {
+        this.board.updateTileInfo(currTileId, {
             type: BoardController.MODEL_PLAYER,
             action: "remove",
             playerIndex: index
         });
-
-        // move the player
-        const tileInfo = this.board.getTileInfo(newTileId);
-        const tilePlayerCount = tileInfo.players.reduce((a, b) => a + b, 0);
-
-        this.players[index].advanceTo(newTileId, this.boardToWorld({
-            tileId: newTileId,
-            type: BoardController.MODEL_PLAYER,
-            total: tilePlayerCount + 1,
-            index: tilePlayerCount
-        }));
 
         // Register new player position
         this.board.updateTileInfo(newTileId, {
@@ -79,6 +69,32 @@ class BoardController {
             action: "add",
             playerIndex: index
         });
+
+        // Animation: move the player
+        return new Promise((resolve => {
+            let playerMovementInterval = setInterval(() => {
+                currTileId += 1;
+
+                const tileInfo = this.board.getTileInfo(currTileId);
+                const tilePlayerCount = tileInfo.players.reduce((a, b) => a + b, 0);
+
+                this.players[index].advanceTo(currTileId, this.boardToWorld({
+                    tileId: currTileId,
+                    type: BoardController.MODEL_PLAYER,
+                    total: tilePlayerCount + 1,
+                    index: tilePlayerCount
+                }));
+
+                if (currTileId === newTileId) {
+                    clearInterval(playerMovementInterval);
+                    resolve();
+                }
+
+                if (currTileId === BoardController.TILE_MAX) {
+                    currTileId -= BoardController.TILE_MAX + 1;
+                }
+            }, 200);
+        }));
     }
 
     addProperty(type, tileId) {
@@ -346,3 +362,4 @@ BoardController.MODEL_PLAYER_OFFSET = 0.2;
 BoardController.MODEL_PLAYER_MARGIN = 0.1;
 BoardController.MODEL_PROPERTY_TOP_MARGIN = 0.33;
 BoardController.MODEL_PROPERTY_LEFT_MARGIN = 0.25;
+BoardController.TILE_MAX = 39;
