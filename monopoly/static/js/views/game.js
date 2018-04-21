@@ -109,7 +109,7 @@ class GameView {
         for (let i = 0; i < players.length; i++) {
             if (this.userName === players[i].userName) this.myPlayerIndex = i;
             this.$usersContainer.innerHTML += `
-                <div id="user-group-${i}" class="user-group">
+                <div id="user-group-${i}" class="user-group" style="background: ${GameView.PLAYERS_COLORS[i]}">
                     <img class="user-avatar" src="${players[i].avatar}">
                     <span class="user-cash">
                         <div class="monopoly-cash">M</div>
@@ -182,7 +182,8 @@ class GameView {
             if (playerIndex === null) {
                 this.$modalAvatar.src = GameView.DEFAULT_AVATAR;
             } else {
-                this.$modalAvatar.src = this.players[playerIndex].avatar;
+                this.$modalAvatar.src = `/static/images/player_${playerIndex}.png`;
+                this.$modalAvatar.style.background = GameView.PLAYERS_COLORS[playerIndex];
             }
 
             if (playerIndex === this.myPlayerIndex) {
@@ -374,7 +375,7 @@ class GameView {
         this.$chatMessageToSend.value = "";
         // TODO: send message via socket
     }
-  
+
     async handlePassStart(message) {
         let curr_player = message.curr_player;
         let eventMsg = this.players[curr_player].userName + "has passed the start point, reward 200.";
@@ -387,3 +388,5 @@ window.onload = () => {
 };
 
 GameView.DEFAULT_AVATAR = "/static/images/favicon.png";
+
+GameView.PLAYERS_COLORS = ["#FFD54F", "#90CAF9", "#E0E0E0", "#B39DDB"];
