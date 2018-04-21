@@ -19,23 +19,15 @@
 
 {% block content %}
 <div id="game-container">
-    <input id="username" hidden value="{{ username }}">
-    <input id="hostname" hidden value="{{ hostname }}">
+    <input id="username" hidden value="{{ username }}" title="User Name">
+    <input id="hostname" hidden value="{{ hostname }}" title="Host Name">
     <div id="users-container"></div>
 
-    <div id="chat-card" class="card center-card hidden modal-hidden">
-        <div class="card-blur-container">
-            <div class="card-blur"></div>
-        </div>
-        <div class="card-content-container">
-            <span id="chat-card-title">Chat Room</span>
-            <div id="chat-message-container">
-
-            </div>
-            <div id="chat-send-container">
-                <input id="chat-send-message" placeholder="Type a message...">
-                <button id="chat-send" class="large-button">Send</button>
-            </div>
+    <div id="chat-container">
+        <div id="chat-messages"></div>
+        <div id="chat-send-container" class="chat-message">
+            <img class="chat-message-avatar" src="/static/images/favicon.png">
+            <input id="chat-message-input" title="Message" placeholder="Press Enter to send message...">
         </div>
     </div>
 
@@ -53,6 +45,5 @@
     <div id="dice-message" class="hidden">
         {% include "rolling_dice.html" %}
     </div>
-    <!--<img id="chat-switch">-->
 </div>
 {% endblock %}

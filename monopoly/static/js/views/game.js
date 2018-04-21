@@ -11,6 +11,14 @@ class GameView {
         this.userName = document.getElementById("username").value;
         this.hostName = document.getElementById("hostname").value;
 
+        this.$chatMessageContainer = document.getElementById("chat-messages");
+        this.$chatMessageToSend = document.getElementById("chat-message-input");
+
+        this.$chatMessageToSend.addEventListener("keydown", e => {
+            const key = e.which || e.keyCode;
+            // Detect Enter pressed
+            if (key === 13) this.sendMessage();
+        });
 
         this.diceMessage = document.getElementById("dice-message").innerHTML;
         this.$usersContainer = document.getElementById("users-container");
@@ -345,6 +353,28 @@ class GameView {
         await this.hideModal(true);
     }
 
+    /*
+    * Add a chat message
+    * playerIndex: int
+    * message: string
+    * */
+    addChatMessage(playerIndex, message) {
+        let messageElement = document.createElement("div");
+        messageElement.classList.add("chat-message");
+        messageElement.innerHTML = `
+            <img class="chat-message-avatar" src="/static/images/player_${playerIndex}.png">
+            <span class="chat-message-content">${message}</span>`;
+        this.$chatMessageContainer.appendChild(messageElement);
+    }
+
+    sendMessage() {
+        const message = this.$chatMessageToSend.value;
+        this.addChatMessage(this.currentPlayer, message);
+
+        this.$chatMessageToSend.value = "";
+        // TODO: send message via socket
+    }
+  
     async handlePassStart(message) {
         let curr_player = message.curr_player;
         let eventMsg = this.players[curr_player].userName + "has passed the start point, reward 200.";
