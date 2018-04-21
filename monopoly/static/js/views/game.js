@@ -253,6 +253,7 @@ class GameView {
         let nextPlayer = message.nextPlayer;
         let posChange = message.posChange;
         let eventMsg = message.decision;
+        let title = message.title;
         this.initGame(players, changeCash, posChange);
 
         await this.gameLoadingPromise;
@@ -268,7 +269,7 @@ class GameView {
                 callback: this.cancelDecision.bind(this)
             }] : [];
             // TODO: Add title
-            this.showModal(nextPlayer, "Some Title", eventMsg, buttons);
+            this.showModal(nextPlayer, title, eventMsg, buttons);
         }
     }
 
@@ -278,6 +279,7 @@ class GameView {
         let steps = message.steps;
         let newPos = message.new_pos;
         let eventMsg = message.result;
+        let title = message.title;
         let rollResMsg = this.players[currPlayer].userName + " gets a roll result " + steps.toString();
 
         await this.showModal(currPlayer, "🎲🎲", rollResMsg, [], 2);
@@ -296,17 +298,17 @@ class GameView {
             }] : [];
 
             // TODO: Add title
-            this.showModal(currPlayer, "", eventMsg, buttons);
+            this.showModal(currPlayer, title, eventMsg, buttons);
         } else {
             if (message.is_cash_change === "true") {
                 // TODO: Add title
-                await this.showModal(currPlayer, "", eventMsg, [], 2);
+                await this.showModal(currPlayer, title, eventMsg, [], 3);
                 let cash = message.curr_cash;
                 this.changeCashAmount(cash);
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else if (message.new_event === "true") {
                 // TODO: Add title
-                await this.showModal(currPlayer, "", eventMsg, [], 2);
+                await this.showModal(currPlayer, title, eventMsg, [], 3);
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else {
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
@@ -388,7 +390,7 @@ class GameView {
         let curr_player = message.curr_player;
         let eventMsg = this.players[curr_player].userName + "has passed the start point, reward 200.";
         // TODO: Add title
-        await this.showModal(curr_player, "Reward", eventMsg, [], 2);
+        await this.showModal(curr_player, "Get Reward", eventMsg, [], 2);
     }
 }
 
