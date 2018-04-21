@@ -36,6 +36,10 @@ class MoveResult(object):
                self.move_result_type == MoveResultType.CONSTRUCTION_OPTION
         return self.yes
 
+    def is_option(self):
+        return self.move_result_type == MoveResultType.BUY_LAND_OPTION or \
+               self.move_result_type == MoveResultType.CONSTRUCTION_OPTION
+
     def __str__(self):
         saying = self.msg if self.msg else ""
         saying += MoveResultType.get_description(self.move_result_type)

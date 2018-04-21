@@ -74,7 +74,8 @@ class GameView {
             "roll_res": this.handleRollRes,
             "buy_land": this.handleBuyLand,
             "construct": this.handleConstruct,
-            "cancel_decision": this.handleCancel
+            "cancel_decision": this.handleCancel,
+            "pass_start": this.handlePassStart,
         };
 
         messageHandlers[message.action].bind(this)(message);
@@ -372,6 +373,12 @@ class GameView {
 
         this.$chatMessageToSend.value = "";
         // TODO: send message via socket
+    }
+  
+    async handlePassStart(message) {
+        let curr_player = message.curr_player;
+        let eventMsg = this.players[curr_player].userName + "has passed the start point, reward 200.";
+        await this.showModal(curr_player, eventMsg, [], 2);
     }
 }
 

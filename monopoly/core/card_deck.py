@@ -1,9 +1,8 @@
 from card import Card
+from random import shuffle
 
 
 class CardDeck(object):
-    # _cards = []
-    # _index = 0
 
     # property
     def __init__(self):
@@ -11,16 +10,17 @@ class CardDeck(object):
         self._cards = []
         self._cards.append(Card("Get One More Grace day ", 100, 0))
         self._cards.append(Card("Overspeed ", 200, 0))
-        # self._cards.append(Card("Autolab rank awarding ", 300, 0))
+        self._cards.append(Card("Autolab rank reward ", -300, 0))
         self._cards.append(Card("Illegal Parking ", 150, 0))
-        # self._cards.append(Card("Stop one round", 0, 1))
-        # self._cards.append(Card("first one", 100, 0))
+        self._cards.append(Card("Meet harry potter in Doherty Hall", -200, 0))
+        self._cards.append(Card("Host a fantastic Carnival", -300, 0))
+        self.shuffle()
 
     def insert(self, card):
         self._cards.append(card)
 
     def shuffle(self):
-        pass
+        shuffle(self._cards)
 
     def draw(self):
         self._index = (self._index + 1) % len(self._cards)
