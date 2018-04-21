@@ -12,6 +12,9 @@ class Land(object):
         self._description = description
         self._content = content
 
+    def add_handler(self, handler):
+        self._handlers.append(handler)
+
     def set_content(self, cotent_land):
         self._content = cotent_land
 
@@ -87,17 +90,20 @@ class ConstructionLand(object):
 
     def add_properties(self):
         if self._properties == BuildingType.NOTHING or \
-                (
-                        self._properties == BuildingType.HOUSE and self._building_num < 4):
+                (self._properties == BuildingType.HOUSE and
+                 self._building_num < 3):
             self._building_num += 1
             self._properties = BuildingType.HOUSE
-        elif self._properties == BuildingType.HOUSE:
-
-            assert self._building_num == 3
+            return True
+        elif self._properties == BuildingType.HOUSE and self._building_num == 3:
             self._properties = BuildingType.HOTEL
             self._building_num = 1
+            return True
+        elif self._properties == BuildingType.HOTEL:
+            return False
         else:
             # error
+            print 'Fatal error when adding properties'
             assert False
 
     def get_rent(self):

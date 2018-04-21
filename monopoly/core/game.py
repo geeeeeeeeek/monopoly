@@ -12,7 +12,11 @@ from building import *
 class Game(object):
 
     def __init__(self, player_num):
-        assert player_num > 0
+        assert 0 < player_num <= 4
+        if player_num <= 0 or player_num > 4:
+            self.notify_error("In correct player number, should be 1-4 "
+                              "players.")
+            return
         self._players = []
         for i in xrange(player_num):
             self._players.append(Player(i))
@@ -29,13 +33,16 @@ class Game(object):
     def _move(self, steps):
         cur_player = self.get_current_player()
         new_position = (
-                               cur_player.get_position() + steps) % self._board.get_grid_num()
+                                   cur_player.get_position() + steps) % self._board.get_grid_num()
         if new_position < cur_player.get_position():
             self.get_current_player().add_money(START_REWARD)
-            self.notify
+            self.notify_pass_start()
         land_dest = self._board.get_land(new_position)
         self.get_current_player().set_position(new_position)
-        assert (not (land_dest is None))
+        assert ((land_dest is not None))
+        if land_dest is None:
+            self.notify_error("Internal error, the destination land is none. "
+                              "there is no land at the new position")
         print 'debug41: ', land_dest
         return land_dest
 
@@ -104,10 +111,11 @@ class Game(object):
             return ret
         else:
             print "Error, the land is", land_type
-            assert False
-            return None
+            self.notify_error("Internal error, unknow land type")
 
-    def _validate_enough_money(self, construction_land):
+    def _has_enough_money(self, construction_land):
+        print 'price1:', self.get_current_player().get_money()
+        print 'construciton plce:', construction_land.get_price()
         return self.get_current_player().get_money() > \
                construction_land.get_price()
 
@@ -120,7 +128,7 @@ class Game(object):
             print 'debug99'
             construction_land = move_result.get_land().get_content()
             if move_result.yes is True:
-                if self._validate_enough_money(construction_land):
+                if self._has_enough_money(construction_land) is False:
                     self.notify_error("No enough money to buy the property.")
                     result = False
                 construction_land.set_owner(self._current_player_index)
@@ -140,7 +148,9 @@ class Game(object):
             if move_result.yes is True:
                 self.get_current_player().deduct_money(
                     construction_land.get_next_construction_price())
-                construction_land.add_properties()
+                if construction_land.add_properties() is False:
+                    self.notify_error()
+
         else:
             if move_result_type == MoveResultType.PAYMENT:
                 print 'debug129'
@@ -151,6 +161,10 @@ class Game(object):
                     # this is the payment to the player
                     print 'debug133'
                     assert land.get_owner_index() is not None
+                    if land.get_owner_index() is None:
+                        self.notify_error("Error: The land has no owner. why "
+                                          "the current player need to make "
+                                          "payment")
                     print 'owner index is: ', land.get_owner_index()
                     rewarded_player = self.get_player(land.get_owner_index())
                     rewarded_player.add_money(val)
@@ -189,6 +203,9 @@ class Game(object):
 
     def roll(self, steps=None):
         assert self.get_game_status() == GameStateType.WAIT_FOR_ROLL
+        if self.get_game_status() != GameStateType.WAIT_FOR_ROLL:
+            self.notify_error("Internal error: the game state must be "
+                              "'waiting for roll' when you roll")
         if steps is None:
             import random
             steps1 = random.randint(1, 6)
@@ -204,22 +221,32 @@ class Game(object):
     # this
     def make_decision(self, decision):
         assert self.get_game_status() == GameStateType.WAIT_FOR_DECISION
+        if self.get_game_status() != GameStateType.WAIT_FOR_DECISION:
+            self.notify_error("Internal error: the game state must be "
+                              "'waiting for decision when you make decision'")
         ret = decision
-        make_decision_success = None
         if decision.move_result_type != MoveResultType.BUY_LAND_OPTION and \
                 decision.move_result_type != MoveResultType.CONSTRUCTION_OPTION:
+            print 'debug227, not a decision'
             make_decision_success = self._apply_result(decision)
         else:
             print 'debug188'
             assert decision.yes is not None
+            if decision.yes is None:
+                print 'error'
+                self.notify_error("Error: You must make a decision when you "
+                                  "need to make a decsion")
             make_decision_success = self._apply_result(decision)
+            print 'debgu237: ', make_decision_success
             ret = MoveResult(decision.get_move_result_type(),
                              decision.get_value(), decision.get_land())
         if make_decision_success:
+            print 'decision made success'
             self._change_player()
             self._roll_to_next_game_state()
             return ret
         else:
+            print 'decision made fail'
             return None
 
     # getters
