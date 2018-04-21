@@ -7,9 +7,11 @@ from move_result_enum import MoveResultType
 from game_change_listner import GameChangeListner
 from land import LandType
 from building import *
+import uuid
 
 
 class Game(object):
+    _game_id = 0
 
     def __init__(self, player_num):
         assert 0 < player_num <= 4
@@ -24,8 +26,13 @@ class Game(object):
         self._card_deck = CardDeck()
         self._board = Board()
         self._current_player_index = 0
+        self._game_id = Game._game_id
+        Game._game_id += 1
         self._handlers = []
         self.add_game_change_listner(InternalLogHandler(self))
+
+    def get_game_id(self):
+        return self._game_id
 
     def add_game_change_listner(self, handler):
         self._handlers.append(handler)
@@ -349,26 +356,32 @@ class InternalLogHandler(MonopolyHandler):
         self.game = g
 
     def on_error(self, err_msg):
-        print '[Error] ' + err_msg
+        print '[Error] [Game ID: {0}]'.format(self.game.get_game_id()) + err_msg
 
     def on_rolled(self):
-        print '[Info] current player {0} is rolling'.format(
-            self.game.get_current_player().get_index())
+        print '[Info] [Game ID: {0}]current player {1} is rolling'.format(
+            self.game.get_game_id(), self.game.get_current_player().get_index())
 
     def on_decision_made(self):
-        print '[Info] Decision is made'
+        print '[Info] [Game ID: {0} ]Decision is made'.format(
+            self.game.get_game_id())
 
     def on_new_game(self):
-        pass
+        print '[Info] [Game ID: {0}] '.format(self.game.get_game_id()) + \
+              "Game Started"
 
     def on_game_ended(self):
-        pass
+        print '[Info] [Game ID: {0}] '.format(self.game.get_game_id()) + \
+              "Game Ended"
 
     def on_player_changed(self):
-        pass
+        print '[Info] [Game Id: {0}] '.format(self.game.get_game_id()) + \
+              "Player changed to : {0}".format(self.game.get_current_player().get_index())
 
     def on_result_applied(self):
         pass
 
     def on_pass_start(self):
-        pass
+        print '[Info] [Game ID: {0}] '.format(self.game.get_game_id()) + \
+              "Player {0} just passed the start point".format(
+                  self.game.get_current_player().get_index())
