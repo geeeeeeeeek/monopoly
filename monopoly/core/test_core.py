@@ -52,7 +52,7 @@ def test3():
         move_result.set_decision(True)
     print "steps: ", steps
     print move_result
-    print 'success test3'
+    print 'success test3\n'
 
 
 # test the first player did not buy, the second buy
@@ -82,13 +82,13 @@ def test4():
     print 'player1 money is: ', game.get_player(1).get_money()
     game.make_decision(move_result)
     print 'player1 money is: ', game.get_player(1).get_money()
-    print 'successful test4'
+    print 'successful test4\n'
 
 
 # only 2 players
 # 2 rounds, the player pays
 def test5():
-    print "new test---test5----"
+    print "---test5----"
     game = Game(2)
     steps, move_result = game.roll(2)
     if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
@@ -116,12 +116,12 @@ def test5():
     print 'player 0 money is', game.get_player(0).get_money()
     assert game.get_player(0).get_money() == INIT_PLAYER_MONEY - 200 - 50
 
-    print 'successful test5'
+    print 'successful test5\n'
 
 
 # go to jail and correctly update
 def test6():
-    print "new test---test6----"
+    print "---test6----"
     game = Game(2)
     steps, move_result = game.roll(10)
     if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
@@ -148,12 +148,12 @@ def test6():
 
     print 'player position is', game.get_current_player().get_position()
     game.make_decision(result)
-    print 'successful test6'
+    print 'successful test6\n'
 
 
 # try construct a house
 def test7():
-    print "new test---test7----"
+    print "---test7----"
     game = Game(1)
     steps, move_result = game.roll(3)
     if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
@@ -173,12 +173,12 @@ def test7():
            HOUSE_CONSTRUCTION_COST
     print 'money', game.get_current_player().get_money()
 
-    print 'successful test7'
+    print 'successful test7\n'
 
 
 # another player go to the construciton land
 def test8():
-    print "new test---test8----"
+    print "---test8----"
     game = Game(2)
     steps, move_result = game.roll(3)
     if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
@@ -207,12 +207,12 @@ def test8():
     game.make_decision(move_result)
     print 'money of player2', game.get_player(1).get_money()
     assert money - 40 == game.get_player(1).get_money()
-    print 'successful test8'
+    print 'successful test8\n'
 
 
 # go to the first grid
 def test9():
-    print "new test---test9----"
+    print "---test9----"
     game = Game(1)
     steps, move_result = game.roll(20)
     if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
@@ -229,12 +229,12 @@ def test9():
     print 'money', game.get_current_player().get_money()
     assert money + 200 == game.get_current_player().get_money()
 
-    print 'successful test9'
+    print 'successful test9\n'
 
 
 # just roll a random
 def test10():
-    print "new test---test10----"
+    print "---test10----"
     game = Game(1)
     steps, move_result = game.roll()
     if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
@@ -243,12 +243,12 @@ def test10():
     print "steps: ", steps
     print move_result
     game.make_decision(move_result)
-    print 'successful test10'
+    print 'successful test10\n'
 
 
 # go to the first grid
 def test11():
-    print "new test---test11----"
+    print "---test11----"
     game = Game(1)
     money = game.get_current_player().get_money()
     print money
@@ -261,38 +261,79 @@ def test11():
     game.make_decision(move_result)
     assert money + 200 == game.get_current_player().get_money()
 
-    print 'successful test9'
+    print 'successful test11\n'
 
 
+# tsst event handler
 def test12(number):
-    print "new test---test{0}----".format(number)
+    print "---test{0}----".format(number)
     game = Game(1)
     money = game.get_current_player().get_money()
     print money
-    handler = LogHandler()
+    handler = LogHandler(game)
     game.add_game_change_listner(handler)
 
-    game.roll()
+    steps, move_result = game.roll()
     # result
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print "steps: ", steps
+    print move_result
+    game.make_decision(move_result)
 
-    print 'successful test{0}'.format(number)
+    print 'successful test{0}\n'.format(number)
+
+
+def test13(number):
+    print "---test{0}----".format(number)
+    game = Game(1)
+    money = game.get_current_player().get_money()
+    print money
+    handler = LogHandler(game)
+    game.add_game_change_listner(handler)
+
+    steps, move_result = game.roll()
+    # result
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print "steps: ", steps
+    print move_result
+    game.make_decision(move_result)
+
+    print 'successful test{0}\n'.format(number)
 
 
 class LogHandler(MonopolyHandler):
-    def on_new_game(self):
-        print 'it is the start of the game'
+
+    def __init__(self, g):
+        self.game = g
 
     def on_error(self, err_msg):
         print "it is an error" + err_msg
 
+    def on_rolled(self):
+        print '[Info] the player {0} is rolling'.format(
+            self.game.get_current_player().get_index())
 
-class MyHandler(MonopolyHandler):
-    def __init__(self, game):
-        self.game = game
-    #
-    # def on_pass_start(self):
-    #     ws.send("passed start")
-    #     self.game
+    def on_decision_made(self):
+        print '[Info] Decision is made, the decision is'
+
+    def on_new_game(self):
+        print 'it is the start of the game'
+
+    def on_game_ended(self):
+        pass
+
+    def on_player_changed(self):
+        pass
+
+    def on_result_applied(self):
+        pass
+
+    def on_pass_start(self):
+        pass
 
 
 def test_suite():
@@ -308,7 +349,10 @@ def test_suite():
     test9()
     test10()
     test11()
+
+    # sprint 3 tests
     test12(12)
+    test13(13)
 
 
 if __name__ == "__main__":
