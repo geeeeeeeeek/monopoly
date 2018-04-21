@@ -86,6 +86,8 @@ def ws_message(message):
         handle_confirm_decision(hostname, games)
     if action == "cancel_decision":
         handle_cancel_decision(hostname, games)
+    if action == "chat":
+        handle_chat(hostname, msg)
 
 
 # @login_required

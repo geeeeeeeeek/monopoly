@@ -77,6 +77,7 @@ class GameView {
             "construct": this.handleConstruct,
             "cancel_decision": this.handleCancel,
             "pass_start": this.handlePassStart,
+            "chat": this.handleChat,
         };
 
         messageHandlers[message.action].bind(this)(message);
@@ -150,6 +151,7 @@ class GameView {
         $nextUserGroup.classList.add("active");
 
         this.currentPlayer = nextPlayer;
+        let title = (this.currentPlayer === this.myPlayerIndex) ? "Your Turn!" : "";
 
         // role dice
         const button = (nextPlayer !== this.myPlayerIndex) ? [] :
@@ -165,7 +167,7 @@ class GameView {
                     onDiceRolled();
                 }
             }];
-        this.showModal(nextPlayer, "Your Turn!", this.diceMessage, button);
+        this.showModal(nextPlayer, title, this.diceMessage, button);
     }
 
     /*
@@ -268,7 +270,6 @@ class GameView {
                 text: "No",
                 callback: this.cancelDecision.bind(this)
             }] : [];
-            // TODO: Add title
             this.showModal(nextPlayer, title, eventMsg, buttons);
         }
     }
@@ -297,17 +298,14 @@ class GameView {
                 callback: this.cancelDecision.bind(this)
             }] : [];
 
-            // TODO: Add title
             this.showModal(currPlayer, title, eventMsg, buttons);
         } else {
             if (message.is_cash_change === "true") {
-                // TODO: Add title
                 await this.showModal(currPlayer, title, eventMsg, [], 3);
                 let cash = message.curr_cash;
                 this.changeCashAmount(cash);
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else if (message.new_event === "true") {
-                // TODO: Add title
                 await this.showModal(currPlayer, title, eventMsg, [], 3);
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else {
@@ -346,6 +344,12 @@ class GameView {
         this.changePlayer(next_player, this.onDiceRolled.bind(this));
     }
 
+    handleChat(message) {
+        let sender = message.sender;
+        let content = message.content;
+        this.addChatMessage(sender, content);
+    }
+
     async confirmDecision() {
         this.socket.send(JSON.stringify({
             action: "confirm_decision",
@@ -380,16 +384,16 @@ class GameView {
 
     sendMessage() {
         const message = this.$chatMessageToSend.value;
-        this.addChatMessage(this.myPlayerIndex, message);
-
-        this.$chatMessageToSend.value = "";
-        // TODO: send message via socket
+        this.socket.send(JSON.stringify({
+            action: "chat",
+            from: this.myPlayerIndex,
+            content: message,
+        }));
     }
 
     async handlePassStart(message) {
         let curr_player = message.curr_player;
         let eventMsg = this.players[curr_player].userName + "has passed the start point, reward 200.";
-        // TODO: Add title
         await this.showModal(curr_player, "Get Reward", eventMsg, [], 2);
     }
 }
