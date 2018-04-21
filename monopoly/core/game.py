@@ -109,7 +109,7 @@ class Game(object):
 
     def _validate_enough_money(self, construction_land):
         return self.get_current_player().get_money() > \
-               construction_land.get_money()
+               construction_land.get_price()
 
     def _apply_result(self, move_result):
         print 'debug95, move result is', move_result
