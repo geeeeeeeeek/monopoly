@@ -32,6 +32,7 @@ class Game(object):
                                cur_player.get_position() + steps) % self._board.get_grid_num()
         if new_position < cur_player.get_position():
             self.get_current_player().add_money(START_REWARD)
+            self.notify
         land_dest = self._board.get_land(new_position)
         self.get_current_player().set_position(new_position)
         assert (not (land_dest is None))
@@ -106,24 +107,36 @@ class Game(object):
             assert False
             return None
 
+    def _validate_enough_money(self, construction_land):
+        return self.get_current_player().get_money() > \
+               construction_land.get_money()
+
     def _apply_result(self, move_result):
         print 'debug95, move result is', move_result
         move_result_type = move_result.get_move_result_type()
         val = move_result.get_value()
+        result = True
         if move_result_type == MoveResultType.BUY_LAND_OPTION:
             print 'debug99'
             construction_land = move_result.get_land().get_content()
             if move_result.yes is True:
+                if self._validate_enough_money(construction_land):
+                    self.notify_error("No enough money to buy the property.")
+                    result = False
                 construction_land.set_owner(self._current_player_index)
                 self.get_current_player().add_properties(construction_land)
                 self.get_current_player().deduct_money(
                     construction_land.get_price())
             else:
-                return
+                result = True
+
         elif move_result_type == MoveResultType.CONSTRUCTION_OPTION:
             construction_land = move_result.get_land().get_content()
-            assert construction_land.get_owner_index() \
-                   == self._current_player_index
+            if construction_land.get_owner_index() != \
+                    self._current_player_index:
+                self.notify_error("Error! this land is not owned by the "
+                                  "current player, so cannot make construciton")
+                result = False
             if move_result.yes is True:
                 self.get_current_player().deduct_money(
                     construction_land.get_next_construction_price())
@@ -150,8 +163,10 @@ class Game(object):
             else:
                 # move result option
                 # should never reach here
-                return
+                result = True
             self.notify_result_applied()
+
+        return result
 
     def _change_player(self):
         self._current_player_index = self._change_player_on(
@@ -190,18 +205,22 @@ class Game(object):
     def make_decision(self, decision):
         assert self.get_game_status() == GameStateType.WAIT_FOR_DECISION
         ret = decision
+        make_decision_success = None
         if decision.move_result_type != MoveResultType.BUY_LAND_OPTION and \
                 decision.move_result_type != MoveResultType.CONSTRUCTION_OPTION:
-            self._apply_result(decision)
+            make_decision_success = self._apply_result(decision)
         else:
             print 'debug188'
             assert decision.yes is not None
-            self._apply_result(decision)
+            make_decision_success = self._apply_result(decision)
             ret = MoveResult(decision.get_move_result_type(),
                              decision.get_value(), decision.get_land())
-        self._change_player()
-        self._roll_to_next_game_state()
-        return ret
+        if make_decision_success:
+            self._change_player()
+            self._roll_to_next_game_state()
+            return ret
+        else:
+            return None
 
     # getters
     def get_player(self, index):
@@ -255,7 +274,12 @@ class Game(object):
         for handler in self._handlers:
             handler.on_error(err_msg)
 
+    def notify_pass_start(self):
+        for handler in self._handlers:
+            handler.on_pass_start()
 
+
+# example of the event handler
 class MonopolyHandler(object):
     def on_error(self, err_msg):
         pass
@@ -276,4 +300,7 @@ class MonopolyHandler(object):
         pass
 
     def on_result_applied(self):
+        pass
+
+    def on_pass_start(self):
         pass

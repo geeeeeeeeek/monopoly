@@ -1,4 +1,4 @@
-from game import Game
+from game import Game, MonopolyHandler
 from move_result_enum import MoveResultType
 from util import *
 from land import *
@@ -230,6 +230,7 @@ def test9():
 
     print 'successful test9'
 
+
 # just roll a random
 def test10():
     print "new test---test10----"
@@ -261,19 +262,48 @@ def test11():
 
     print 'successful test9'
 
+
+def test12(number):
+    print "new test---test{0}----".format(number)
+    game = Game(1)
+    money = game.get_current_player().get_money()
+    print money
+    handler = LogHandler()
+    game.add_game_change_listner(handler)
+
+    game.roll()
+    # result
+
+    print 'successful test{0}'.format(number)
+
+
+class LogHandler(MonopolyHandler):
+    def on_new_game(self):
+        print 'it is the start of the game'
+
+    def on_error(self, err_msg):
+        print "it is an error" + err_msg
+
+#
+# class MyHandler(MonopolyHandler):
+#     def on_pass_start(self):
+#         ws.send("passed start")
+
+
 def test_suite():
-    for i in xrange(1, 12):
-        testing(i)
-    test2()
-    test3()
-    test4()
-    test5()
-    test6()
-    test7()
-    test8()
-    test9()
-    test10()
-    test11()
+    # for i in xrange(1, 12):
+    #     testing(i)
+    # test2()
+    # test3()
+    # test4()
+    # test5()
+    # test6()
+    # test7()
+    # test8()
+    # test9()
+    # test10()
+    # test11()
+    test12(12)
 
 
 if __name__ == "__main__":
