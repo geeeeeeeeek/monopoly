@@ -9,6 +9,7 @@ from core.game import *
 
 import json
 from monopoly.ws_handlers.game_handler import *
+from monopoly.ws_handlers.game_change_handler import *
 
 # Connected to websocket.connect
 # @login_required
@@ -137,7 +138,11 @@ def handle_start(hostname):
     if hostname not in games:
         players = rooms[hostname]
         player_num = len(players)
-        games[hostname] = Game(player_num)
+        game = Game(player_num)
+        games[hostname] = game
+
+        change_handler = ChangeHandler(game, hostname)
+        game.add_game_change_listner(change_handler)
 
     Group(hostname).send({
         "text": build_start_msg()
