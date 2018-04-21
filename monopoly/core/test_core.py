@@ -23,6 +23,7 @@ def test2():
     steps, move_result = game.roll(5)
     if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
             or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        print 'debu26'
         move_result.set_decision(True)
     print "steps: ", steps
     print move_result
@@ -284,25 +285,29 @@ class LogHandler(MonopolyHandler):
     def on_error(self, err_msg):
         print "it is an error" + err_msg
 
-#
-# class MyHandler(MonopolyHandler):
-#     def on_pass_start(self):
-#         ws.send("passed start")
+
+class MyHandler(MonopolyHandler):
+    def __init__(self, game):
+        self.game = game
+    #
+    # def on_pass_start(self):
+    #     ws.send("passed start")
+    #     self.game
 
 
 def test_suite():
-    # for i in xrange(1, 12):
-    #     testing(i)
-    # test2()
-    # test3()
-    # test4()
-    # test5()
-    # test6()
-    # test7()
-    # test8()
-    # test9()
-    # test10()
-    # test11()
+    for i in xrange(1, 12):
+        testing(i)
+    test2()
+    test3()
+    test4()
+    test5()
+    test6()
+    test7()
+    test8()
+    test9()
+    test10()
+    test11()
     test12(12)
 
 
