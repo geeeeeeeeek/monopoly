@@ -301,6 +301,118 @@ def test13(number):
     print "steps: ", steps
     print move_result
     game.make_decision(move_result)
+    print game.get_status()
+
+    print 'successful test{0}\n'.format(number)
+
+# building hotel
+def test14(number):
+    print "---test{0}----".format(number)
+    game = Game(1)
+    money = game.get_current_player().get_money()
+    print money
+    handler = LogHandler(game)
+    game.add_game_change_listner(handler)
+
+    steps, move_result = game.roll(8)
+    # result
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print "steps: ", steps
+    print move_result
+    game.make_decision(move_result)
+    print 'the construction land property is: ', game.get_status()[1].get_land(
+        8).get_content().get_property_num()
+    print 'the construction land property, can upgrade?: ', game.get_status()[
+        1].get_land(
+        8).get_content().is_constructable()
+
+    print 'new round'
+    steps, move_result = game.roll(40)
+    # result
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print "steps: ", steps
+    print move_result
+    game.make_decision(move_result)
+    print 'the construction land property is: ', game.get_status()[1].get_land(
+        8).get_content().get_property_num()
+    print 'the construction land property, can upgrade?: ', game.get_status()[
+        1].get_land(
+        8).get_content().is_constructable()
+    print 'now has one house '
+
+    print 'round 3'
+
+    steps, move_result = game.roll(40)
+    # result
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print "steps: ", steps
+    print move_result
+    game.make_decision(move_result)
+    print 'the construction land property is: ', game.get_status()[1].get_land(
+        8).get_content().get_property_num()
+    print 'the construction land property, can upgrade?: ', game.get_status()[
+        1].get_land(
+        8).get_content().is_constructable()
+    print 'now has 2 house '
+
+    steps, move_result = game.roll(40)
+    # result
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print "steps: ", steps
+    print move_result
+    ret = game.make_decision(move_result)
+    print 'decision result: ', ret
+    print 'the construction land property is: ', game.get_status()[1].get_land(
+        8).get_content().get_property_num()
+    print 'the construction land property, can upgrade?: ', game.get_status()[
+        1].get_land(
+        8).get_content().is_constructable()
+    print 'now has 3 house '
+
+    steps, move_result = game.roll(40)
+    # result
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+        print 'set decision yes'
+    else:
+        print 'no decision needed'
+    print "steps: ", steps
+    print move_result
+    ret = game.make_decision(move_result)
+    print 'the construction land property is: ', game.get_status()[1].get_land(
+        8).get_content().get_property_num()
+    print 'the construction land property, can upgrade?: ', game.get_status()[
+        1].get_land(
+        8).get_content().is_constructable()
+    print 'decision result: ', ret
+    print 'now has 1 hotel'
+
+    steps, move_result = game.roll(40)
+    # result
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+        print 'set decision yes'
+    else:
+        print 'no decision needed'
+    print "steps: ", steps
+    print move_result
+    ret = game.make_decision(move_result)
+    print 'the construction land property is: ', game.get_status()[1].get_land(
+        8).get_content().get_property_num()
+    print 'the construction land property, can upgrade?: ', game.get_status()[
+        1].get_land(
+        8).get_content().is_constructable()
+    print 'decision result: ', ret
 
     print 'successful test{0}\n'.format(number)
 
@@ -353,6 +465,7 @@ def test_suite():
     # sprint 3 tests
     test12(12)
     test13(13)
+    test14(14)
 
 
 if __name__ == "__main__":
