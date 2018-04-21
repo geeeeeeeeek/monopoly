@@ -25,15 +25,21 @@ class Game(object):
         self._board = Board()
         self._current_player_index = 0
         self._handlers = []
-        self.add_game_change_listner(MonopolyHandler())
+        self.add_game_change_listner(InternalLogHandler(self))
 
     def add_game_change_listner(self, handler):
         self._handlers.append(handler)
 
+    def remove_game_change_listner(self, to_be_deleted):
+        for handler in self._handlers:
+            if handler == to_be_deleted:
+                self._handlers.remove(handler)
+                return
+
     def _move(self, steps):
         cur_player = self.get_current_player()
         new_position = (
-                                   cur_player.get_position() + steps) % self._board.get_grid_num()
+                               cur_player.get_position() + steps) % self._board.get_grid_num()
         if new_position < cur_player.get_position():
             self.get_current_player().add_money(START_REWARD)
             self.notify_pass_start()
@@ -149,7 +155,7 @@ class Game(object):
                 self.get_current_player().deduct_money(
                     construction_land.get_next_construction_price())
                 if construction_land.add_properties() is False:
-                    self.notify_error()
+                    self.notify_error("Add property fail. ")
 
         else:
             if move_result_type == MoveResultType.PAYMENT:
@@ -185,6 +191,7 @@ class Game(object):
     def _change_player(self):
         self._current_player_index = self._change_player_on(
             self._current_player_index)
+        self.notify_player_changed()
 
     def _change_player_on(self, cur):
         new_user_index = (cur + 1) % (len(
@@ -206,6 +213,8 @@ class Game(object):
         if self.get_game_status() != GameStateType.WAIT_FOR_ROLL:
             self.notify_error("Internal error: the game state must be "
                               "'waiting for roll' when you roll")
+        self.notify_rolled()
+
         if steps is None:
             import random
             steps1 = random.randint(1, 6)
@@ -224,6 +233,7 @@ class Game(object):
         if self.get_game_status() != GameStateType.WAIT_FOR_DECISION:
             self.notify_error("Internal error: the game state must be "
                               "'waiting for decision when you make decision'")
+        self.notify_decision_made()
         ret = decision
         if decision.move_result_type != MoveResultType.BUY_LAND_OPTION and \
                 decision.move_result_type != MoveResultType.CONSTRUCTION_OPTION:
@@ -324,6 +334,37 @@ class MonopolyHandler(object):
         pass
 
     def on_decdision_made(self):
+        pass
+
+    def on_result_applied(self):
+        pass
+
+    def on_pass_start(self):
+        pass
+
+
+class InternalLogHandler(MonopolyHandler):
+
+    def __init__(self, g):
+        self.game = g
+
+    def on_error(self, err_msg):
+        print '[Error] ' + err_msg
+
+    def on_rolled(self):
+        print '[Info] current player {0} is rolling'.format(
+            self.game.get_current_player().get_index())
+
+    def on_decision_made(self):
+        print '[Info] Decision is made'
+
+    def on_new_game(self):
+        pass
+
+    def on_game_ended(self):
+        pass
+
+    def on_player_changed(self):
         pass
 
     def on_result_applied(self):

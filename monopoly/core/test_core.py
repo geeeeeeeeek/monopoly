@@ -261,38 +261,59 @@ def test11():
     game.make_decision(move_result)
     assert money + 200 == game.get_current_player().get_money()
 
-    print 'successful test9'
+    print 'successful test11'
 
 
+# tsst event handler
 def test12(number):
     print "new test---test{0}----".format(number)
     game = Game(1)
     money = game.get_current_player().get_money()
     print money
-    handler = LogHandler()
+    handler = LogHandler(game)
     game.add_game_change_listner(handler)
 
-    game.roll()
+    steps, move_result = game.roll()
     # result
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print "steps: ", steps
+    print move_result
+    game.make_decision(move_result)
 
     print 'successful test{0}'.format(number)
 
 
 class LogHandler(MonopolyHandler):
-    def on_new_game(self):
-        print 'it is the start of the game'
+
+    def __init__(self, g):
+        self.game = g
 
     def on_error(self, err_msg):
         print "it is an error" + err_msg
 
+    def on_rolled(self):
+        print '[Info] the player {0} is rolling'.format(
+            self.game.get_current_player().get_index())
 
-class MyHandler(MonopolyHandler):
-    def __init__(self, game):
-        self.game = game
-    #
-    # def on_pass_start(self):
-    #     ws.send("passed start")
-    #     self.game
+    def on_decision_made(self):
+        print '[Info] Decision is made, the decision is'
+
+    def on_new_game(self):
+        print 'it is the start of the game'
+
+    def on_game_ended(self):
+        pass
+
+    def on_player_changed(self):
+        pass
+
+    def on_result_applied(self):
+        pass
+
+    def on_pass_start(self):
+        pass
 
 
 def test_suite():
@@ -308,6 +329,8 @@ def test_suite():
     test9()
     test10()
     test11()
+
+    # sprint 3 tests
     test12(12)
 
 
