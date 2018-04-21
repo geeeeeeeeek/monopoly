@@ -25,13 +25,11 @@
     margin-left: 40px;
     border-radius: 100px;
     opacity: 0.85;
-    background: #FFC107;
-    border: 3px solid #fff;
     display: flex;
+    box-shadow: 0 0 20px #fff;
 }
 
 .user-group.active {
-    border-color: #4a9fef;
     box-shadow: 0 0 20px #315677;
 }
 
@@ -39,21 +37,19 @@
     line-height: 54px;
     font-size: 30px;
     font-family: monospace;
-    margin: 0 6px;
+    margin: 0 10px 0 6px;
     color: #795548;
     display: flex;
 }
 
 .user-avatar {
-    background: #ccc;
     border-radius: 28px;
     overflow: hidden;
-    border: 3px solid #fff;
     width: 48px;
     height: 48px;
     vertical-align: middle;
     position: relative;
-    margin-left: -3px;
+    padding: 3px;
 }
 
 .user-avatar:before {
@@ -90,6 +86,11 @@
     width: 432px;
     height: fit-content;
     overflow: initial;
+}
+
+#modal-message-container {
+    font-size: 16px;
+    padding: 0 20px;
 }
 
 #modal-card .card-content-container {
@@ -251,4 +252,13 @@
         visibility: hidden;
         overflow: hidden;
     }
+}
+
+
+#modal-title {
+    align-items: center;
+    text-align: center;
+    font-size: 32px;
+    color: #0084ff;
+    margin-bottom: 40px;
 }

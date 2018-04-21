@@ -27,8 +27,9 @@ class GameView {
         this.$modalAvatar = document.getElementById("modal-user-avatar");
         this.$modalMessage = document.getElementById("modal-message-container");
         this.$modalButtons = document.getElementById("modal-buttons-container");
+        this.$modalTitle = document.getElementById("modal-title");
 
-        this.showModal(null, "Loading game resources...", []);
+        this.showModal(null, "Welcome to Monopoly", "Loading game resources...", []);
         this.initBoard();
     }
 
@@ -109,7 +110,7 @@ class GameView {
         for (let i = 0; i < players.length; i++) {
             if (this.userName === players[i].userName) this.myPlayerIndex = i;
             this.$usersContainer.innerHTML += `
-                <div id="user-group-${i}" class="user-group">
+                <div id="user-group-${i}" class="user-group" style="background: ${GameView.PLAYERS_COLORS[i]}">
                     <img class="user-avatar" src="${players[i].avatar}">
                     <span class="user-cash">
                         <div class="monopoly-cash">M</div>
@@ -164,7 +165,7 @@ class GameView {
                     onDiceRolled();
                 }
             }];
-        this.showModal(nextPlayer, this.diceMessage, button);
+        this.showModal(nextPlayer, "Your Turn!", this.diceMessage, button);
     }
 
     /*
@@ -177,12 +178,13 @@ class GameView {
     * }],
     * displayTime: int // seconds to display
     * */
-    showModal(playerIndex, message, buttons, displayTime) {
+    showModal(playerIndex, title, message, buttons, displayTime) {
         return new Promise(resolve => {
             if (playerIndex === null) {
                 this.$modalAvatar.src = GameView.DEFAULT_AVATAR;
             } else {
-                this.$modalAvatar.src = this.players[playerIndex].avatar;
+                this.$modalAvatar.src = `/static/images/player_${playerIndex}.png`;
+                this.$modalAvatar.style.background = GameView.PLAYERS_COLORS[playerIndex];
             }
 
             if (playerIndex === this.myPlayerIndex) {
@@ -193,6 +195,8 @@ class GameView {
 
             this.$modalMessage.innerHTML = message;
             this.$modalButtons.innerHTML = "";
+
+            this.$modalTitle.innerText = title;
 
             for (let i in buttons) {
                 let button = document.createElement("button");
@@ -263,7 +267,8 @@ class GameView {
                 text: "No",
                 callback: this.cancelDecision.bind(this)
             }] : [];
-            this.showModal(nextPlayer, eventMsg, buttons);
+            // TODO: Add title
+            this.showModal(nextPlayer, "Some Title", eventMsg, buttons);
         }
     }
 
@@ -275,7 +280,7 @@ class GameView {
         let eventMsg = message.result;
         let rollResMsg = this.players[currPlayer].userName + " gets a roll result " + steps.toString();
 
-        await this.showModal(currPlayer, rollResMsg, [], 2);
+        await this.showModal(currPlayer, "🎲🎲", rollResMsg, [], 2);
 
         await this.gameController.movePlayer(currPlayer, newPos);
 
@@ -289,15 +294,19 @@ class GameView {
                 text: "No",
                 callback: this.cancelDecision.bind(this)
             }] : [];
-            this.showModal(currPlayer, eventMsg, buttons);
+
+            // TODO: Add title
+            this.showModal(currPlayer, "", eventMsg, buttons);
         } else {
             if (message.is_cash_change === "true") {
-                await this.showModal(currPlayer, eventMsg, [], 2);
+                // TODO: Add title
+                await this.showModal(currPlayer, "", eventMsg, [], 2);
                 let cash = message.curr_cash;
                 this.changeCashAmount(cash);
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else if (message.new_event === "true") {
-                await this.showModal(currPlayer, eventMsg, [], 2);
+                // TODO: Add title
+                await this.showModal(currPlayer, "", eventMsg, [], 2);
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else {
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
@@ -374,11 +383,12 @@ class GameView {
         this.$chatMessageToSend.value = "";
         // TODO: send message via socket
     }
-  
+
     async handlePassStart(message) {
         let curr_player = message.curr_player;
         let eventMsg = this.players[curr_player].userName + "has passed the start point, reward 200.";
-        await this.showModal(curr_player, eventMsg, [], 2);
+        // TODO: Add title
+        await this.showModal(curr_player, "Reward", eventMsg, [], 2);
     }
 }
 
@@ -387,3 +397,5 @@ window.onload = () => {
 };
 
 GameView.DEFAULT_AVATAR = "/static/images/favicon.png";
+
+GameView.PLAYERS_COLORS = ["#FFD54F", "#90CAF9", "#E0E0E0", "#B39DDB"];
