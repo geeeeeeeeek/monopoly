@@ -88,6 +88,11 @@
     overflow: initial;
 }
 
+#modal-message-container {
+    font-size: 16px;
+    padding: 0 20px;
+}
+
 #modal-card .card-content-container {
     display: flex;
     flex-direction: column;
@@ -247,4 +252,13 @@
         visibility: hidden;
         overflow: hidden;
     }
+}
+
+
+#modal-title {
+    align-items: center;
+    text-align: center;
+    font-size: 32px;
+    color: #0084ff;
+    margin-bottom: 40px;
 }
