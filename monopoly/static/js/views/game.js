@@ -150,6 +150,7 @@ class GameView {
         $nextUserGroup.classList.add("active");
 
         this.currentPlayer = nextPlayer;
+        let title = (this.currentPlayer === this.myPlayerIndex) ? "Your Turn!" : "";
 
         // role dice
         const button = (nextPlayer !== this.myPlayerIndex) ? [] :
@@ -165,7 +166,7 @@ class GameView {
                     onDiceRolled();
                 }
             }];
-        this.showModal(nextPlayer, "Your Turn!", this.diceMessage, button);
+        this.showModal(nextPlayer, title, this.diceMessage, button);
     }
 
     /*
