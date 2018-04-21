@@ -155,8 +155,8 @@ class Game(object):
             construction_land = move_result.get_land().get_content()
             if construction_land.get_owner_index() != \
                     self._current_player_index:
-                self.notify_error("Error! this land is not owned by the "
-                                  "current player, so cannot make construciton")
+                # self.notify_error("Error! this land is not owned by the "
+                #                   "current player, so cannot make construciton")
                 result = False
             if move_result.yes is True:
                 self.get_current_player().deduct_money(
@@ -263,7 +263,7 @@ class Game(object):
             self._roll_to_next_game_state()
             return ret
         else:
-            print 'decision made fail'
+            print 'make_decision fail'
             return None
 
     # getters
