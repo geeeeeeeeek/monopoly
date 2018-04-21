@@ -23,8 +23,6 @@ class Game(object):
         self._handlers = []
         self.add_game_change_listner(MonopolyHandler())
 
-
-
     def add_game_change_listner(self, handler):
         self._handlers.append(handler)
 
@@ -34,6 +32,7 @@ class Game(object):
                                cur_player.get_position() + steps) % self._board.get_grid_num()
         if new_position < cur_player.get_position():
             self.get_current_player().add_money(START_REWARD)
+            self.notify
         land_dest = self._board.get_land(new_position)
         self.get_current_player().set_position(new_position)
         assert (not (land_dest is None))
@@ -275,29 +274,33 @@ class Game(object):
         for handler in self._handlers:
             handler.on_error(err_msg)
 
+    def notify_pass_start(self):
+        for handler in self._handlers:
+            handler.on_pass_start()
+
 
 # example of the event handler
 class MonopolyHandler(object):
     def on_error(self, err_msg):
         pass
-    #
-    # def on_new_game(self):
-    #     pass
-    #
-    # def on_game_ended(self):
-    #     pass
-    #
-    # def on_rolled(self):
-    #     pass
-    #
-    # def on_player_changed(self):
-    #     pass
-    #
-    # def on_decdision_made(self):
-    #     pass
-    #
-    # def on_result_applied(self):
-    #     pass
+
+    def on_new_game(self):
+        pass
+
+    def on_game_ended(self):
+        pass
+
+    def on_rolled(self):
+        pass
+
+    def on_player_changed(self):
+        pass
+
+    def on_decdision_made(self):
+        pass
+
+    def on_result_applied(self):
+        pass
 
     def on_pass_start(self):
         pass
