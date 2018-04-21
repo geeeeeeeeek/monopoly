@@ -378,7 +378,7 @@ class GameView {
 
     sendMessage() {
         const message = this.$chatMessageToSend.value;
-        this.addChatMessage(this.currentPlayer, message);
+        this.addChatMessage(this.myPlayerIndex, message);
 
         this.$chatMessageToSend.value = "";
         // TODO: send message via socket
