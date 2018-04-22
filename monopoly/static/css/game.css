@@ -153,10 +153,6 @@
     margin: 40px;
 }
 
-#chat-messages {
-    flex-grow: 1;
-}
-
 .chat-message {
     display: flex;
     flex-direction: row;
@@ -166,6 +162,7 @@
     max-width: 320px;
     width: fit-content;
     margin-top: 10px;
+    min-height: 38px;
 }
 
 .chat-message-avatar {
@@ -219,6 +216,8 @@
     display: flex;
     justify-content: flex-end;
     flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
 }
 
 #chat-messages .chat-message {

@@ -389,6 +389,7 @@ class GameView {
             from: this.myPlayerIndex,
             content: message,
         }));
+        this.$chatMessageToSend.value = "";
     }
 
     async handlePassStart(message) {
