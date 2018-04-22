@@ -25,9 +25,9 @@ class Board(object):
         self._lands.append(Land(7, "Chance", ChanceLand()))
         self._lands.append(Land(8, "Posner Hall", ConstructionLand(100)))
         self._lands.append(Land(9, "Hunt Library", ConstructionLand(120)))
-        self._lands.append(Land(10, "AIV", JailLand(1)))
+        self._lands.append(Land(10, "AIV Jail", JailLand(1)))
         self._lands.append(Land(11, "Doherty Hall", ConstructionLand(140)))
-        self._lands.append(Land(12, "Entropy", Infra(150)))
+        self._lands.append(Land(12, "Entropy+", Infra(150)))
         self._lands.append(Land(13, "Gasling Stadium", ConstructionLand(140)))
         self._lands.append(Land(14, "Margaret Morrison Carnegie Hall",
                                 ConstructionLand(160)))
@@ -47,7 +47,7 @@ class Board(object):
         self._lands.append(Land(27, "Fence", ConstructionLand(260)))
         self._lands.append(Land(28, "iNoodle", Infra(150)))
         self._lands.append(Land(29, "Purnell Center", ConstructionLand(280)))
-        self._lands.append(Land(30, "AIV", JailLand(1)))
+        self._lands.append(Land(30, "AIV Jail", JailLand(1)))
         self._lands.append(Land(31, "Hamburg Hall", ConstructionLand(300)))
         self._lands.append(Land(32, "Collaborative Innovation Center",
                                 ConstructionLand(300)))
@@ -58,7 +58,7 @@ class Board(object):
         self._lands.append(Land(37, "Information Networking Institute",
                                 ConstructionLand(350)))
         self._lands.append(Land(38, "Pasta Vilaggio", Infra(150)))
-        self._lands.append(Land(39, "DB Mellon Institute", ConstructionLand(
+        self._lands.append(Land(39, "Mellon Institute", ConstructionLand(
             400)))
 
     def get_grid_num(self):
