@@ -305,6 +305,7 @@ def test13(number):
 
     print 'successful test{0}\n'.format(number)
 
+
 # building hotel
 def test14(number):
     print "---test{0}----".format(number)
@@ -417,13 +418,77 @@ def test14(number):
     print 'successful test{0}\n'.format(number)
 
 
+# This is test that there is no enough money to buy the property
+def test15(number):
+    print "---test{0}----".format(number)
+    game = Game(1)
+    game.get_current_player().set_money(20)
+    money = game.get_current_player().get_money()
+    print money
+    handler = LogHandler(game)
+    game.add_game_change_listner(handler)
+
+    steps, move_result = game.roll(3)
+    # result
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print move_result.get_move_result_type()
+    print move_result.is_option()
+    print "steps: ", steps
+    print move_result
+    game.make_decision(move_result)
+    print game.get_status()
+
+    print 'successful test{0}\n'.format(number)
+
+
+# This is test that there is no enough money to construct a building
+def test16(number):
+    print "---test{0}----".format(number)
+    game = Game(1)
+    game.get_current_player().set_money(80)
+    money = game.get_current_player().get_money()
+    print money
+    handler = LogHandler(game)
+    game.add_game_change_listner(handler)
+
+    steps, move_result = game.roll(3)
+    # result
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print 'move result type is', move_result.get_move_result_type()
+    print 'whether it is an option: ', move_result.is_option()
+    print "steps: ", steps
+    print move_result
+    game.make_decision(move_result)
+    print game.get_status()
+
+    print '-----round2-----'
+    game.get_current_player().set_money(20)
+    stop, move_result = game.roll(40)
+    print 'debug471', move_result
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print 'move result type is', move_result.get_move_result_type()
+    print 'whether it is an option: ', move_result.is_option()
+    print "steps: ", steps
+    print move_result
+    game.make_decision(move_result)
+    print game.get_status()
+
+    print 'successful test{0}\n'.format(number)
+
+
 class LogHandler(MonopolyHandler):
 
     def __init__(self, g):
         self.game = g
 
     def on_error(self, err_msg):
-        print "it is an error" + err_msg
+        print "it is an error: " + err_msg
 
     def on_rolled(self):
         print '[Info] the player {0} is rolling'.format(
@@ -466,6 +531,8 @@ def test_suite():
     test12(12)
     test13(13)
     test14(14)
+    test15(15)
+    test16(16)
 
 
 if __name__ == "__main__":
