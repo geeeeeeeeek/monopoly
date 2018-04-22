@@ -45,8 +45,8 @@ class Game(object):
 
     def _move(self, steps):
         cur_player = self.get_current_player()
-        new_position = (
-                               cur_player.get_position() + steps) % self._board.get_grid_num()
+        new_position = (cur_player.get_position() + steps) \
+                       % self._board.get_grid_num()
         if new_position < cur_player.get_position():
             self.get_current_player().add_money(START_REWARD)
             self.notify_pass_start()
@@ -175,7 +175,7 @@ class Game(object):
             assert construction_land.get_owner_index() == self._current_player_index
             if construction_land.get_owner_index() != \
                     self._current_player_index:
-                #return handled
+                # return handled
                 self.notify_error("Error! this land is not owned by the "
                                   "current player, so cannot make construciton")
                 result = False
@@ -306,6 +306,15 @@ class Game(object):
     # getters
     def get_player(self, index):
         return self._players[index]
+
+    # this will return a 40 num array, each indicate the owner of each land
+    def get_land_owners(self):
+        ret = []
+        for i in xrange(self._board.get_grid_num()):
+            land = self._board.get_land(i)
+            owner = land.get_content().get_owner_index()
+            ret.append(owner)
+        return ret
 
     def get_current_player(self):
         return self._players[self._current_player_index]

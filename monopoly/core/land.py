@@ -36,8 +36,7 @@ class Land(object):
     def __str__(self):
         type_str = LandType.get_description(self.get_type())
         return "land position {0}, land content type {1}".format(
-            self.get_position(),
-                                                                 type_str)
+            self.get_position(), type_str)
 
 
 class ConstructionLand(object):
@@ -111,12 +110,12 @@ class ConstructionLand(object):
             ret = 0
         if self._properties == BuildingType.HOTEL:
             ret = (self._price + HOTEL_CONSTRUCTION_COST) / \
-                   RATIO_RENT_TO_PRICE_FOR_HOTEL
+                  RATIO_RENT_TO_PRICE_FOR_HOTEL
         else:
             ret = (self._price + \
-                    self._building_num *
-                    HOUSE_CONSTRUCTION_COST) / \
-                   RATIO_RENT_TO_PRICE_FOR_HOUSE
+                   self._building_num *
+                   HOUSE_CONSTRUCTION_COST) / \
+                  RATIO_RENT_TO_PRICE_FOR_HOUSE
         print 'debug114, rent is', ret
         return ret
 
@@ -157,6 +156,9 @@ class StartLand(object):
     def get_type(self):
         return LandType.START
 
+    def get_owner_index(self):
+        return None
+
 
 class JailLand(object):
     # _stops = 0
@@ -170,15 +172,24 @@ class JailLand(object):
     def get_type(self):
         return LandType.JAIL
 
+    def get_owner_index(self):
+        return None
+
 
 class ParkingLand(object):
     def get_type(self):
         return LandType.PARKING
 
+    def get_owner_index(self):
+        return None
+
 
 class ChanceLand(object):
     def get_type(self):
         return LandType.CHANCE
+
+    def get_owner_index(self):
+        return None
 
 
 class LandType(object):
