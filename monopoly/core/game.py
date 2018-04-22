@@ -51,11 +51,12 @@ class Game(object):
             self.get_current_player().add_money(START_REWARD)
             self.notify_pass_start()
         land_dest = self._board.get_land(new_position)
-        self.get_current_player().set_position(new_position)
-        assert ((land_dest is not None))
+        assert (land_dest is not None)
         if land_dest is None:
             self.notify_error("Internal error, the destination land is none. "
                               "there is no land at the new position")
+            return None
+        self.get_current_player().set_position(new_position)
         print 'debug41: ', land_dest
         return land_dest
 
@@ -141,6 +142,7 @@ class Game(object):
         else:
             print "Error, the land is", land_type
             self.notify_error("Internal error, unknow land type")
+            return None
 
     def _has_enough_money(self, construction_land):
         print 'price1:', self.get_current_player().get_money()
@@ -158,6 +160,7 @@ class Game(object):
             construction_land = move_result.get_land().get_content()
             if move_result.yes is True:
                 if self._has_enough_money(construction_land) is False:
+                    # return handled
                     self.notify_error("No enough money to buy the property.")
                     result = False
                 construction_land.set_owner(self._current_player_index)
@@ -172,6 +175,7 @@ class Game(object):
             assert construction_land.get_owner_index() == self._current_player_index
             if construction_land.get_owner_index() != \
                     self._current_player_index:
+                #return handled
                 self.notify_error("Error! this land is not owned by the "
                                   "current player, so cannot make construciton")
                 result = False
@@ -179,22 +183,27 @@ class Game(object):
                 self.get_current_player().deduct_money(
                     construction_land.get_next_construction_price())
                 if construction_land.add_properties() is False:
+                    # return handled
                     self.notify_error("Add property fail. ")
+                    result = False
 
         else:
             if move_result_type == MoveResultType.PAYMENT:
                 print 'debug129'
                 self.get_current_player().deduct_money(val)
+                if self.get_current_player().get_money() < 0:
+                    self.notify_game_ended()
+                    self._game_state = GameStateType.GAME_ENDED
                 land = move_result.get_land().get_content()
                 if land.get_type() == LandType.CONSTRUCTION_LAND or \
                         land.get_type() == LandType.INFRA:
                     # this is the payment to the player
-                    print 'debug133'
                     assert land.get_owner_index() is not None
                     if land.get_owner_index() is None:
                         self.notify_error("Error: The land has no owner. why "
                                           "the current player need to make "
                                           "payment")
+                        result = False
                     print 'owner index is: ', land.get_owner_index()
                     rewarded_player = self.get_player(land.get_owner_index())
                     rewarded_player.add_money(val)
@@ -233,10 +242,14 @@ class Game(object):
         self._game_state = 1 - self._game_state
 
     def roll(self, steps=None):
+        if self.get_game_status() == GameStateType.GAME_ENDED:
+            self.notify_error("Internal error: the game has ended")
+            return None
         assert self.get_game_status() == GameStateType.WAIT_FOR_ROLL
         if self.get_game_status() != GameStateType.WAIT_FOR_ROLL:
             self.notify_error("Internal error: the game state must be "
                               "'waiting for roll' when you roll")
+            return None
         self.notify_rolled()
 
         if steps is None:
@@ -245,6 +258,9 @@ class Game(object):
             steps2 = random.randint(1, 6)
             steps = steps1 + steps2
         land_dest = self._move(steps)
+        if land_dest is None:
+            print 'debug262, the move result is None'
+            return None
         print "debug116", land_dest
         self._roll_to_next_game_state()
         move_result = self._get_move_result(land_dest)
@@ -253,10 +269,14 @@ class Game(object):
     # if the result type is option, you must set the decision before calling
     # this
     def make_decision(self, decision):
+        if self.get_game_status() == GameStateType.GAME_ENDED:
+            self.notify_error("Internal error: the game has ended")
+            return None
         assert self.get_game_status() == GameStateType.WAIT_FOR_DECISION
         if self.get_game_status() != GameStateType.WAIT_FOR_DECISION:
             self.notify_error("Internal error: the game state must be "
                               "'waiting for decision when you make decision'")
+            return None
         self.notify_decision_made()
         ret = decision
         if decision.move_result_type != MoveResultType.BUY_LAND_OPTION and \
@@ -270,6 +290,7 @@ class Game(object):
                 print 'error'
                 self.notify_error("Error: You must make a decision when you "
                                   "need to make a decsion")
+                return None
             make_decision_success = self._apply_result(decision)
             print 'debgu237: ', make_decision_success
             ret = MoveResult(decision.get_move_result_type(),
@@ -280,7 +301,6 @@ class Game(object):
             self._roll_to_next_game_state()
             return ret
         else:
-            print 'make_decision fail'
             return None
 
     # getters
@@ -390,6 +410,8 @@ class InternalLogHandler(MonopolyHandler):
     def on_game_ended(self):
         print '[Info] [Game ID: {0}] '.format(self.game.get_game_id()) + \
               "Game Ended"
+        print '[Info] The player {0} has go bankruptcy'.format(
+            self.game.get_current_player().get_index())
 
     def on_player_changed(self):
         print '[Info] [Game Id: {0}] '.format(self.game.get_game_id()) + \
