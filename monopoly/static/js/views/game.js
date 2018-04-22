@@ -298,15 +298,15 @@ class GameView {
                 callback: this.cancelDecision.bind(this)
             }] : [];
 
-            this.showModal(currPlayer, title, eventMsg, buttons);
+            this.showModal(currPlayer, title, this.players[currPlayer].userName + eventMsg, buttons);
         } else {
             if (message.is_cash_change === "true") {
-                await this.showModal(currPlayer, title, eventMsg, [], 3);
+                await this.showModal(currPlayer, title, this.players[currPlayer].userName + eventMsg, [], 3);
                 let cash = message.curr_cash;
                 this.changeCashAmount(cash);
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else if (message.new_event === "true") {
-                await this.showModal(currPlayer, title, eventMsg, [], 3);
+                await this.showModal(currPlayer, title, this.players[currPlayer].userName + eventMsg, [], 3);
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else {
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
