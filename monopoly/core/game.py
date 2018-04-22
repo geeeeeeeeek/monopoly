@@ -59,12 +59,22 @@ class Game(object):
         print 'debug41: ', land_dest
         return land_dest
 
+    def _is_purchase_affordable(self, land):
+        return self.get_current_player().get_money() >= land.get_price()
+
+    def _is_construction_affordable(self, land):
+        return self.get_current_player().get_money() >= \
+               land.get_next_construction_price()
+
     def _get_move_result(self, land):
         land_type = land.get_type()
         if land_type == LandType.CONSTRUCTION_LAND:
             # if land is owned
             construction_land = land.get_content()
             if construction_land.get_owner_index() is None:
+                if self._is_purchase_affordable(construction_land) is False:
+                    val = construction_land.get_price()
+                    return MoveResult(MoveResultType.NOTHING, val, land)
                 result_type = MoveResultType.BUY_LAND_OPTION
                 val = construction_land.get_price()
                 return MoveResult(result_type, val, land)
@@ -72,6 +82,9 @@ class Game(object):
                     self._current_player_index:
                 if construction_land.is_constructable() is False:
                     return MoveResult(MoveResultType.NOTHING, 0, land)
+                if self._is_construction_affordable(construction_land) is False:
+                    val = construction_land.get_next_construction_price()
+                    return MoveResult(MoveResultType.NOTHING, val, land)
                 result_type = MoveResultType.CONSTRUCTION_OPTION
                 val = construction_land.get_next_construction_price()
                 return MoveResult(result_type, val, land)
@@ -83,6 +96,9 @@ class Game(object):
             print "debug63"
             infra_land = land.get_content()
             if infra_land.get_owner_index() is None:
+                if self._is_purchase_affordable(infra_land) is False:
+                    return MoveResult(MoveResultType.NOTHING,
+                                      infra_land.get_price(), land)
                 result_type = MoveResultType.BUY_LAND_OPTION
                 val = infra_land.get_price()
                 return MoveResult(result_type, val, land)
@@ -153,10 +169,11 @@ class Game(object):
 
         elif move_result_type == MoveResultType.CONSTRUCTION_OPTION:
             construction_land = move_result.get_land().get_content()
+            assert construction_land.get_owner_index() == self._current_player_index
             if construction_land.get_owner_index() != \
                     self._current_player_index:
-                # self.notify_error("Error! this land is not owned by the "
-                #                   "current player, so cannot make construciton")
+                self.notify_error("Error! this land is not owned by the "
+                                  "current player, so cannot make construciton")
                 result = False
             if move_result.yes is True:
                 self.get_current_player().deduct_money(
@@ -376,7 +393,8 @@ class InternalLogHandler(MonopolyHandler):
 
     def on_player_changed(self):
         print '[Info] [Game Id: {0}] '.format(self.game.get_game_id()) + \
-              "Player changed to : {0}".format(self.game.get_current_player().get_index())
+              "Player changed to : {0}".format(
+                  self.game.get_current_player().get_index())
 
     def on_result_applied(self):
         pass
