@@ -79,7 +79,7 @@ class Board {
 
 Board.SIZE = 11;
 
-Board.SIDE_TOP = 0;
+Board.SIDE_TOP = 2;
 Board.SIDE_LEFT = 1;
-Board.SIDE_RIGHT = 2;
-Board.SIDE_BOTTOM = 3;
+Board.SIDE_RIGHT = 3;
+Board.SIDE_BOTTOM = 0;
