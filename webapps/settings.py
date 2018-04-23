@@ -26,7 +26,7 @@ SECRET_KEY = '7d#m%i!ed32ei5v(i2da*#w9od=_m9u&*6&-6jla1fqdb=66_('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ec2-18-188-96-54.us-east-2.compute.amazonaws.com']
 
 # Application definition
 
@@ -91,6 +91,13 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'django', 'USER': 'root', 'PASSWORD': 'team16',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
