@@ -173,7 +173,6 @@
     overflow: hidden;
 }
 
-
 .chat-message-avatar:before {
     content: ' ';
     display: block;
@@ -253,11 +252,17 @@
     }
 }
 
-
 #modal-title {
     align-items: center;
     text-align: center;
     font-size: 32px;
     color: #0084ff;
-    margin-bottom: 40px;
+}
+
+#modal-subtitle {
+    align-items: center;
+    text-align: center;
+    font-size: 20px;
+    color: #009688;
+    margin: 4px 0 36px;
 }
