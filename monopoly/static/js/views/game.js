@@ -356,9 +356,12 @@ class GameView {
 
     async handleGameEnd(message) {
         let loser = message.loser;
-        let msg = (loser === this.myPlayerIndex) ? "You loss!" : "You win!";
-        await this.showModal(this.myPlayerIndex, "Game Over", msg, [], 100);
-
+        let all_asset = message.all_asset;
+        let msg = (loser === this.myPlayerIndex) ? "You loss! You have run out of cash. " : "You win! ";
+        for (let i = 0; i < all_asset.length; i++) {
+            msg = msg + this.players[i].userName + " has asset: " + all_asset[i] + ". ";
+        }
+        await this.showModal(this.myPlayerIndex, "Game Over", msg, [], 10000);
     }
 
     handleChat(message) {

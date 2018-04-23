@@ -10,10 +10,10 @@ class CardDeck(object):
         self._cards = []
         self._cards.append(Card("Get One More Grace day ", 100, 0))
         self._cards.append(Card("Overspeed ", 200, 0))
-        self._cards.append(Card("Autolab rank reward ", -300, 0))
+        self._cards.append(Card("Autolab rank reward ", -100, 0))
         self._cards.append(Card("Illegal Parking ", 150, 0))
-        self._cards.append(Card("Meet harry potter in Doherty Hall", -200, 0))
-        self._cards.append(Card("Host a fantastic Carnival", -300, 0))
+        self._cards.append(Card("Meet harry potter in Doherty Hall", -150, 0))
+        self._cards.append(Card("Host a fantastic Carnival", -200, 0))
         self.shuffle()
 
     def insert(self, card):

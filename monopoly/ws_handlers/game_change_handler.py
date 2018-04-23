@@ -30,7 +30,7 @@ class ChangeHandler(MonopolyHandler):
         print 'it is the start of the game'
 
     def on_game_ended(self):
-        self.is_end = True
+        self._is_end = True
         print 'this is the end of the game'
 
     def on_player_changed(self):
