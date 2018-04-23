@@ -548,17 +548,17 @@ def test18(number):
     print 'successful test{0}\n'.format(number)
 
 
-# get assets function
+
+# infra the second time arrive
 def test19(number):
     print "---test{0}----".format(number)
-    game = Game(2)
-    game.get_current_player().set_money(80)
+    game = Game(1)
     money = game.get_current_player().get_money()
     print money
     handler = LogHandler(game)
     game.add_game_change_listner(handler)
-
-    steps, move_result = game.roll(3)
+    
+    steps, move_result = game.roll(5)
     # result
     if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
             or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
@@ -570,8 +570,19 @@ def test19(number):
     game.make_decision(move_result)
     print game.get_status()
 
-    print 'assets are: ', game.get_player(0).get_asset()
-    print 'assets are: ', game.get_player(1).get_asset()
+    print '---round2---'
+
+    steps, move_result = game.roll(40)
+    # result
+    if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \
+            or move_result.move_result_type == MoveResultType.BUY_LAND_OPTION:
+        move_result.set_decision(True)
+    print 'move result type is', move_result.get_move_result_type()
+    print 'whether it is an option: ', move_result.is_option()
+    print "steps: ", steps
+    print move_result
+    game.make_decision(move_result)
+    print game.get_status()
 
     print 'successful test{0}\n'.format(number)
 
