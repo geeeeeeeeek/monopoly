@@ -262,13 +262,27 @@ class GameView {
         let title = message.title;
         let landname = message.landname;
         let owners = message.owners;
+        let houses = message.houses;
         this.initGame(players, changeCash, posChange);
 
         await this.gameLoadingPromise;
         await this.hideModal(true);
 
         for (let i = 0; i < owners.length; i++) {
-            // TODO: init land owner
+            if (owners[i] !== null) {
+                this.gameController.addProperty(PropertyManager.PROPERTY_OWNER_MARK, i, owners[i]);
+            }
+        }
+
+        for (let i = 0; i < houses.length; i++) {
+            if (houses[i] === 4) {
+                this.gameController.addProperty(PropertyManager.PROPERTY_HOTEL, i);
+            }
+            else {
+                for (let building_num = 0; building_num < houses[i]; building_num++) {
+                    this.gameController.addProperty(PropertyManager.PROPERTY_HOUSE, i);
+                }
+            }
         }
 
 
@@ -282,7 +296,8 @@ class GameView {
                 text: "No",
                 callback: this.cancelDecision.bind(this)
             }] : [];
-            this.showModal(nextPlayer, title + landname, "subtitle", eventMsg, buttons);
+            eventMsg = this.players[nextPlayer].userName + " " + eventMsg;
+            this.showModal(nextPlayer, title, landname, eventMsg, buttons);
         }
     }
 
@@ -305,7 +320,11 @@ class GameView {
 
         if (message.bypass_start === "true") {
             let eventMsg = this.players[currPlayer].userName + " has passed the start point, reward 200.";
-            await this.showModal(currPlayer, "Get Reward", "subtitle", eventMsg, [], 2);
+            if (message.is_cash_change !== "true") {
+                let cash = message.curr_cash;
+                this.changeCashAmount(cash);
+            }
+            await this.showModal(currPlayer, "Get Reward", "Start point", eventMsg, [], 2);
         }
 
         if (message.is_option === "true") {
@@ -317,15 +336,15 @@ class GameView {
                 callback: this.cancelDecision.bind(this)
             }] : [];
 
-            this.showModal(currPlayer, title + landname, "subtitle", this.players[currPlayer].userName + eventMsg, buttons);
+            this.showModal(currPlayer, title, landname, this.players[currPlayer].userName + eventMsg, buttons);
         } else {
             if (message.is_cash_change === "true") {
-                await this.showModal(currPlayer, title + landname, "subtitle", this.players[currPlayer].userName + eventMsg, [], 3);
+                await this.showModal(currPlayer, title, landname, this.players[currPlayer].userName + eventMsg, [], 3);
                 let cash = message.curr_cash;
                 this.changeCashAmount(cash);
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else if (message.new_event === "true") {
-                await this.showModal(currPlayer, title + landname, "subtitle", this.players[currPlayer].userName + eventMsg, [], 3);
+                await this.showModal(currPlayer, title, landname, this.players[currPlayer].userName + eventMsg, [], 3);
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else {
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
@@ -336,10 +355,8 @@ class GameView {
 
     handleBuyLand(message) {
         const {curr_player, curr_cash, tile_id} = message;
-
         this.changeCashAmount(curr_cash);
-        // TODO: one player get the land
-
+        this.gameController.addProperty(PropertyManager.PROPERTY_OWNER_MARK, tile_id, curr_player);
         let next_player = message.next_player;
         this.changePlayer(next_player, this.onDiceRolled.bind(this));
     }
@@ -370,7 +387,7 @@ class GameView {
         for (let i = 0; i < all_asset.length; i++) {
             msg = msg + this.players[i].userName + " has asset: " + all_asset[i] + ". ";
         }
-        await this.showModal(this.myPlayerIndex, "Game Over", "subtitle", msg, [], 10000);
+        await this.showModal(this.myPlayerIndex, "Game Over", "game result", msg, [], 10000);
     }
 
     handleChat(message) {
@@ -419,12 +436,6 @@ class GameView {
             content: message,
         }));
         this.$chatMessageToSend.value = "";
-    }
-
-    async handlePassStart(message) {
-        let curr_player = message.curr_player;
-        let eventMsg = this.players[curr_player].userName + "has passed the start point, reward 200.";
-        await this.showModal(curr_player, "Get Reward", "subtitle", eventMsg, [], 2);
     }
 
     /*
