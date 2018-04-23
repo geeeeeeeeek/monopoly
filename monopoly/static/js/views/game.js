@@ -140,7 +140,7 @@ class GameView {
     changeCashAmount(amounts) {
         for (let i in amounts) {
             const $cashAmount = document.querySelector(`#user-group-${i} .user-cash-num`);
-            $cashAmount.innerText = amounts[i];
+            $cashAmount.innerText = (amounts[i] >= 0) ? amounts[i] : 0;
         }
     }
 
@@ -290,7 +290,6 @@ class GameView {
                 }
             }
         }
-
 
         if (message.waitDecision === "false") {
             this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
