@@ -77,6 +77,7 @@ class GameView {
             "construct": this.handleConstruct,
             "cancel_decision": this.handleCancel,
             "pass_start": this.handlePassStart,
+            "game_end": this.handleGameEnd,
             "chat": this.handleChat,
         };
 
@@ -351,6 +352,13 @@ class GameView {
     handleCancel(message) {
         let next_player = message.next_player;
         this.changePlayer(next_player, this.onDiceRolled.bind(this));
+    }
+
+    async handleGameEnd(message) {
+        let loser = message.loser;
+        let msg = (loser === this.myPlayerIndex) ? "You loss!" : "You win!";
+        await this.showModal(this.myPlayerIndex, "Game Over", msg, [], 100);
+
     }
 
     handleChat(message) {

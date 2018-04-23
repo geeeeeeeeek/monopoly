@@ -1,9 +1,14 @@
 from monopoly.ws_handlers.game_handler import *
 
+
 class ChangeHandler(MonopolyHandler):
     def __init__(self, game, hostname):
         self.game = game
         self.hostname = hostname
+        self._is_end = False
+
+    def is_end(self):
+        return self._is_end
 
     def on_pass_start(self):
         curr_player = self.game.get_current_player().get_index()
@@ -25,7 +30,8 @@ class ChangeHandler(MonopolyHandler):
         print 'it is the start of the game'
 
     def on_game_ended(self):
-        pass
+        self.is_end = True
+        print 'this is the end of the game'
 
     def on_player_changed(self):
         pass
