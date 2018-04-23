@@ -140,6 +140,7 @@
 
 .monopoly-cash {
     text-decoration: line-through;
+    font-family: monospace;
 }
 
 /* Chat */
@@ -263,6 +264,58 @@
     align-items: center;
     text-align: center;
     font-size: 20px;
-    color: #009688;
+    color: #FF9800;
     margin: 4px 0 36px;
+}
+
+.scoreboard-row {
+    display: flex;
+    line-height: 36px;
+    margin: 20px 0;
+    font-size: 24px;
+}
+
+.scoreboard-ranking {
+    font-family: impact, serif;
+    width: 40px;
+    font-style: italic;
+}
+
+.scoreboard-username {
+    margin-left: 20px;
+    width: 180px;
+    font-size: 18px;
+}
+
+.scoreboard-score {
+    font-family: monospace;
+}
+
+.scoreboard-row:nth-child(1) {
+    color: #F44336;
+    animation: fadein 1s;
+}
+
+.scoreboard-row:nth-child(2) {
+    color: #FF9800;
+    animation: fadein 2s;
+}
+
+.scoreboard-row:nth-child(3) {
+    color: #2196F3;
+    animation: fadein 3s;
+}
+
+.scoreboard-row:nth-child(4) {
+    color: #009688;
+    animation: fadein 4s;
+}
+
+.scoreboard-bg {
+    background: url("/static/images/scoreboard_bg.png") no-repeat;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
