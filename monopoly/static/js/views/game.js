@@ -21,9 +21,11 @@ class GameView {
         });
 
         this.diceMessage = document.getElementById("dice-message").innerHTML;
+
         this.$usersContainer = document.getElementById("users-container");
 
         this.$modalCard = document.getElementById("modal-card");
+        this.$modalCardContent = document.querySelector("#modal-card .card-content-container");
         this.$modalAvatar = document.getElementById("modal-user-avatar");
         this.$modalMessage = document.getElementById("modal-message-container");
         this.$modalButtons = document.getElementById("modal-buttons-container");
@@ -168,7 +170,7 @@ class GameView {
                     onDiceRolled();
                 }
             }];
-        this.showModal(nextPlayer, title, "",this.diceMessage, button);
+        this.showModal(nextPlayer, title, "", this.diceMessage, button);
     }
 
     /*
@@ -436,6 +438,29 @@ class GameView {
         this.$chatMessageToSend.value = "";
     }
 
+    /*
+    * ScoreList should be sorted
+    * [{
+    *   playerIndex: int,
+    *   score: int
+    * }]
+    * */
+    showScoreboard(scoreList) {
+        let scoreboardTemplate = `<div id="scoreboard">`;
+        for (let index in scoreList) {
+            scoreboardTemplate += `
+                <div class="scoreboard-row">
+                    <span class="scoreboard-ranking">${index}</span>
+                    <img class="chat-message-avatar" src="${this.players[scoreList[index].playerIndex].avatar}">
+                    <span class="scoreboard-username">${this.players[scoreList[index].playerIndex].fullName}</span>
+                    <div class="monopoly-cash">M</div>
+                    <span class="scoreboard-score">${scoreList[index].score}</span>
+                </div>`;
+        }
+        scoreboardTemplate += "</div>";
+        this.$modalCardContent.classList.add("scoreboard-bg");
+        this.showModal(null, "Scoreboard", "Good Game!", scoreboardTemplate, []);
+    }
 }
 
 window.onload = () => {
