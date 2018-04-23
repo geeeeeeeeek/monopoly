@@ -294,6 +294,7 @@ class GameView {
                 text: "No",
                 callback: this.cancelDecision.bind(this)
             }] : [];
+            eventMsg = this.players[nextPlayer].userName + " " + eventMsg;
             this.showModal(nextPlayer, title, landname, eventMsg, buttons);
         }
     }
