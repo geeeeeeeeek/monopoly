@@ -29,6 +29,7 @@ class JoinView {
 
     initComponents() {
         this.$usersContainer = document.getElementById("joined-users-container");
+        this.$newGameNotice = document.getElementById("new-game-notice");
         this.$startGame = document.getElementById("start-game");
         this.$startGame.addEventListener("click", () => {
             this.startGame();
@@ -67,17 +68,20 @@ class JoinView {
 
             if (this.friends.length > 1) {
                 if (this.hostName !== this.userName) {
-                    this.$startGame.innerHTML = "Waiting for host to start the game...";
+                    this.$startGame.innerText = "Waiting for host to start the game...";
                 } else {
                     this.$startGame.disabled = false;
-                    this.$startGame.innerHTML = "Start Game";
+                    this.$startGame.innerText = "Start Game";
                 }
             }
         } else if (message.action === "start") {
             this.navigateToGame();
         } else if (message.action === "fail_join") {
-            alert("failed to join");
-            // TODO: Failed to join
+            this.$startGame.disabled = true;
+            this.$startGame.innerText = "Navigating back... Create your own game!";
+            this.$newGameNotice.innerText = "4 Players Max Per Game!";
+            this.$newGameNotice.style.color = "#F44336";
+            setTimeout(this.navigateBack, 2000);
         }
     }
 
@@ -103,6 +107,10 @@ class JoinView {
 
     navigateToGame() {
         window.location = `http://${window.location.host}/monopoly/game/${this.hostName}`;
+    }
+
+    navigateBack() {
+        window.location = `http://${window.location.host}/monopoly/join`;
     }
 
     copyToClipboard() {

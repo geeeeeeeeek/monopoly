@@ -305,9 +305,9 @@ class GameView {
     }
 
 
-    handleAddErr() {
-        // TODO: attempt to join a non-exist room
-        alert("Failed to join");
+    async handleAddErr() {
+        await this.showModal(null, "Permission Denied", "Game Not Found", "Navigating back... Create your own game with your friends!", [], 5);
+        window.location = `http://${window.location.host}/monopoly/join`;
     }
 
 

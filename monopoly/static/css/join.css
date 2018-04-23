@@ -144,8 +144,9 @@ hr {
 
 #init-profile {
     background-color: #FF5722 !important;
+    flex-grow: 1;
 }
 
 #init-profile:hover {
-    background-color: #FF7043 !important;;
+    background-color: #FF7043 !important;
 }
