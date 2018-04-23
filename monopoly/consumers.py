@@ -16,6 +16,7 @@ from monopoly.ws_handlers.game_change_handler import *
 
 rooms = {}
 games = {}
+changehandlers = {}
 
 
 def ws_message(message):
@@ -58,7 +59,13 @@ def ws_connect_for_join(message):
     print 'user is: ', message.user
     print 'player name: ', player_name
     print 'room name: ', room_name
-    add_player(room_name, player_name)
+    if not add_player(room_name, player_name):
+        message.reply_channel.send({
+            "text": build_join_failed_msg()
+        })
+        print 'failed to join'
+        return
+
     Group(hostname).add(message.reply_channel)
 
     # # response_text = serializers.serialize('json', Item.objects.all())
@@ -81,7 +88,7 @@ def ws_message(message):
     if action == "start":
         handle_start(hostname)
     if action == "roll":
-        handle_roll(hostname, games)
+        handle_roll(hostname, games, changehandlers)
     if action == "confirm_decision":
         handle_confirm_decision(hostname, games)
     if action == "cancel_decision":
@@ -101,6 +108,13 @@ def ws_connect_for_start(message):
 
 def build_start_msg():
     ret = {"action": "start"}
+    print json.dumps(ret)
+    return json.dumps(ret)
+
+
+def build_join_failed_msg():
+    ret = {"action": "fail_join",
+    }
     print json.dumps(ret)
     return json.dumps(ret)
 
@@ -132,7 +146,12 @@ def add_player(room_name, player_name):
     if room_name not in rooms:
         rooms[room_name] = set()
         rooms[room_name].add(room_name)
+
+    if len(rooms[room_name]) >= 4:
+        return False
+
     rooms[room_name].add(player_name)
+    return True
 
 
 def handle_start(hostname):
@@ -145,6 +164,7 @@ def handle_start(hostname):
 
         change_handler = ChangeHandler(game, hostname)
         game.add_game_change_listner(change_handler)
+        changehandlers[hostname] = change_handler
 
     Group(hostname).send({
         "text": build_start_msg()

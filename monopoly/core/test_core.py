@@ -548,6 +548,7 @@ def test18(number):
     print 'successful test{0}\n'.format(number)
 
 
+
 # infra the second time arrive
 def test19(number):
     print "---test{0}----".format(number)
@@ -556,7 +557,7 @@ def test19(number):
     print money
     handler = LogHandler(game)
     game.add_game_change_listner(handler)
-
+    
     steps, move_result = game.roll(5)
     # result
     if move_result.move_result_type == MoveResultType.CONSTRUCTION_OPTION \

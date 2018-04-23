@@ -16,10 +16,14 @@
         <div class="card-blur"></div>
     </div>
     <div class="card-content-container">
-        <img id="user-avatar" src="{{ user.avatar }}">
+        <a href="/monopoly/profile/{{ user.name }}" target="_blank">
+            <img id="user-avatar" src="{{ user.avatar }}">
+        </a>
         <span id="new-game-notice">New Game!</span>
         <div id="joined-users-container">
-            <img class="joined-user-avatar" src="{{ user.avatar }}" title="{{ user.name }}">
+            <a href="/monopoly/profile/{{ user.name }}" target="_blank">
+                <img class="joined-user-avatar" src="{{ user.avatar }}" title="{{ user.name }}">
+            </a>
         </div>
         <button id="start-game" class="large-button" disabled>
             Waiting for friends to join...

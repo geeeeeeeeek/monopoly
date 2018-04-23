@@ -21,15 +21,18 @@ class GameView {
         });
 
         this.diceMessage = document.getElementById("dice-message").innerHTML;
+
         this.$usersContainer = document.getElementById("users-container");
 
         this.$modalCard = document.getElementById("modal-card");
+        this.$modalCardContent = document.querySelector("#modal-card .card-content-container");
         this.$modalAvatar = document.getElementById("modal-user-avatar");
         this.$modalMessage = document.getElementById("modal-message-container");
         this.$modalButtons = document.getElementById("modal-buttons-container");
         this.$modalTitle = document.getElementById("modal-title");
+        this.$modalSubTitle = document.getElementById("modal-subtitle");
 
-        this.showModal(null, "Welcome to Monopoly", "Loading game resources...", []);
+        this.showModal(null, "Welcome to Monopoly", "", "Loading game resources...", []);
         this.initBoard();
     }
 
@@ -72,11 +75,12 @@ class GameView {
     handleStatusChange(message) {
         const messageHandlers = {
             "init": this.handleInit,
+            "add_err": this.handleAddErr,
             "roll_res": this.handleRollRes,
             "buy_land": this.handleBuyLand,
             "construct": this.handleConstruct,
             "cancel_decision": this.handleCancel,
-            "pass_start": this.handlePassStart,
+            "game_end": this.handleGameEnd,
             "chat": this.handleChat,
         };
 
@@ -112,7 +116,9 @@ class GameView {
             if (this.userName === players[i].userName) this.myPlayerIndex = i;
             this.$usersContainer.innerHTML += `
                 <div id="user-group-${i}" class="user-group" style="background: ${GameView.PLAYERS_COLORS[i]}">
-                    <img class="user-avatar" src="${players[i].avatar}">
+                    <a href="/monopoly/profile/${players[i].userName}" target="_blank">
+                        <img class="user-avatar" src="${players[i].avatar}">
+                    </a>
                     <span class="user-cash">
                         <div class="monopoly-cash">M</div>
                         <div class="user-cash-num">1500</div>
@@ -167,7 +173,7 @@ class GameView {
                     onDiceRolled();
                 }
             }];
-        this.showModal(nextPlayer, title, this.diceMessage, button);
+        this.showModal(nextPlayer, title, "", this.diceMessage, button);
     }
 
     /*
@@ -180,7 +186,7 @@ class GameView {
     * }],
     * displayTime: int // seconds to display
     * */
-    showModal(playerIndex, title, message, buttons, displayTime) {
+    showModal(playerIndex, title, subTitle, message, buttons, displayTime) {
         return new Promise(resolve => {
             if (playerIndex === null) {
                 this.$modalAvatar.src = GameView.DEFAULT_AVATAR;
@@ -199,6 +205,7 @@ class GameView {
             this.$modalButtons.innerHTML = "";
 
             this.$modalTitle.innerText = title;
+            this.$modalSubTitle.innerText = subTitle;
 
             for (let i in buttons) {
                 let button = document.createElement("button");
@@ -256,10 +263,32 @@ class GameView {
         let posChange = message.posChange;
         let eventMsg = message.decision;
         let title = message.title;
+        let landname = message.landname;
+        let owners = message.owners;
+        let houses = message.houses;
         this.initGame(players, changeCash, posChange);
 
         await this.gameLoadingPromise;
         await this.hideModal(true);
+
+        for (let i = 0; i < owners.length; i++) {
+            if (owners[i] !== null) {
+                this.gameController.addProperty(PropertyManager.PROPERTY_OWNER_MARK, i, owners[i]);
+            }
+        }
+
+        for (let i = 0; i < houses.length; i++) {
+            if (houses[i] === 4) {
+                this.gameController.addProperty(PropertyManager.PROPERTY_HOTEL, i);
+            }
+            else {
+                for (let building_num = 0; building_num < houses[i]; building_num++) {
+                    this.gameController.addProperty(PropertyManager.PROPERTY_HOUSE, i);
+                }
+            }
+        }
+
+
         if (message.waitDecision === "false") {
             this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
         } else {
@@ -270,9 +299,17 @@ class GameView {
                 text: "No",
                 callback: this.cancelDecision.bind(this)
             }] : [];
-            this.showModal(nextPlayer, title, eventMsg, buttons);
+            eventMsg = this.players[nextPlayer].userName + " " + eventMsg;
+            this.showModal(nextPlayer, title, landname, eventMsg, buttons);
         }
     }
+
+
+    handleAddErr() {
+        // TODO: attempt to join a non-exist room
+        alert("Failed to join");
+    }
+
 
     async handleRollRes(message) {
         let currPlayer = message.curr_player;
@@ -281,13 +318,23 @@ class GameView {
         let newPos = message.new_pos;
         let eventMsg = message.result;
         let title = message.title;
+        let landname = message.landname;
         let rollResMsg = this.players[currPlayer].userName + " gets a roll result " + steps.toString();
 
-        await this.showModal(currPlayer, "🎲🎲", rollResMsg, [], 2);
+        await this.showModal(currPlayer, "🎲🎲", "", rollResMsg, [], 2);
 
         await this.gameController.movePlayer(currPlayer, newPos);
 
         this.audioManager.play("move");
+
+        if (message.bypass_start === "true") {
+            let eventMsg = this.players[currPlayer].userName + " has passed the start point, reward 200.";
+            if (message.is_cash_change !== "true") {
+                let cash = message.curr_cash;
+                this.changeCashAmount(cash);
+            }
+            await this.showModal(currPlayer, "Get Reward", "Start point", eventMsg, [], 2);
+        }
 
         if (message.is_option === "true") {
             const buttons = (this.myPlayerIndex === currPlayer) ? [{
@@ -298,15 +345,15 @@ class GameView {
                 callback: this.cancelDecision.bind(this)
             }] : [];
 
-            this.showModal(currPlayer, title, this.players[currPlayer].userName + eventMsg, buttons);
+            this.showModal(currPlayer, title, landname, this.players[currPlayer].userName + eventMsg, buttons);
         } else {
             if (message.is_cash_change === "true") {
-                await this.showModal(currPlayer, title, this.players[currPlayer].userName + eventMsg, [], 3);
+                await this.showModal(currPlayer, title, landname, this.players[currPlayer].userName + eventMsg, [], 3);
                 let cash = message.curr_cash;
                 this.changeCashAmount(cash);
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else if (message.new_event === "true") {
-                await this.showModal(currPlayer, title, this.players[currPlayer].userName + eventMsg, [], 3);
+                await this.showModal(currPlayer, title, landname, this.players[currPlayer].userName + eventMsg, [], 3);
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else {
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
@@ -317,10 +364,8 @@ class GameView {
 
     handleBuyLand(message) {
         const {curr_player, curr_cash, tile_id} = message;
-
         this.changeCashAmount(curr_cash);
-        // TODO: one player get the land
-
+        this.gameController.addProperty(PropertyManager.PROPERTY_OWNER_MARK, tile_id, curr_player);
         let next_player = message.next_player;
         this.changePlayer(next_player, this.onDiceRolled.bind(this));
     }
@@ -342,6 +387,16 @@ class GameView {
     handleCancel(message) {
         let next_player = message.next_player;
         this.changePlayer(next_player, this.onDiceRolled.bind(this));
+    }
+
+    async handleGameEnd(message) {
+        let loser = message.loser;
+        let all_asset = message.all_asset;
+        let msg = (loser === this.myPlayerIndex) ? "You loss! You have run out of cash. " : "You win! ";
+        for (let i = 0; i < all_asset.length; i++) {
+            msg = msg + this.players[i].userName + " has asset: " + all_asset[i] + ". ";
+        }
+        await this.showModal(this.myPlayerIndex, "Game Over", "game result", msg, [], 10000);
     }
 
     handleChat(message) {
@@ -392,10 +447,28 @@ class GameView {
         this.$chatMessageToSend.value = "";
     }
 
-    async handlePassStart(message) {
-        let curr_player = message.curr_player;
-        let eventMsg = this.players[curr_player].userName + "has passed the start point, reward 200.";
-        await this.showModal(curr_player, "Get Reward", eventMsg, [], 2);
+    /*
+    * ScoreList should be sorted
+    * [{
+    *   playerIndex: int,
+    *   score: int
+    * }]
+    * */
+    showScoreboard(scoreList) {
+        let scoreboardTemplate = `<div id="scoreboard">`;
+        for (let index in scoreList) {
+            scoreboardTemplate += `
+                <div class="scoreboard-row">
+                    <span class="scoreboard-ranking">${index}</span>
+                    <img class="chat-message-avatar" src="${this.players[scoreList[index].playerIndex].avatar}">
+                    <span class="scoreboard-username">${this.players[scoreList[index].playerIndex].fullName}</span>
+                    <div class="monopoly-cash">M</div>
+                    <span class="scoreboard-score">${scoreList[index].score}</span>
+                </div>`;
+        }
+        scoreboardTemplate += "</div>";
+        this.$modalCardContent.classList.add("scoreboard-bg");
+        this.showModal(null, "Scoreboard", "Good Game!", scoreboardTemplate, []);
     }
 }
 

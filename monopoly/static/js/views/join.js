@@ -69,6 +69,9 @@ class JoinView {
             }
         } else if (message.action === "start") {
             this.navigateToGame();
+        } else if (message.action === "fail_join") {
+            alert("failed to join");
+            // TODO: Failed to join
         }
     }
 
@@ -78,8 +81,11 @@ class JoinView {
 
             this.friends.push(friend.name);
 
-            const template = `<img class="joined-user-avatar" src="${friend.avatar}" title="${friend.name}">`;
-            this.$usersContainer.innerHTML += template;
+            this.$usersContainer.innerHTML += `
+                <a href="/monopoly/profile/${friend.name}" target="_blank">
+                    <img class="joined-user-avatar" src="${friend.avatar}" title="${friend.name}">
+                </a>
+            `;
         }
     }
 
