@@ -44,6 +44,12 @@ class JoinView {
                 this.copyToClipboard();
             })
         }
+
+        const isProfileInited = document.getElementById("user-avatar").getAttribute("src").length !== 0;
+        if (!isProfileInited) {
+            const $addProfileButton = document.getElementById("init-profile");
+            $addProfileButton.classList.remove("hidden");
+        }
     }
 
     initWebSocket() {
