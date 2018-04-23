@@ -16,6 +16,7 @@ from monopoly.ws_handlers.game_change_handler import *
 
 rooms = {}
 games = {}
+changehandlers = {}
 
 
 def ws_message(message):
@@ -81,7 +82,7 @@ def ws_message(message):
     if action == "start":
         handle_start(hostname)
     if action == "roll":
-        handle_roll(hostname, games)
+        handle_roll(hostname, games, changehandlers)
     if action == "confirm_decision":
         handle_confirm_decision(hostname, games)
     if action == "cancel_decision":
@@ -145,6 +146,7 @@ def handle_start(hostname):
 
         change_handler = ChangeHandler(game, hostname)
         game.add_game_change_listner(change_handler)
+        changehandlers[hostname] = change_handler
 
     Group(hostname).send({
         "text": build_start_msg()
