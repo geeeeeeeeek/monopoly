@@ -141,3 +141,11 @@ hr {
     visibility: visible;
     opacity: 1;
 }
+
+#init-profile {
+    background-color: #FF5722 !important;
+}
+
+#init-profile:hover {
+    background-color: #FF7043 !important;;
+}
