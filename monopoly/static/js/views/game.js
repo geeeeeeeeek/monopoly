@@ -28,6 +28,7 @@ class GameView {
         this.$modalMessage = document.getElementById("modal-message-container");
         this.$modalButtons = document.getElementById("modal-buttons-container");
         this.$modalTitle = document.getElementById("modal-title");
+        this.$modalSubTitle = document.getElementById("modal-subtitle");
 
         this.showModal(null, "Welcome to Monopoly", "Loading game resources...", []);
         this.initBoard();
@@ -181,7 +182,7 @@ class GameView {
     * }],
     * displayTime: int // seconds to display
     * */
-    showModal(playerIndex, title, message, buttons, displayTime) {
+    showModal(playerIndex, title, subTitle, message, buttons, displayTime) {
         return new Promise(resolve => {
             if (playerIndex === null) {
                 this.$modalAvatar.src = GameView.DEFAULT_AVATAR;
@@ -200,6 +201,7 @@ class GameView {
             this.$modalButtons.innerHTML = "";
 
             this.$modalTitle.innerText = title;
+            this.$modalSubTitle.innerText = subTitle;
 
             for (let i in buttons) {
                 let button = document.createElement("button");
@@ -279,7 +281,7 @@ class GameView {
                 text: "No",
                 callback: this.cancelDecision.bind(this)
             }] : [];
-            this.showModal(nextPlayer, title + landname, eventMsg, buttons);
+            this.showModal(nextPlayer, title + landname, "subtitle", eventMsg, buttons);
         }
     }
 
@@ -293,7 +295,7 @@ class GameView {
         let landname = message.landname;
         let rollResMsg = this.players[currPlayer].userName + " gets a roll result " + steps.toString();
 
-        await this.showModal(currPlayer, "🎲🎲", rollResMsg, [], 2);
+        await this.showModal(currPlayer, "🎲🎲", "subtitle", rollResMsg, [], 2);
 
         await this.gameController.movePlayer(currPlayer, newPos);
 
@@ -308,15 +310,15 @@ class GameView {
                 callback: this.cancelDecision.bind(this)
             }] : [];
 
-            this.showModal(currPlayer, title + landname, this.players[currPlayer].userName + eventMsg, buttons);
+            this.showModal(currPlayer, title + landname, "subtitle", this.players[currPlayer].userName + eventMsg, buttons);
         } else {
             if (message.is_cash_change === "true") {
-                await this.showModal(currPlayer, title + landname, this.players[currPlayer].userName + eventMsg, [], 3);
+                await this.showModal(currPlayer, title + landname, "subtitle", this.players[currPlayer].userName + eventMsg, [], 3);
                 let cash = message.curr_cash;
                 this.changeCashAmount(cash);
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else if (message.new_event === "true") {
-                await this.showModal(currPlayer, title + landname, this.players[currPlayer].userName + eventMsg, [], 3);
+                await this.showModal(currPlayer, title + landname, "subtitle", this.players[currPlayer].userName + eventMsg, [], 3);
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else {
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
@@ -361,7 +363,7 @@ class GameView {
         for (let i = 0; i < all_asset.length; i++) {
             msg = msg + this.players[i].userName + " has asset: " + all_asset[i] + ". ";
         }
-        await this.showModal(this.myPlayerIndex, "Game Over", msg, [], 10000);
+        await this.showModal(this.myPlayerIndex, "Game Over", "subtitle", msg, [], 10000);
     }
 
     handleChat(message) {
@@ -415,7 +417,7 @@ class GameView {
     async handlePassStart(message) {
         let curr_player = message.curr_player;
         let eventMsg = this.players[curr_player].userName + "has passed the start point, reward 200.";
-        await this.showModal(curr_player, "Get Reward", eventMsg, [], 2);
+        await this.showModal(curr_player, "Get Reward", "subtitle", eventMsg, [], 2);
     }
 }
 
