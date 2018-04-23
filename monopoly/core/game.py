@@ -146,7 +146,7 @@ class Game(object):
 
     def _has_enough_money(self, construction_land):
         print 'price1:', self.get_current_player().get_money()
-        print 'construciton plce:', construction_land.get_price()
+        print 'construciton price:', construction_land.get_price()
         return self.get_current_player().get_money() > \
                construction_land.get_price()
 
@@ -157,16 +157,16 @@ class Game(object):
         result = True
         if move_result_type == MoveResultType.BUY_LAND_OPTION:
             print 'debug99'
-            construction_land = move_result.get_land().get_content()
+            purchasable_land = move_result.get_land().get_content()
             if move_result.yes is True:
-                if self._has_enough_money(construction_land) is False:
+                if self._has_enough_money(purchasable_land) is False:
                     # return handled
                     self.notify_error("No enough money to buy the property.")
                     result = False
-                construction_land.set_owner(self._current_player_index)
-                self.get_current_player().add_properties(construction_land)
+                purchasable_land.set_owner(self._current_player_index)
+                self.get_current_player().add_properties(purchasable_land)
                 self.get_current_player().deduct_money(
-                    construction_land.get_price())
+                    purchasable_land.get_price())
             else:
                 result = True
 

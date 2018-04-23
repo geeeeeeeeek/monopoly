@@ -32,6 +32,12 @@ class Player(object):
     def get_properties(self):
         return self._properties
 
+    def get_asset(self):
+        ret = self.get_money()
+        for land in self._properties:
+            ret += land.get_evaluation()
+        return ret
+
     def remove_property(self, building):
         self._properties.remove(building)
 
