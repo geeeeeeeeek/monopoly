@@ -76,7 +76,6 @@ class GameView {
             "buy_land": this.handleBuyLand,
             "construct": this.handleConstruct,
             "cancel_decision": this.handleCancel,
-            "pass_start": this.handlePassStart,
             "game_end": this.handleGameEnd,
             "chat": this.handleChat,
         };
@@ -283,6 +282,7 @@ class GameView {
         }
     }
 
+
     async handleRollRes(message) {
         let currPlayer = message.curr_player;
         let nextPlayer = message.next_player;
@@ -298,6 +298,11 @@ class GameView {
         await this.gameController.movePlayer(currPlayer, newPos);
 
         this.audioManager.play("move");
+
+        if (message.bypass_start === "true") {
+            let eventMsg = this.players[currPlayer].userName + " has passed the start point, reward 200.";
+            await this.showModal(currPlayer, "Get Reward", eventMsg, [], 2);
+        }
 
         if (message.is_option === "true") {
             const buttons = (this.myPlayerIndex === currPlayer) ? [{
@@ -412,11 +417,6 @@ class GameView {
         this.$chatMessageToSend.value = "";
     }
 
-    async handlePassStart(message) {
-        let curr_player = message.curr_player;
-        let eventMsg = this.players[curr_player].userName + "has passed the start point, reward 200.";
-        await this.showModal(curr_player, "Get Reward", eventMsg, [], 2);
-    }
 }
 
 window.onload = () => {
