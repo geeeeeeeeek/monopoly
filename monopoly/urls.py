@@ -5,7 +5,6 @@ from django.contrib.auth import views as auth_views
 from monopoly.views.game_view import GameView
 from monopoly.views.join_view import JoinView
 from monopoly.views.login_view import LoginView
-from monopoly.views.photo_view import PhotoView
 from monopoly.views.profile_view import ProfileView
 from monopoly.views.register_confirm_view import ConfirmRegistrationView
 from monopoly.views.register_view import RegisterView
