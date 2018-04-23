@@ -14,6 +14,9 @@ class GameView {
         this.$chatMessageContainer = document.getElementById("chat-messages");
         this.$chatMessageToSend = document.getElementById("chat-message-input");
 
+        this.$audioControl = document.getElementById("audio-control");
+        this.$audioControl.addEventListener("click", this.switchAudio.bind(this));
+
         this.$chatMessageToSend.addEventListener("keydown", e => {
             const key = e.which || e.keyCode;
             // Detect Enter pressed
@@ -469,6 +472,15 @@ class GameView {
         scoreboardTemplate += "</div>";
         this.$modalCardContent.classList.add("scoreboard-bg");
         this.showModal(null, "Scoreboard", "Good Game!", scoreboardTemplate, []);
+    }
+
+    switchAudio() {
+        if (this.audioManager.playing) {
+            this.$audioControl.classList.add("control-off");
+        } else {
+            this.$audioControl.classList.remove("control-off");
+        }
+        this.audioManager.mute();
     }
 }
 

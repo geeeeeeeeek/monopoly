@@ -34,13 +34,17 @@ class AudioManager {
             if (audio.loop) this.audioPlayers[audio.key].loop = true;
             if (audio.volume) this.audioPlayers[audio.key].volume = audio.volume;
         }
+
+        this.playing = true;
     }
 
     play(audio) {
+        if (!this.playing) return;
         this.audioPlayers[audio].play();
     }
 
-    mute(audio, doMute) {
-        this.audioPlayers[audio] = doMute ? 0.0 : 1.0;
+    mute() {
+        this.playing = !this.playing;
+        this.audioPlayers["background"].volume = 0.6 * this.playing;
     }
 }
