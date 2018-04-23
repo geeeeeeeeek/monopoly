@@ -14,7 +14,7 @@ class Game(object):
     _game_id = 0
 
     def __init__(self, player_num):
-        assert 0 < player_num <= 4
+        # assert 0 < player_num <= 4
         if player_num <= 0 or player_num > 4:
             self.notify_error("In correct player number, should be 1-4 "
                               "players.")
@@ -30,6 +30,7 @@ class Game(object):
         Game._game_id += 1
         self._handlers = []
         self.add_game_change_listner(InternalLogHandler(self))
+        self.notify_new_game()
 
     def get_game_id(self):
         return self._game_id
@@ -51,13 +52,13 @@ class Game(object):
             self.get_current_player().add_money(START_REWARD)
             self.notify_pass_start()
         land_dest = self._board.get_land(new_position)
-        assert (land_dest is not None)
+        # assert (land_dest is not None)
         if land_dest is None:
             self.notify_error("Internal error, the destination land is none. "
                               "there is no land at the new position")
             return None
         self.get_current_player().set_position(new_position)
-        print 'debug41: ', land_dest
+        # print 'debug41: ', land_dest
         return land_dest
 
     def _is_purchase_affordable(self, land):
@@ -104,7 +105,7 @@ class Game(object):
                 val = infra_land.get_price()
                 return MoveResult(result_type, val, land)
             else:
-                if infra_land.get_owner_index == self._current_player_index:
+                if infra_land.get_owner_index() == self._current_player_index:
                     result_type = MoveResultType.NOTHING
                     val = 0
                     return MoveResult(result_type, val, land)
@@ -151,12 +152,12 @@ class Game(object):
                construction_land.get_price()
 
     def _apply_result(self, move_result):
-        print 'debug95, move result is', move_result
+        # print 'debug95, move result is', move_result
         move_result_type = move_result.get_move_result_type()
         val = move_result.get_value()
         result = True
         if move_result_type == MoveResultType.BUY_LAND_OPTION:
-            print 'debug99'
+            # print 'debug99'
             construction_land = move_result.get_land().get_content()
             if move_result.yes is True:
                 if self._has_enough_money(construction_land) is False:
@@ -172,7 +173,7 @@ class Game(object):
 
         elif move_result_type == MoveResultType.CONSTRUCTION_OPTION:
             construction_land = move_result.get_land().get_content()
-            assert construction_land.get_owner_index() == self._current_player_index
+            # assert construction_land.get_owner_index() == self._current_player_index
             if construction_land.get_owner_index() != \
                     self._current_player_index:
                 # return handled
@@ -189,7 +190,7 @@ class Game(object):
 
         else:
             if move_result_type == MoveResultType.PAYMENT:
-                print 'debug129'
+                # print 'debug129'
                 self.get_current_player().deduct_money(val)
                 if self.get_current_player().get_money() < 0:
                     self.notify_game_ended()
@@ -198,7 +199,7 @@ class Game(object):
                 if land.get_type() == LandType.CONSTRUCTION_LAND or \
                         land.get_type() == LandType.INFRA:
                     # this is the payment to the player
-                    assert land.get_owner_index() is not None
+                    # assert land.get_owner_index() is not None
                     if land.get_owner_index() is None:
                         self.notify_error("Error: The land has no owner. why "
                                           "the current player need to make "
@@ -229,7 +230,7 @@ class Game(object):
     def _change_player_on(self, cur):
         new_user_index = (cur + 1) % (len(
             self._players))
-        print 'debug157', new_user_index
+        # print 'debug157', new_user_index
         new_user = self._players[new_user_index]
         if new_user.get_stop_num() > 0:
 
@@ -245,7 +246,7 @@ class Game(object):
         if self.get_game_status() == GameStateType.GAME_ENDED:
             self.notify_error("Internal error: the game has ended")
             return None
-        assert self.get_game_status() == GameStateType.WAIT_FOR_ROLL
+        # assert self.get_game_status() == GameStateType.WAIT_FOR_ROLL
         if self.get_game_status() != GameStateType.WAIT_FOR_ROLL:
             self.notify_error("Internal error: the game state must be "
                               "'waiting for roll' when you roll")
@@ -259,7 +260,7 @@ class Game(object):
             steps = steps1 + steps2
         land_dest = self._move(steps)
         if land_dest is None:
-            print 'debug262, the move result is None'
+            # print 'debug262, the move result is None'
             return None
         print "debug116", land_dest
         self._roll_to_next_game_state()
@@ -272,7 +273,7 @@ class Game(object):
         if self.get_game_status() == GameStateType.GAME_ENDED:
             self.notify_error("Internal error: the game has ended")
             return None
-        assert self.get_game_status() == GameStateType.WAIT_FOR_DECISION
+        # assert self.get_game_status() == GameStateType.WAIT_FOR_DECISION
         if self.get_game_status() != GameStateType.WAIT_FOR_DECISION:
             self.notify_error("Internal error: the game state must be "
                               "'waiting for decision when you make decision'")
@@ -281,11 +282,11 @@ class Game(object):
         ret = decision
         if decision.move_result_type != MoveResultType.BUY_LAND_OPTION and \
                 decision.move_result_type != MoveResultType.CONSTRUCTION_OPTION:
-            print 'debug227, not a decision'
+            # print 'debug227, not a decision'
             make_decision_success = self._apply_result(decision)
         else:
-            print 'debug188'
-            assert decision.yes is not None
+            # print 'debug188'
+            # assert decision.yes is not None
             if decision.yes is None:
                 print 'error'
                 self.notify_error("Error: You must make a decision when you "
