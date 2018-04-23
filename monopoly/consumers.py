@@ -59,7 +59,13 @@ def ws_connect_for_join(message):
     print 'user is: ', message.user
     print 'player name: ', player_name
     print 'room name: ', room_name
-    add_player(room_name, player_name)
+    if not add_player(room_name, player_name):
+        message.reply_channel.send({
+            "text": build_join_failed_msg()
+        })
+        print 'failed to join'
+        return
+
     Group(hostname).add(message.reply_channel)
 
     # # response_text = serializers.serialize('json', Item.objects.all())
@@ -106,6 +112,13 @@ def build_start_msg():
     return json.dumps(ret)
 
 
+def build_join_failed_msg():
+    ret = {"action": "fail_join",
+    }
+    print json.dumps(ret)
+    return json.dumps(ret)
+
+
 def build_join_reply_msg(room_name):
     # todo profile
     players = rooms[room_name]
@@ -133,7 +146,12 @@ def add_player(room_name, player_name):
     if room_name not in rooms:
         rooms[room_name] = set()
         rooms[room_name].add(room_name)
+
+    if len(rooms[room_name]) >= 1:
+        return False
+
     rooms[room_name].add(player_name)
+    return True
 
 
 def handle_start(hostname):
