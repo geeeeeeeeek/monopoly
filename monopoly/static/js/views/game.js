@@ -30,7 +30,7 @@ class GameView {
         this.$modalTitle = document.getElementById("modal-title");
         this.$modalSubTitle = document.getElementById("modal-subtitle");
 
-        this.showModal(null, "Welcome to Monopoly", "Loading game resources...", []);
+        this.showModal(null, "Welcome to Monopoly", "", "Loading game resources...", []);
         this.initBoard();
     }
 
@@ -168,7 +168,7 @@ class GameView {
                     onDiceRolled();
                 }
             }];
-        this.showModal(nextPlayer, title, this.diceMessage, button);
+        this.showModal(nextPlayer, title, "",this.diceMessage, button);
     }
 
     /*
@@ -295,7 +295,7 @@ class GameView {
         let landname = message.landname;
         let rollResMsg = this.players[currPlayer].userName + " gets a roll result " + steps.toString();
 
-        await this.showModal(currPlayer, "🎲🎲", "subtitle", rollResMsg, [], 2);
+        await this.showModal(currPlayer, "🎲🎲", "", rollResMsg, [], 2);
 
         await this.gameController.movePlayer(currPlayer, newPos);
 
@@ -303,7 +303,7 @@ class GameView {
 
         if (message.bypass_start === "true") {
             let eventMsg = this.players[currPlayer].userName + " has passed the start point, reward 200.";
-            await this.showModal(currPlayer, "Get Reward", eventMsg, [], 2);
+            await this.showModal(currPlayer, "Get Reward", "subtitle", eventMsg, [], 2);
         }
 
         if (message.is_option === "true") {
