@@ -26,8 +26,12 @@ class GameController {
         this.boardController.movePlayer(playerIndex, newTileId);
     }
 
-    addProperty(type, tileId) {
-        this.boardController.addProperty(type, tileId);
+    addProperty(type, tileId, playerIndex) {
+        if (type === PropertyManager.PROPERTY_OWNER_MARK) {
+            this.boardController.addLandMark(playerIndex, tileId);
+        } else {
+            this.boardController.addProperty(type, tileId);
+        }
     }
 
     resizeBoard() {

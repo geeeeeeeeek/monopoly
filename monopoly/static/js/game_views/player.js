@@ -29,7 +29,7 @@ class Player {
                 // onProgress callback
                 (xhr) => {
                     if (xhr.loaded === xhr.total) {
-                        console.log(this.modelUrl + " loaded!")
+                        console.log(this.modelUrl + " loaded!");
                         resolve();
                     }
                 },

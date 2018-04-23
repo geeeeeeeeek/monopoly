@@ -99,31 +99,39 @@ class BoardController {
 
     addProperty(type, tileId) {
         let tileInfo = this.board.getTileInfo(tileId);
-        if (!tileInfo.propertyManager) {
-            this.board.updateTileInfo(tileId, {
-                type: BoardController.MODEL_PROPERTY,
-                options: {
-                    loadedHouseJson: this.houseModelJson,
-                    loadedHotelJson: this.hotelModelJson,
-                    scene: this.scene
-                }
-            });
-        }
         const tilePropertyCount = tileInfo.propertyManager.getPropertyCount();
 
         if (type === PropertyManager.PROPERTY_HOUSE) {
             tileInfo.propertyManager.buildHouse(this.boardToWorld({
                 tileId: tileId,
                 type: BoardController.MODEL_PROPERTY,
-                total: tilePropertyCount + 1
-            }));
-        } else {
+                total: tilePropertyCount + 2
+            }), tileId);
+        } else if (type === PropertyManager.PROPERTY_HOTEL) {
             tileInfo.propertyManager.buildHotel(this.boardToWorld({
                 tileId: tileId,
                 type: BoardController.MODEL_PROPERTY,
-                total: 1
+                total: 2
             }), tileId);
         }
+    }
+
+    addLandMark(playerIndex, tileId) {
+        let tileInfo = this.board.getTileInfo(tileId);
+        this.board.updateTileInfo(tileId, {
+            type: BoardController.MODEL_PROPERTY,
+            options: {
+                loadedHouseJson: this.houseModelJson,
+                loadedHotelJson: this.hotelModelJson,
+                scene: this.scene
+            }
+        });
+
+        tileInfo.propertyManager.buyLand(this.boardToWorld({
+            tileId: tileId,
+            type: BoardController.MODEL_PROPERTY,
+            total: 1
+        }), tileId, playerIndex);
     }
 
     initEngine() {
@@ -332,22 +340,22 @@ class BoardController {
                 case Board.SIDE_TOP:
                     z += BoardController.MODEL_PROPERTY_TOP_MARGIN;
                     x += BoardController.MODEL_PROPERTY_LEFT_MARGIN;
-                    x -= (total - 1) * BoardController.MODEL_PROPERTY_LEFT_MARGIN;
+                    x -= (total - 1) * BoardController.MODEL_PROPERTY_MARGIN + BoardController.MODEL_PROPERTY_LEFT_OFFSET * (total > 1);
                     break;
                 case Board.SIDE_BOTTOM:
                     z -= BoardController.MODEL_PROPERTY_TOP_MARGIN;
                     x -= BoardController.MODEL_PROPERTY_LEFT_MARGIN;
-                    x += (total - 1) * BoardController.MODEL_PROPERTY_LEFT_MARGIN;
+                    x += (total - 1) * BoardController.MODEL_PROPERTY_MARGIN + BoardController.MODEL_PROPERTY_LEFT_OFFSET * (total > 1);
                     break;
                 case Board.SIDE_LEFT:
                     x += BoardController.MODEL_PROPERTY_TOP_MARGIN;
                     z -= BoardController.MODEL_PROPERTY_LEFT_MARGIN;
-                    z += (total - 1) * BoardController.MODEL_PROPERTY_LEFT_MARGIN;
+                    z += (total - 1) * BoardController.MODEL_PROPERTY_MARGIN + BoardController.MODEL_PROPERTY_LEFT_OFFSET * (total > 1);
                     break;
                 case Board.SIDE_RIGHT:
                     x -= BoardController.MODEL_PROPERTY_TOP_MARGIN;
                     z += BoardController.MODEL_PROPERTY_LEFT_MARGIN;
-                    z -= (total - 1) * BoardController.MODEL_PROPERTY_LEFT_MARGIN;
+                    z -= (total - 1) * BoardController.MODEL_PROPERTY_MARGIN + BoardController.MODEL_PROPERTY_LEFT_OFFSET * (total > 1);
                     break;
             }
         }
@@ -360,6 +368,8 @@ BoardController.MODEL_PLAYER = 0;
 BoardController.MODEL_PROPERTY = 1;
 BoardController.MODEL_PLAYER_OFFSET = 0.2;
 BoardController.MODEL_PLAYER_MARGIN = 0.1;
-BoardController.MODEL_PROPERTY_TOP_MARGIN = 0.33;
-BoardController.MODEL_PROPERTY_LEFT_MARGIN = 0.25;
+BoardController.MODEL_PROPERTY_TOP_MARGIN = 0.39;
+BoardController.MODEL_PROPERTY_LEFT_MARGIN = 0.37;
+BoardController.MODEL_PROPERTY_MARGIN = 0.24;
+BoardController.MODEL_PROPERTY_LEFT_OFFSET = 0.05;
 BoardController.TILE_MAX = 39;
