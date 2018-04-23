@@ -116,7 +116,9 @@ class GameView {
             if (this.userName === players[i].userName) this.myPlayerIndex = i;
             this.$usersContainer.innerHTML += `
                 <div id="user-group-${i}" class="user-group" style="background: ${GameView.PLAYERS_COLORS[i]}">
-                    <img class="user-avatar" src="${players[i].avatar}">
+                    <a href="/monopoly/profile/${players[i].userName}" target="_blank">
+                        <img class="user-avatar" src="${players[i].avatar}">
+                    </a>
                     <span class="user-cash">
                         <div class="monopoly-cash">M</div>
                         <div class="user-cash-num">1500</div>
