@@ -317,6 +317,10 @@ class GameView {
 
         if (message.bypass_start === "true") {
             let eventMsg = this.players[currPlayer].userName + " has passed the start point, reward 200.";
+            if (message.is_cash_change !== "true") {
+                let cash = message.curr_cash;
+                this.changeCashAmount(cash);
+            }
             await this.showModal(currPlayer, "Get Reward", "subtitle", eventMsg, [], 2);
         }
 
@@ -431,11 +435,6 @@ class GameView {
         this.$chatMessageToSend.value = "";
     }
 
-    async handlePassStart(message) {
-        let curr_player = message.curr_player;
-        let eventMsg = this.players[curr_player].userName + "has passed the start point, reward 200.";
-        await this.showModal(curr_player, "Get Reward", "subtitle", eventMsg, [], 2);
-    }
 }
 
 window.onload = () => {
