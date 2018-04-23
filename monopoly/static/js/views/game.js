@@ -260,13 +260,27 @@ class GameView {
         let title = message.title;
         let landname = message.landname;
         let owners = message.owners;
+        let houses = message.houses;
         this.initGame(players, changeCash, posChange);
 
         await this.gameLoadingPromise;
         await this.hideModal(true);
 
         for (let i = 0; i < owners.length; i++) {
-            // TODO: init land owner
+            if (owners[i] !== null) {
+                this.gameController.addProperty(PropertyManager.PROPERTY_OWNER_MARK, i, owners[i]);
+            }
+        }
+
+        for (let i = 0; i < houses.length; i++) {
+            if (houses[i] === 4) {
+                this.gameController.addProperty(PropertyManager.PROPERTY_HOTEL, i);
+            }
+            else {
+                for (let building_num = 0; building_num < houses[i]; building_num++) {
+                    this.gameController.addProperty(PropertyManager.PROPERTY_HOUSE, i);
+                }
+            }
         }
 
 
@@ -334,10 +348,8 @@ class GameView {
 
     handleBuyLand(message) {
         const {curr_player, curr_cash, tile_id} = message;
-
         this.changeCashAmount(curr_cash);
-        // TODO: one player get the land
-
+        this.gameController.addProperty(PropertyManager.PROPERTY_OWNER_MARK, tile_id, curr_player);
         let next_player = message.next_player;
         this.changePlayer(next_player, this.onDiceRolled.bind(this));
     }
