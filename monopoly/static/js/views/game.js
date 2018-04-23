@@ -75,6 +75,7 @@ class GameView {
     handleStatusChange(message) {
         const messageHandlers = {
             "init": this.handleInit,
+            "add_err": this.handleAddErr,
             "roll_res": this.handleRollRes,
             "buy_land": this.handleBuyLand,
             "construct": this.handleConstruct,
@@ -299,6 +300,12 @@ class GameView {
             eventMsg = this.players[nextPlayer].userName + " " + eventMsg;
             this.showModal(nextPlayer, title, landname, eventMsg, buttons);
         }
+    }
+
+
+    handleAddErr() {
+        // TODO: attempt to join a non-exist room
+        alert("Failed to join");
     }
 
 
