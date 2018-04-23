@@ -257,10 +257,17 @@ class GameView {
         let eventMsg = message.decision;
         let title = message.title;
         let landname = message.landname;
+        let owners = message.owners;
         this.initGame(players, changeCash, posChange);
 
         await this.gameLoadingPromise;
         await this.hideModal(true);
+
+        for (let i = 0; i < owners.length; i++) {
+            // TODO: init land owner
+        }
+
+
         if (message.waitDecision === "false") {
             this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
         } else {
