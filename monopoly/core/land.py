@@ -21,6 +21,12 @@ class Land(object):
     def get_type(self):
         return self._content.get_type()
 
+    def get_evaluation(self):
+        if self.get_content().get_type() == LandType.INFRA or self.get_content(
+        ).get_type() == LandType.CONSTRUCTION_LAND:
+            return self.get_content().get_evaluation()
+        return 0
+
     def get_content(self):
         return self._content
 
@@ -54,6 +60,14 @@ class ConstructionLand(object):
 
     def get_price(self):
         return self._price
+
+    def get_evaluation(self):
+        building_value = self._price
+        if self._properties == BuildingType.HOUSE:
+            building_value += HOUSE_CONSTRUCTION_COST * self._building_num
+        elif self._properties == BuildingType.HOTEL:
+            building_value += HOUSE_CONSTRUCTION_COST * 3 + HOTEL_CONSTRUCTION_COST
+        return building_value
 
     def get_property(self):
         return self._properties
@@ -142,6 +156,9 @@ class Infra(object):
 
     def get_payment(self):
         return self.get_price() / 4
+
+    def get_evaluation(self):
+        return self.get_price()
 
 
 class StartLand(object):
