@@ -5,6 +5,7 @@ class GameView {
     constructor() {
         this.initComponents();
         this.audioManager = new AudioManager();
+        this.audioManager.play("background");
     }
 
     initComponents() {
@@ -67,8 +68,6 @@ class GameView {
             const message = JSON.parse(event.data);
             this.handleStatusChange(message);
         };
-
-        this.audioManager.play("background");
     }
 
     onDiceRolled() {
