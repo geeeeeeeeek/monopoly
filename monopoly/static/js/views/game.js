@@ -393,13 +393,27 @@ class GameView {
     }
 
     async handleGameEnd(message) {
-        let loser = message.loser;
+        let result = [];
+        // let loser = message.loser;
         let all_asset = message.all_asset;
-        let msg = (loser === this.myPlayerIndex) ? "You loss! You have run out of cash. " : "You win! ";
-        for (let i = 0; i < all_asset.length; i++) {
-            msg = msg + this.players[i].userName + " has asset: " + all_asset[i] + ". ";
+        for (let k = 0; k < all_asset.length; k++) {
+            let big_asset = -1e20;
+            let big_index = 0;
+            for (let i = 0; i < all_asset.length; i++) {
+                if (all_asset[i] === null){
+                    continue;
+                }
+                if (big_asset < all_asset[i]) {
+                    big_asset = all_asset[i];
+                    big_index = i;
+                }
+            }
+            result.push({playerIndex: big_index,
+                         score: big_asset,
+            });
+            all_asset.splice(big_index, 1, null);
         }
-        await this.showModal(this.myPlayerIndex, "Game Over", "game result", msg, [], 10000);
+        this.showScoreboard(result);
     }
 
     handleChat(message) {
@@ -460,9 +474,10 @@ class GameView {
     showScoreboard(scoreList) {
         let scoreboardTemplate = `<div id="scoreboard">`;
         for (let index in scoreList) {
+            let rank = parseInt(index) + 1;
             scoreboardTemplate += `
                 <div class="scoreboard-row">
-                    <span class="scoreboard-ranking">${index}</span>
+                    <span class="scoreboard-ranking">${rank}</span>
                     <img class="chat-message-avatar" src="${this.players[scoreList[index].playerIndex].avatar}">
                     <span class="scoreboard-username">${this.players[scoreList[index].playerIndex].fullName}</span>
                     <div class="monopoly-cash">M</div>
