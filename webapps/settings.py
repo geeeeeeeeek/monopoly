@@ -28,7 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost',
                  '127.0.0.1',
-                 'ec2-18-188-96-54.us-east-2.compute.amazonaws.com']
+                 'ec2-18-188-96-54.us-east-2.compute.amazonaws.com',
+                 '18.188.96.54']
 
 # Application definition
 
