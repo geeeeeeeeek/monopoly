@@ -344,10 +344,10 @@ class GameView {
 
         if (message.is_option === "true") {
             const buttons = (this.myPlayerIndex === currPlayer) ? [{
-                text: "Yes",
+                text: "Buy! I'm a rich man!",
                 callback: this.confirmDecision.bind(this)
             }, {
-                text: "No",
+                text: "No, I will be back...",
                 callback: this.cancelDecision.bind(this)
             }] : [];
 
