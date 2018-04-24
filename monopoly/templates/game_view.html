@@ -30,7 +30,7 @@
                 <path d="M21,3V15.5A3.5,3.5 0 0,1 17.5,19A3.5,3.5 0 0,1 14,15.5A3.5,3.5 0 0,1 17.5,12C18.04,12 18.55,12.12 19,12.34V6.47L9,8.6V17.5A3.5,3.5 0 0,1 5.5,21A3.5,3.5 0 0,1 2,17.5A3.5,3.5 0 0,1 5.5,14C6.04,14 6.55,14.12 7,14.34V6L21,3Z"></path>
             </svg>
         </a>
-        <a id="help-control">
+        <a id="help-control" class="control-off">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="24" height="24"
                  viewBox="0 0 24 24">
                 <path xmlns="http://www.w3.org/2000/svg"
@@ -62,6 +62,59 @@
 
     <div id="dice-message" class="hidden">
         {% include "rolling_dice.html" %}
+    </div>
+    <div id="rules-overlay" class="hidden">
+        <div class="rule-indicator-container" id="rule-indicator-audio">
+            <span>  ↑</span>
+            <span>Mute/Unmute Music</span>
+        </div>
+        <div class="rule-indicator-container" id="rule-indicator-help">
+            <span>← Hide/Show the tutorial again </span>
+        </div>
+        <div class="rule-indicator-container" id="rule-indicator-player">
+            <span>↑  </span>
+            <span>The balance of each player</span>
+            <span class="rule-sub">You have 1500 million when the game starts.</span>
+        </div>
+        <div class="rule-indicator-container" id="rule-indicator-chat">
+            <span>Chat with your friends</span>
+            <span class="rule-sub">Messages will show up here.</span>
+            <span>  ↓</span>
+        </div>
+        <div class="rule-indicator-container" id="rule-indicator-start">
+            <span>You start here</span>
+            <span>⤵</span>
+        </div>
+        <div id="rules-container">
+            <div class="rule-container" id="construction-rule-container">
+                <span class="rule-title">Construction</span>
+                <span>When you stop onto a new land, you can</span>
+                <ul>
+                    <li>do nothing</li>
+                    <li><span>buy the land</span><img src="/static/images/player_0_mark.png"></li>
+                    <li><span>build a house for $40</span><img src="/static/images/house.png"><span>(up to three, one at a time)</span>
+                    </li>
+                    <li><span>upgrade to a hotel for $100</span><img src="/static/images/hotel.png"></li>
+                </ul>
+                <span>You can also buy infrastructures like Entropy+, City Grill...</span>
+            </div>
+            <div class="rule-container" id="rent-rule-container">
+                <span class="rule-title">Rent</span>
+                <span>When other players stop onto your land, you'll get rent from the player:</span>
+                <ul>
+                    <li>¼ (house) or ½ (hotel) of the land price,</li>
+                    <li>and $10 for each house,</li>
+                    <li>and $50 for the hotel.</li>
+                </ul>
+            </div>
+            <div class="rule-container" id="other-rule-container">
+                <span class="rule-title">Game Process</span>
+                <ul>
+                    <li>You'll be suspended for one round if you reach the AIV jail.</li>
+                    <li>The game ends after the first player runs out of cash.</li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

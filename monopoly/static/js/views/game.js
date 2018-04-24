@@ -5,6 +5,7 @@ class GameView {
     constructor() {
         this.initComponents();
         this.audioManager = new AudioManager();
+        this.audioManager.play("background");
     }
 
     initComponents() {
@@ -16,6 +17,11 @@ class GameView {
 
         this.$audioControl = document.getElementById("audio-control");
         this.$audioControl.addEventListener("click", this.switchAudio.bind(this));
+
+        this.$helpControl = document.getElementById("help-control");
+        this.$helpControl.addEventListener("click", this.showHelp.bind(this));
+        this.$helpOverlay = document.getElementById("rules-overlay");
+        this.showingHelp = false;
 
         this.$chatMessageToSend.addEventListener("keydown", e => {
             const key = e.which || e.keyCode;
@@ -62,8 +68,6 @@ class GameView {
             const message = JSON.parse(event.data);
             this.handleStatusChange(message);
         };
-
-        this.audioManager.play("background");
     }
 
     onDiceRolled() {
@@ -140,7 +144,7 @@ class GameView {
     changeCashAmount(amounts) {
         for (let i in amounts) {
             const $cashAmount = document.querySelector(`#user-group-${i} .user-cash-num`);
-            $cashAmount.innerText = amounts[i];
+            $cashAmount.innerText = (amounts[i] >= 0) ? amounts[i] : 0;
         }
     }
 
@@ -290,7 +294,6 @@ class GameView {
                 }
             }
         }
-
 
         if (message.waitDecision === "false") {
             this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
@@ -496,6 +499,18 @@ class GameView {
             this.$audioControl.classList.remove("control-off");
         }
         this.audioManager.mute();
+    }
+
+    showHelp() {
+        this.showingHelp = !this.showingHelp;
+
+        if (this.showingHelp) {
+            this.$helpControl.classList.remove("control-off");
+            this.$helpOverlay.classList.remove("hidden");
+        } else {
+            this.$helpControl.classList.add("control-off");
+            this.$helpOverlay.classList.add("hidden");
+        }
     }
 }
 
