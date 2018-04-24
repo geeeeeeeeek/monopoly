@@ -27,6 +27,7 @@
     opacity: 0.85;
     display: flex;
     box-shadow: 0 0 20px #fff;
+    z-index: 100;
 }
 
 .user-group.active {
@@ -211,6 +212,7 @@
 
 #chat-send-container {
     width: 320px;
+    z-index: 100;
 }
 
 #chat-messages {
@@ -352,4 +354,110 @@
 
 #controls-container a {
     cursor: pointer;
+}
+
+#rules-overlay {
+    background: #000000;
+    opacity: 0.8;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 99;
+}
+
+.rule-indicator-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    white-space: pre;
+    font-size: 24px;
+    color: #ffffff;
+}
+
+#rule-indicator-audio {
+    left: 40px;
+    top: 100px;
+}
+
+#rule-indicator-help {
+    left: 170px;
+    top: 50px;
+}
+
+#rule-indicator-player {
+    right: 60px;
+    top: 100px;
+    align-items: flex-end;
+}
+
+#rule-indicator-chat {
+    left: 40px;
+    bottom: 100px;
+}
+
+#rule-indicator-start {
+    right: 160px;
+    bottom: 150px;
+    align-items: flex-end;
+}
+
+.rule-sub {
+    font-size: 20px;
+    color: #999;
+}
+
+#rules-container {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    color: #ffffff;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    height: 280px;
+}
+
+.rule-container {
+    font-size: 16px;
+    background: #4e4e4e47;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    margin: 0 20px;
+}
+
+.rule-container ul li {
+    line-height: 24px;
+}
+
+.rule-container ul {
+    line-height: 0;
+    padding-left: 20px;
+    margin: 5px 0;
+}
+
+.rule-container ul li img {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin: 0 4px;
+}
+
+.rule-container ul li span {
+    vertical-align: middle;
+}
+
+.rule-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #FF9800;
+}
+
+#construction-rule-container {
+    min-width: 300px;
 }

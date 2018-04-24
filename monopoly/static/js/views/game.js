@@ -17,6 +17,11 @@ class GameView {
         this.$audioControl = document.getElementById("audio-control");
         this.$audioControl.addEventListener("click", this.switchAudio.bind(this));
 
+        this.$helpControl = document.getElementById("help-control");
+        this.$helpControl.addEventListener("click", this.showHelp.bind(this));
+        this.$helpOverlay = document.getElementById("rules-overlay");
+        this.showingHelp = false;
+
         this.$chatMessageToSend.addEventListener("keydown", e => {
             const key = e.which || e.keyCode;
             // Detect Enter pressed
@@ -480,6 +485,18 @@ class GameView {
             this.$audioControl.classList.remove("control-off");
         }
         this.audioManager.mute();
+    }
+
+    showHelp() {
+        this.showingHelp = !this.showingHelp;
+
+        if (this.showingHelp) {
+            this.$helpControl.classList.remove("control-off");
+            this.$helpOverlay.classList.remove("hidden");
+        } else {
+            this.$helpControl.classList.add("control-off");
+            this.$helpOverlay.classList.add("hidden");
+        }
     }
 }
 
