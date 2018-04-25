@@ -23,8 +23,10 @@ class GameView {
         this.$helpOverlay = document.getElementById("rules-overlay");
         this.showingHelp = false;
 
-        this.$exitControl = document.getElementById("exit-control");
-        this.$exitControl.addEventListener("click", this.endGame.bind(this));
+        if (this.userName === this.hostName) {
+            this.$exitControl = document.getElementById("exit-control");
+            this.$exitControl.addEventListener("click", this.endGame.bind(this));
+        }
 
         this.$chatMessageToSend.addEventListener("keydown", e => {
             const key = e.which || e.keyCode;
@@ -520,14 +522,15 @@ class GameView {
     }
 
     endGame() {
-        // TODO
-        alert("Game End");
+        this.socket.send(JSON.stringify({
+            action: "end_game",
+        }));
     }
 
-    async handleGameEnd() {
-        await this.showModal(null, "Game Terminated by Host", "", "Navigating back...", [], 5);
-        window.location = `http://${window.location.host}/monopoly/join`;
-    }
+    // async handleGameEnd() {
+    //     await this.showModal(null, "Game Terminated by Host", "", "Navigating back...", [], 5);
+    //     window.location = `http://${window.location.host}/monopoly/join`;
+    // }
 }
 
 window.onload = () => {

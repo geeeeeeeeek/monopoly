@@ -95,6 +95,8 @@ def ws_message(message):
         handle_cancel_decision(hostname, games)
     if action == "chat":
         handle_chat(hostname, msg)
+    if action == "end_game":
+        handle_end_game(hostname, games)
 
 
 # @login_required
@@ -120,7 +122,6 @@ def build_join_failed_msg():
 
 
 def build_join_reply_msg(room_name):
-    # todo profile
     players = rooms[room_name]
     print 'players: ', players
     data = []
