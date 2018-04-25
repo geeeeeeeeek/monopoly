@@ -19,7 +19,8 @@ class ProfileView(View):
         except Exception:
             self.error = "User {id} not existed.".format(id=kwargs.get("profile_user"))
             self.profile_user = None
-            raise Http404
+            return render(request, "404.html", {})
+
 
         try:
             self.profile_info = Profile.objects.get(user=self.profile_user)
@@ -39,7 +40,7 @@ class ProfileView(View):
         except Exception:
             self.error = "User {id} not existed.".format(id=kwargs.get("profile_user"))
             self.profile_user = None
-            raise Http404
+            raise render(request, "404.html", {})
 
         try:
             self.profile_info = Profile.objects.get(user=self.profile_user)
