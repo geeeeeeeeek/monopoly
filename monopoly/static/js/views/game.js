@@ -6,6 +6,8 @@ class GameView {
         this.initComponents();
         this.audioManager = new AudioManager();
         this.audioManager.play("background");
+
+        this.gameInProcess = true;
     }
 
     initComponents() {
@@ -95,6 +97,8 @@ class GameView {
             "game_end": this.handleGameEnd,
             "chat": this.handleChat,
         };
+
+        if (!this.gameInProcess) return;
 
         messageHandlers[message.action].bind(this)(message);
     }
@@ -405,6 +409,8 @@ class GameView {
     }
 
     async handleGameEnd(message) {
+        this.gameInProcess = false;
+
         let result = [];
         // let loser = message.loser;
         let all_asset = message.all_asset;

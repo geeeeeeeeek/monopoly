@@ -20,12 +20,9 @@ class ChangeHandler(MonopolyHandler):
     def on_pass_start(self):
         self._bypass_start = True
         print 'bypass start point'
-        # curr_player = self.game.get_current_player().get_index()
-        # Group(self.hostname).send({
-        #     "text": build_pass_start_msg(curr_player)
-        # })
 
     def on_error(self, err_msg):
+
         print "it is an error" + err_msg
 
     def on_rolled(self):
