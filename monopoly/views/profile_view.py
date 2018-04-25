@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import render
+from django.template import Template, RequestContext
 from django.views import View
 
 from monopoly.forms.profile_form import ProfileForm
@@ -52,23 +53,19 @@ class ProfileView(View):
         avatar = request.FILES.get("avatar", None)
 
         if self.profile_info:
-            if bio:
-                self.profile_info.bio = bio
+            self.profile_info.bio = bio
             if avatar:
                 self.profile_info.avatar = avatar
-
-        else:
-            self.profile_info = Profile(user=request.user, bio=bio, avatar=avatar)
-
-        form = ProfileForm(request.POST, request.FILES, instance=self.profile_info)
-
-        if form.is_valid():
-            print "valid"
-            # form.save()
             self.profile_info.save()
         else:
-            print form.errors
-            self.errors = str(form.errors)
+            self.profile_info = Profile(user=request.user, bio=bio, avatar=avatar)
+            form = ProfileForm(request.POST, request.FILES, instance=self.profile_info)
+
+            if form.is_valid():
+                print "valid"
+                self.profile_info.save()
+            else:
+                print form.errors
 
         res = {
             "user": self.profile_user,
