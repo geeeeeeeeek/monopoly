@@ -77,8 +77,13 @@
             <span>Mute/Unmute Music</span>
         </div>
         <div class="rule-indicator-container" id="rule-indicator-help">
-            <span>← Hide/Show the tutorial again </span>
+            <span>↳ Hide/Show the tutorial again </span>
         </div>
+        {% if username == hostname %}
+        <div class="rule-indicator-container" id="rule-indicator-exit">
+            <span>← Terminate the game </span>
+        </div>
+        {% endif %}
         <div class="rule-indicator-container" id="rule-indicator-player">
             <span>↑  </span>
             <span>The balance of each player</span>
