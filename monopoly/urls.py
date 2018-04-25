@@ -10,6 +10,7 @@ from monopoly.views.register_confirm_view import ConfirmRegistrationView
 from monopoly.views.register_view import RegisterView
 
 urlpatterns = [
+    url(r'^$', login_required(JoinView.as_view()), name="join"),
     url(r'^game/(?P<host_name>.*)', login_required(GameView.as_view()), name='game'),
     url(r'^logout$', auth_views.logout_then_login, name='logout'),
     url(r'^login', LoginView.as_view(), name='login'),
