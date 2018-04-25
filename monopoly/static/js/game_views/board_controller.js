@@ -77,7 +77,6 @@ class BoardController {
             let playerMovementInterval = setInterval(() => {
                 currTileId += 1;
                 currTileId %= BoardController.TILE_MAX + 1;
-                console.log("debug78: " + currTileId.toString());
                 const tileInfo = this.board.getTileInfo(currTileId);
                 const tilePlayerCount = tileInfo.players.reduce((a, b) => a + b, 0);
 
@@ -92,7 +91,6 @@ class BoardController {
                     clearInterval(playerMovementInterval);
                     resolve();
                 }
-                console.log("debug94");
             }, 200);
         }));
     }
