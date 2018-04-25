@@ -327,7 +327,7 @@ class GameView {
         let landname = message.landname;
         let rollResMsg = this.players[currPlayer].userName + " gets a roll result " + steps.toString();
 
-        await this.showModal(currPlayer, "🎲🎲", "", rollResMsg, [], 2);
+        await this.showModal(currPlayer, "Roll Result", "", rollResMsg, [], 2);
 
         await this.gameController.movePlayer(currPlayer, newPos);
 
