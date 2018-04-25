@@ -3,6 +3,11 @@
 ## Play Online
 https://goo.gl/mFvHvU
 
+> **Test Users**
+> - User Name: je0k
+> - User Name: ztong
+> - Password for all users: 1
+
 ## Highlights
 ### Game 
 ![image](https://user-images.githubusercontent.com/7262715/39226713-1cf40220-4822-11e8-903c-d0f5c7e21522.png)
