@@ -96,7 +96,9 @@ def ws_message(message):
     if action == "chat":
         handle_chat(hostname, msg)
     if action == "end_game":
-        handle_end_game(hostname, games)
+        handle_end_game(hostname, games, rooms)
+        del games[hostname]
+        del rooms[hostname]
 
 
 # @login_required
