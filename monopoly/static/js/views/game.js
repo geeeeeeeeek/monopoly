@@ -494,7 +494,12 @@ class GameView {
         }
         scoreboardTemplate += "</div>";
         this.$modalCardContent.classList.add("scoreboard-bg");
-        this.showModal(null, "Scoreboard", "Good Game!", scoreboardTemplate, []);
+        this.showModal(null, "Scoreboard", "Good Game!", scoreboardTemplate, [{
+            text: "Start a New Game",
+            callback: () => {
+                window.location = `http://${window.location.host}/monopoly/join`;
+            }
+        }]);
     }
 
     switchAudio() {
