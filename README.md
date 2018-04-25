@@ -23,4 +23,14 @@ https://goo.gl/mFvHvU
  1. https://docs.google.com/presentation/d/1Y36HwivsSiNB1SoqGMhy1w3d_xAc3nSCdld9G0SGKKY/edit?usp=sharing
  2. https://docs.google.com/presentation/d/1HHyJW2xknJmWeFV6CiM_MjlmA2Ol-EJYkaNLHm-yITU/edit#slide=id.p
 
-
+## Reference
+ - Game board starter template: [3D board game in a browser using WebGL and Three.js](http://www.osd.net/blog/web-development/3d-board-game-in-a-browser-using-webgl-and-three-js-part-3/)
+ - [Rolling dice animation](https://codepen.io/tameraydin/pen/CADvB)
+ - Media assets:
+   - [Mario Sculpture](https://clara.io/view/36463f26-3b2c-4569-aac7-a06020a83016/image)
+   - [R2-D2](https://clara.io/view/65483955-f6f5-40d4-ae8c-2dc3c081de2c)
+   - [Penguin](https://clara.io/view/46e7f15d-f532-4934-859b-43ba66ade69d/image)
+   - [Final Robot w moves](https://clara.io/view/2c8d9566-5a3b-4f49-93e2-a1c231a30115/image)
+   - [Hotel](https://clara.io/view/2ff5ed67-3665-4cef-a2c1-0d66bf810362/image)
+   - [House](https://clara.io/view/7e543030-2f76-4844-a483-80624ce3640f/image)
+   - [Material Design Icons](http://materialdesignicons.com/)
