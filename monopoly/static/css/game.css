@@ -391,11 +391,16 @@
 
 #rule-indicator-audio {
     left: 40px;
-    top: 100px;
+    top: 105px;
 }
 
 #rule-indicator-help {
-    left: 170px;
+    left: 125px;
+    top: 98px;
+}
+
+#rule-indicator-exit {
+    left: 250px;
     top: 50px;
 }
 
@@ -432,6 +437,8 @@
     bottom: 0;
     margin: auto;
     height: 280px;
+    align-items: center;
+    justify-content: center;
 }
 
 .rule-container {
