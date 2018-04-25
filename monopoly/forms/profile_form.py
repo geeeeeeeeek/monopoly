@@ -10,9 +10,6 @@ class ProfileForm(ModelForm):
     class Meta:
         model = Profile
         fields = ["bio", "avatar"]
-        # exclude = (
-        #     'user',
-        # )
 
     def clean_avatar(self):
         picture = self.cleaned_data['avatar']
@@ -27,10 +24,5 @@ class ProfileForm(ModelForm):
             raise ValidationError('File too big (max size is {0} bytes)'.format(MAX_UPLOAD_SIZE))
         return picture
 
-    def clean_bio(self):
-        bio = self.cleaned_data['bio']
-        if not bio or len(bio) == 0:
-            raise ValidationError("Bio can't be empty.")
-        return bio
 
 

@@ -344,10 +344,10 @@ class GameView {
 
         if (message.is_option === "true") {
             const buttons = (this.myPlayerIndex === currPlayer) ? [{
-                text: "Buy! I'm a rich man!",
+                text: "Buy",
                 callback: this.confirmDecision.bind(this)
             }, {
-                text: "No, I will be back...",
+                text: "No",
                 callback: this.cancelDecision.bind(this)
             }] : [];
 
@@ -357,6 +357,7 @@ class GameView {
                 await this.showModal(currPlayer, title, landname, this.players[currPlayer].userName + eventMsg, [], 3);
                 let cash = message.curr_cash;
                 this.changeCashAmount(cash);
+                this.audioManager.play("cash");
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             } else if (message.new_event === "true") {
                 await this.showModal(currPlayer, title, landname, this.players[currPlayer].userName + eventMsg, [], 3);
