@@ -19,5 +19,6 @@ urlpatterns = [
     url(r'^register', RegisterView.as_view(), name='register'),
     url(r'^confirm-registration/(?P<username>[a-zA-Z0-9]+)/(?P<token>[a-z0-9\-]+)$',
         ConfirmRegistrationView.as_view(), name='confirm'),
-    url(r'^.+', login_required(JoinView.as_view()), name="join"),
+    url(r'^.*$', login_required(JoinView.as_view()), name="join"),
+
 ]
