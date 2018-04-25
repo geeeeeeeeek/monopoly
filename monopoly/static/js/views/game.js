@@ -124,17 +124,19 @@ class GameView {
 
         for (let i = 0; i < players.length; i++) {
             if (this.userName === players[i].userName) this.myPlayerIndex = i;
+            const avatarTemplate = players[i].avatar ? `<img class="user-avatar" src="${players[i].avatar}">`
+                : `<div class="user-group-name">${players[i].fullName.charAt(0)}</div>`;
+
             this.$usersContainer.innerHTML += `
                 <div id="user-group-${i}" class="user-group" style="background: ${GameView.PLAYERS_COLORS[i]}">
                     <a href="/monopoly/profile/${players[i].userName}" target="_blank">
-                        <img class="user-avatar" src="${players[i].avatar}">
+                        ${avatarTemplate}
                     </a>
                     <span class="user-cash">
                         <div class="monopoly-cash">M</div>
                         <div class="user-cash-num">1500</div>
                     </span>
                     <img class="user-role" src="/static/images/player_${i}.png">
-                    <span class="user-group-name">${players[i].fullName}</span>
                 </div>`;
         }
 
