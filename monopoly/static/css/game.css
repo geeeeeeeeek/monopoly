@@ -31,7 +31,7 @@
 }
 
 .user-group.active {
-    box-shadow: 0 0 20px #315677;
+    box-shadow: 0 0 0 4px #BF360C;
 }
 
 .user-cash {
@@ -73,6 +73,19 @@
     left: -20px;
     position: absolute;
     border-radius: 28px;
+}
+
+.user-group-name {
+    top: -22px;
+    left: 49px;
+    position: absolute;
+    font-size: 12px;
+    color: #fff;
+    background: #000;
+    border-radius: 5px;
+    line-height: 24px;
+    padding: 2px 8px;
+    opacity: 0.8;
 }
 
 .center-card {

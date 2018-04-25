@@ -131,6 +131,7 @@ class GameView {
                         <div class="user-cash-num">1500</div>
                     </span>
                     <img class="user-role" src="/static/images/player_${i}.png">
+                    <span class="user-group-name">${players[i].fullName}</span>
                 </div>`;
         }
 
