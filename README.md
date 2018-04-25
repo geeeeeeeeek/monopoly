@@ -14,7 +14,7 @@ https://goo.gl/mFvHvU
 ![image](https://user-images.githubusercontent.com/7262715/39226845-fcb27342-4822-11e8-9d20-325f245eed33.png)
 
 # Join Game
-![image](https://user-images.githubusercontent.com/7262715/39226864-1cd5b774-4823-11e8-9b2a-6bebdcf083f5.png)
+![image](https://user-images.githubusercontent.com/7262715/39258760-c7b4f204-4882-11e8-89bf-8ce3f24098b8.png)
 
 # Login
 ![image](https://user-images.githubusercontent.com/7262715/39226864-1cd5b774-4823-11e8-9b2a-6bebdcf083f5.png)
