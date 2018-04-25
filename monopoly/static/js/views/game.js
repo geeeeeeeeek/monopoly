@@ -404,7 +404,7 @@ class GameView {
             let big_asset = -1e20;
             let big_index = 0;
             for (let i = 0; i < all_asset.length; i++) {
-                if (all_asset[i] === null){
+                if (all_asset[i] === null) {
                     continue;
                 }
                 if (big_asset < all_asset[i]) {
@@ -412,8 +412,9 @@ class GameView {
                     big_index = i;
                 }
             }
-            result.push({playerIndex: big_index,
-                         score: big_asset,
+            result.push({
+                playerIndex: big_index,
+                score: big_asset,
             });
             all_asset.splice(big_index, 1, null);
         }
@@ -512,6 +513,15 @@ class GameView {
             this.$helpControl.classList.add("control-off");
             this.$helpOverlay.classList.add("hidden");
         }
+    }
+
+    endGame() {
+        // TODO
+    }
+
+    async handleGameEnd() {
+        await this.showModal(null, "Game Terminated by Host", "", "Navigating back...", [], 5);
+        window.location = `http://${window.location.host}/monopoly/join`;
     }
 }
 
