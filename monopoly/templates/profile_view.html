@@ -29,6 +29,7 @@
                     {% csrf_token %}
                     <textarea id="profile-bio" readonly name="bio">{{ profile.bio }}</textarea>
                     <input type="file" id="profile-avatar-file" name="avatar" hidden>
+                        &nbsp;
                     <div id="profile-actions">
                         <a id="profile-back" href="/monopoly/join">
                             <button type="button"
@@ -37,6 +38,11 @@
                         &nbsp;
                         <button type="button" id="profile-edit" class="light-button">Edit Profile</button>
                         <button type="submit" id="profile-update" hidden class="large-button">Apply Changes</button>
+                        &nbsp;
+                        <a href="/monopoly/logout">
+                            <button type="button"
+                                class="light-button">Logout</button>
+                        </a>
                     </div>
                 </form>
             </div>
