@@ -299,7 +299,7 @@ class GameView {
             this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
         } else {
             const buttons = (this.myPlayerIndex === nextPlayer) ? [{
-                text: "Yes",
+                text: "Buy",
                 callback: this.confirmDecision.bind(this)
             }, {
                 text: "No",
