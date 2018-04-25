@@ -56,6 +56,8 @@ class BoardController {
 
     movePlayer(index, newTileId) {
         let currTileId = this.players[index].getTileId();
+        console.log("index and new tile id is: " + currTileId.toString() + " " + newTileId.toString());
+
         // Remove previous player position
         this.board.updateTileInfo(currTileId, {
             type: BoardController.MODEL_PLAYER,
@@ -74,7 +76,8 @@ class BoardController {
         return new Promise((resolve => {
             let playerMovementInterval = setInterval(() => {
                 currTileId += 1;
-
+                currTileId %= BoardController.TILE_MAX + 1;
+                console.log("debug78: " + currTileId.toString());
                 const tileInfo = this.board.getTileInfo(currTileId);
                 const tilePlayerCount = tileInfo.players.reduce((a, b) => a + b, 0);
 
@@ -89,10 +92,7 @@ class BoardController {
                     clearInterval(playerMovementInterval);
                     resolve();
                 }
-
-                if (currTileId === BoardController.TILE_MAX) {
-                    currTileId -= BoardController.TILE_MAX + 1;
-                }
+                console.log("debug94");
             }, 200);
         }));
     }
