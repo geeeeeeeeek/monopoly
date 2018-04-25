@@ -23,6 +23,9 @@ class GameView {
         this.$helpOverlay = document.getElementById("rules-overlay");
         this.showingHelp = false;
 
+        this.$exitControl = document.getElementById("exit-control");
+        this.$exitControl.addEventListener("click", this.endGame.bind(this));
+
         this.$chatMessageToSend.addEventListener("keydown", e => {
             const key = e.which || e.keyCode;
             // Detect Enter pressed
@@ -517,6 +520,7 @@ class GameView {
 
     endGame() {
         // TODO
+        alert("Game End");
     }
 
     async handleGameEnd() {
